@@ -1,0 +1,27 @@
+html
+    head
+        title A Spoopy Tale | a browser-based spoopy text game
+        script(src='js/jquery.min.js')
+        script(src='js/socket.io.js')
+        script(src='js/sweetalert.min.js')
+        script(src='js/spoopy.client.js')
+
+        link(rel='stylesheet', href='css/main/css')
+        link(rel='stylesheet', href='css/sweetalert/css')
+
+    body
+        div(class='wrap')
+            div(class='left')
+                div(id='timer')
+                    p -
+
+            div(id='chat-controls')
+                form(id='chat-form')
+                    input(id='chat-input', autocomplete='off', placeholder='<speak into the void?>')
+                    button(id='chat-send') Speak
+            
+            div(id='chat-log')
+                ul(id='chat-messages')
+
+            div(class='main')
+                div(class='load')
