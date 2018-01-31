@@ -1,0 +1,10 @@
+$font-size: 14;
+$font-family: Helvetica, Arial, sans-serif;
+
+.hide {
+    display: none;
+}
+
+html {
+    font: $font-size $font-family;
+}
