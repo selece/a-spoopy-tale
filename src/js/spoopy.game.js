@@ -8,7 +8,7 @@ require.config({
     }
 });
 
-define(['jquery', 'underscore', 'spoopy.data.rooms', 'spoopy.data.items'], ($, _, rooms, items) => {
+define(['jquery', 'underscore', 'spoopy.rooms', 'spoopy.items'], ($, _, rooms, items) => {
     let current_room = 'Kitchen';
     
     $(document).ready(() => {

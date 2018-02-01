@@ -15,6 +15,22 @@ const html5lint = require('gulp-html5-lint');
 const composer = require('gulp-uglify/composer');
 const uglify = composer(uglify_es, console);
 
+const paths = {
+    scss: {
+        src: 'src/scss/*.scss',
+        dest: 'assets/css/',
+    },
+
+    js: {
+        src: 'src/js/*.js',
+        dest: 'assets/js/spoopy/',
+    },
+
+    pug: {
+        src: 'views/*.pug',
+    }
+};
+
 gulp.task('default', [
     'sass',
     'jshint',
@@ -25,7 +41,7 @@ gulp.task('default', [
 
 gulp.task('jshint', () => {
     pump([
-        gulp.src('spoopy.game.js'),
+        gulp.src(paths.js.src),
         jshint('.jshintrc'),
         jshint.reporter('jshint-stylish'),
         livereload(),
@@ -42,7 +58,7 @@ gulp.task('html5lint', () => {
 
 gulp.task('sass', () => {
     pump([
-        gulp.src('scss/*.scss'),
+        gulp.src(paths.scss.src),
         sourcemaps.init(),
         sass().on('error', sass.logError),
         autoprefixer({
@@ -51,25 +67,29 @@ gulp.task('sass', () => {
         }),
         cssnano(),
         sourcemaps.write('./'),
-        gulp.dest('assets/css'),
+        gulp.dest(paths.scss.dest),
         livereload(),
     ]);
 });
 
 gulp.task('uglify', () => {
     pump([
-        gulp.src('spoopy.game.js'),
+        gulp.src(paths.js.src),
         uglify(),
-        gulp.dest('assets/js/spoopy/'),
+        gulp.dest(paths.js.dest),
         livereload(),
     ]);
+});
+
+gulp.task('livereload', () => {
+    livereload();
 });
 
 gulp.task('watch', () => {
     livereload.listen();
     
-    gulp.watch('scss/*.scss', ['scss']);
-    gulp.watch('views/*.pug', ['scss']);
-    gulp.watch(['spoopy.*.js'], ['jshint', 'uglify']);
-    gulp.watch(['index.html'], ['html5lint']);
+    gulp.watch(paths.scss.src, ['sass']);
+    gulp.watch(paths.pug.src, ['livereload']);
+    gulp.watch(paths.js.src, ['jshint', 'uglify']);
+    gulp.watch('index.html', ['html5lint', 'livereload']);
 });
