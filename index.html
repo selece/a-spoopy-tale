@@ -14,25 +14,31 @@
                 - a dark room (http://github.com/doublespeakgames/adarkroom/)
     -->
 
-    <!-- general libs -->
-    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
-    <script type="text/javascript" src="assets/js/underscore.min.js"></script>
-
-    <!-- game specific libs -->
-    <script type="text/javascript" src="assets/js/spoopy.game.js"></script>
+    <!-- using requirejs to load all of our stuff, yay!-->
+    <script type="text/javascript" data-main="assets/js/spoopy/spoopy.game" src="assets/js/require.min.js"></script>
 
     <!-- game stylesheets -->
     <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+
 
 </head>
 <body>
 
     <div id="wrap">
         <div id="clock"></div>
+
         <div id="notification"></div>
+
         <div id="content">
-            <div id="header"><h1></h1></div>
-            <div id="content"><p></p></div>
+            <div id="header">
+                <h1></h1>
+            </div>
+            <div id="content">
+                <p></p>
+            </div>
+            <div id="nav">
+                <ul></ul>
+            </div>
         </div>
     </div>
 

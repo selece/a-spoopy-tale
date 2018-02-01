@@ -18,6 +18,10 @@
         "document": false,
 
         // underscore
-        "_": false
+        "_": false,
+
+        // requirejs
+        "require": false,
+        "define": false
     }
 }

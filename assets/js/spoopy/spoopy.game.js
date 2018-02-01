@@ -1,0 +1,1 @@
+"use strict";require.config({paths:{jquery:"../jquery.min",underscore:"../underscore.min"}}),define(["jquery","underscore","spoopy.data.rooms"],(e,r,o)=>{e(document).ready(()=>{e("#header h1").text("Foyer"),e("#content p").text(o.get_description("Foyer")),r.mapObject(o.rooms,r=>{e("#nav ul").append(`<li><a href="#">${r.name}</a></li>`)})})});
