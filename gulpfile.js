@@ -8,7 +8,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const autoprefixer = require('gulp-autoprefixer');
 const jshint = require('gulp-jshint');
 const livereload = require('gulp-livereload');
-const nodemon = require('gulp-nodemon');
 const pump = require('pump');
 const uglify_es = require('uglify-es');
 
@@ -20,35 +19,20 @@ gulp.task('default', [
     'jshint',
     'uglify',
     'watch',
-    'server',
 ]);
-
-gulp.task('server', () => {
-    nodemon({
-        'script': 'server.min/spoopy.server.js',
-        'args': ['--port=3000'],
-    });
-});
 
 gulp.task('jshint', () => {
     pump([
-        gulp.src('spoopy.server.js'),
+        gulp.src('spoopy.game.js'),
         jshint('.jshintrc'),
         jshint.reporter('jshint-stylish'),
+        livereload(),
     ]);
-
-    pump([
-        gulp.src('spoopy.client.js'),
-        jshint('.jshintrc'),
-        jshint.reporter('jshint-stylish'),
-    ]);
-
-    livereload();
 });
 
 gulp.task('sass', () => {
     pump([
-        gulp.src('sass/*.scss'),
+        gulp.src('scss/*.scss'),
         sourcemaps.init(),
         sass().on('error', sass.logError),
         autoprefixer({
@@ -64,24 +48,17 @@ gulp.task('sass', () => {
 
 gulp.task('uglify', () => {
     pump([
-        gulp.src('spoopy.client.js'),
+        gulp.src('spoopy.game.js'),
         uglify(),
         gulp.dest('assets/js'),
+        livereload(),
     ]);
-
-    pump([
-        gulp.src('spoopy.server.js'),
-        uglify(),
-        gulp.dest('server.min'),
-    ]);
-
-    livereload();
 });
 
 gulp.task('watch', () => {
     livereload.listen();
     
-    gulp.watch('sass/*.scss', ['sass']);
-    gulp.watch('views/*.pug', ['sass']);
-    gulp.watch(['spoopy.server.js', 'spoopy.client.js'], ['jshint', 'uglify']);
+    gulp.watch('scss/*.scss', ['scss']);
+    gulp.watch('views/*.pug', ['scss']);
+    gulp.watch(['index.html', 'spoopy.game.js'], ['jshint', 'uglify']);
 });

@@ -15,6 +15,9 @@
         "$": false,
         "io": false,
         "swal": false,
-        "document": false
+        "document": false,
+
+        // underscore
+        "_": false
     }
 }

@@ -1,35 +1,20 @@
 {
   "name": "a-spoopy-tale",
   "version": "1.0.0",
-  "description": "A spoopy tale! Text-based adventure game.",
+  "description": "A spoopy tale! Text-based adventure game built in HTML5 & Javascript.",
   "main": "spoopy.server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-css": "node-sass --include-path sass sass/client.scss assets/css/spoopy.client.css",
-    "watch-css": "nodemon -e sass -x \"npm run build-css\"",
-    "server": "node spoopy.server.js --port 3000"
-  },
+  "scripts": {},
   "author": "Jonathan Liaw",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.2",
-    "minimist": "^1.2.0",
-    "moment": "^2.20.1",
-    "moniker": "^0.1.2",
-    "pug": "^2.0.0-rc.4",
-    "underscore": "^1.8.3",
-    "winston": "^2.4.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
-    "chai-http": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.1.0",
     "gulp-concat": "^2.6.1",
     "gulp-cssnano": "^2.1.2",
     "gulp-jshint": "^2.1.0",
     "gulp-livereload": "^3.8.1",
-    "gulp-nodemon": "^2.2.1",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
@@ -37,9 +22,24 @@
     "jshint-stylish": "^2.2.1",
     "mocha": "^5.0.0",
     "node-sass": "^4.7.2",
-    "nodemon": "^1.14.11",
     "pump": "^2.0.1",
     "uglify-es": "^3.3.9",
     "uglify-js": "^3.3.9"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selece/a-spoopy-tale.git"
+  },
+  "keywords": [
+    "html5",
+    "js",
+    "game"
+  ],
+  "bugs": {
+    "url": "https://github.com/selece/a-spoopy-tale/issues"
+  },
+  "homepage": "https://github.com/selece/a-spoopy-tale#readme"
 }
