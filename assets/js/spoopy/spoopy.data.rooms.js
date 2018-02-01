@@ -1,53 +1,64 @@
-define([], () => {
+define(['underscore'], (_) => {
     let rooms = [
         {
             'name': 'Foyer',
             'descriptions': [
                 {
                     'text': 'A musty smell fills your nostrils as you survey the dust-covered entranceway.',
-                    'conditions': false,
+                    'conditions': {},
                 },
                 {
                     'text': 'The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.',
-                    'conditions': false,
+                    'conditions': {},
                 },
             ],
-            'tags': false,
+            'tags': {},
         },
         {
             'name': 'Kitchen',
             'descriptions': [
                 {
                     'text': 'The faint smell of rot wafts towards you. Nothing edible has been prepared here for a long time.',
-                    'conditions': false,
+                    'conditions': {},
+                },
+                {
+                    'text': 'CONDITIONAL DESCRIPTION TEST',
+                    'conditions': {has_item: ['Skull']},
                 }
             ],
-            'tags': false,
+            'tags': {},
         },
         {
             'name': 'Conservatory',
             'descriptions': [
                 {
                     'text': 'Long-dead leaves crunch beneath your shoes as you explore the empty conservatory.',
-                    'conditions': false,
+                    'conditions': {},
                 },
                 {
                     'text': 'The peeling plaster walls and cracked glass windows fill your view.',
-                    'conditions': false,
+                    'conditions': {},
                 }
             ],
-            'tags': false,
+            'tags': {},
         },
     ];
 
-    let get_description = function get_description(search, conditions=false) {
+    let get_description = function get_description(search, conditions={}) {
         let target = _.findWhere(rooms, {name: search});
         if (target !== undefined) {
-            return _.sample(_.where(target.descriptions, {conditions: conditions})).text;
+            return _.sample(
+                _.filter(
+                    target.descriptions,
+                    (elem) => {
+                        return _.isEqual(elem.conditions, conditions);
+                    }
+                )
+            ).text || 'Error! Could not load valid description.';
 
         } else {
             console.error('get_description(): ', search, ' not found in ', rooms);
-            return null;
+            return 'Error! Could not load valid description.';
         }
     };
 

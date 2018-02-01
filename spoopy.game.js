@@ -8,12 +8,12 @@ require.config({
     }
 });
 
-define(['jquery', 'underscore', 'spoopy.data.rooms'], ($, _, rooms) => {
-    let current_room = 'Foyer';
+define(['jquery', 'underscore', 'spoopy.data.rooms', 'spoopy.data.items'], ($, _, rooms, items) => {
+    let current_room = 'Kitchen';
     
     $(document).ready(() => {
         $('#header h1').text(current_room);
-        $('#content p').text(rooms.get_description(current_room));
+        $('#content p').text(rooms.get_description(current_room, {has_item: ['Skull']}));
 
         _.mapObject(rooms.rooms, (room) => {
             $('#nav ul').append(`<li><a href="#">${room.name}</a></li>`);
