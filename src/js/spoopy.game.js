@@ -34,6 +34,8 @@ define(
 
 // TODO: Need to build this thing. :/
 // NOTE: Lots of trying stuff going on in here...
+// NOTE: http://blog.benoitvallon.com/data-structures-in-javascript/the-graph-data-structure/
+// NOTE: https://www.joezimjs.com/javascript/great-mystery-of-the-tilde/
         let engine_build_map = (rooms) => {
             let room_list = [
                 {
@@ -134,6 +136,7 @@ define(
             $('#content p').text(rooms.get_description(player.loc));
 
 /* TODO: Show buttons only for current room connections.
+            $('#nav ul').empty();
             _.mapObject(
                 _.filter(rooms.rooms),
                 room => $('#nav ul').append(build_room_nav_button(room))
