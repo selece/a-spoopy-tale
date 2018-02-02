@@ -12,8 +12,8 @@ define(['pubsub'], (PS) => {
         this.map = [];
         this.loc = Player.DEFAULT_STARTING_LOCATION;
 
-        // NOTE: we have to bind the context (this) for the handler otherwise this
-        // turns into the Window/global-land and we lose the Player object.
+        // NOTE: we have to bind the context (this) for the handler otherwise 'this'
+        // turns into the Window/global-land and we lose the Player object context.
         this.move_handler = PS.subscribe('ENGINE_NAV_CLICK', this.move.bind(this));
     }
 
@@ -22,12 +22,12 @@ define(['pubsub'], (PS) => {
     Player.prototype = {
         constructor: Player,
 
-        pickup_item: function(item) {
+        pickup_item: item => {
             console.log('picking up', item);
             this.inventory.push(item);
         },
 
-        drop_item: function(item) {
+        drop_item: item => {
             console.log('dropping', item);
 
             if (_.contains(this.inventory, item)) {
@@ -37,11 +37,12 @@ define(['pubsub'], (PS) => {
             }
         },
 
+        // NOTE: move() cannot be an arrow func. due to needing access to
+        // the Player context via 'this' for the bind() call in the constructor.
         move: function(chan, new_loc) {
-            console.log(chan, 'called move to', new_loc);
             this.loc = new_loc;
 
-            if (!_.contains(this.map, new_loc)) {
+            if (!_.contains(this.map, new_loc)) { 
                 this.map.push(new_loc);
             }
         },
