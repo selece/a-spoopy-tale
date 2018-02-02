@@ -1,0 +1,1 @@
+"use strict";define(["spoopy.items","spoopy.rooms"],(o,e)=>{let n=[],t=[],i="";return{inventory:n,map:t,location:i,pickup_item:e=>{console.log("picking up",e,o.get_description(e)),n.push(e)},drop_item:o=>{console.log("dropping",o),_.contains(n,o)?n=_.without(n,o):console.error("drop_item(): could not drop non-existent",o)},move:o=>{i=o,_.contains(t,o)&&t.push(o)}}});
