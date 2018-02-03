@@ -34,99 +34,95 @@ define(
 
 // TODO: Need to build this thing. :/
 // NOTE: Lots of trying stuff going on in here...
-// NOTE: http://blog.benoitvallon.com/data-structures-in-javascript/the-graph-data-structure/
-// NOTE: https://www.joezimjs.com/javascript/great-mystery-of-the-tilde/
-        let engine_build_map = (rooms) => {
-            let room_list = [
-                {
-                    name: 'A',
-                    exits: 3,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'B',
-                    exits: 2,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'C',
-                    exits: 1,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'D',
-                    exits: 1,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'E',
-                    exits: 2,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'F',
-                    exits: 4,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'G',
-                    exits: 1,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'F',
-                    exits: 1,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'G',
-                    exits: 2,
-                    tags: {},
-                    connections: [],
-                },
-                {
-                    name: 'H',
-                    exits: 2,
-                    tags: {},
-                    connections: [],
-                }
-            ];
+        let engine_get_room = (available, exclusions) => {
+            let draw;
 
-            let engine_get_room = (available, exclusions) => {
-                return _.sample(
-                    _.filter(
-                        available,
-                        elem => !_.contains(exclusions, elem)
-                    )
-                ) || undefined;
-            };
+            console.log('engine_get_room():', exclusions);
 
-            let exclusions = [];
-            for (let room of room_list) {
-                exclusions.push(room);
+            while (draw === undefined) {
 
-                for (let i = 0; i < _.random(1, room.exits); i++) {
-                    let room_draw = engine_get_room(room_list, exclusions);
+                let filtered = _.filter(
+                    available,
 
-                    if (room_draw !== undefined) {
-                        exclusions.push(room_draw);
-                        room.connections.push(room_draw);
-
-                        let linked = room_list[_.indexOf(room_list, room_draw)];
-                        linked.connections.push(room);
+                    // NOTE: the provided context {} looks messy, but removes the jshint
+                    // warning about function accessing outer scoped variables
+                    function(elem) {
+                        return !(this._.contains(this.exc, elem));
+                    },
+                    {
+                        exc: exclusions,
+                        _: _,
                     }
+                );
+
+                if (filtered.length > 0) {
+                    draw = _.sample(filtered) || undefined;
+
+                } else {
+                    console.error('engine_get_room(): no valid rooms');
+                    break;
                 }
             }
 
-            console.log(room_list);
+            console.log('engine_get_room():', _.contains(exclusions, draw), draw);
+
+            return draw;
+        };
+
+        let engine_generate_room_connections = (start, conns, available, exclusions) => {
+
+            let connections = [];
+            let local_excludes = [start];
+
+            for (let i in _.range(conns)) {
+                let new_conn = engine_get_room(available, _.union(local_excludes, exclusions));
+
+                if (new_conn !== undefined) {
+                    connections.push(new_conn);
+                    local_excludes.push(new_conn);
+
+                    console.log('engine_generate_room_connections():', new_conn, local_excludes);
+
+                } else {
+                    console.error('engine_generate_room_connections(): undefined from new_conn generator.');
+                }
+            }
+
+            return {
+                connections: connections,
+                exclusions: _.union(exclusions, local_excludes),
+            };
+        };
+
+        let engine_generate_missing_edges = (room_map, target_node) => {
+
+            console.log('engine_generate_missing_edges(): looking at', room_map[target_node]);
+            for (let node in room_map[target_node]) {
+                let node_val = room_map[target_node][node];
+                console.log('engine_generate_missing_edges(): building missing edges for', node_val);
+                if (!_.has(room_map, node_val)) {
+                    room_map[node_val] = [];
+                }
+
+                if (!_.find(room_map[node_val], target_node)) {
+                    room_map[node_val].push(target_node);
+                } else {
+                    console.log('engine_generate_missing_edges(): edge already exists');
+                }
+            }
+        };
+
+        let engine_build_map = (rooms) => {
+            let room_list = _.range(10);
+            let room_map = {};
+            let exclusions = [];
+            let start = 0;
+
+            let gen1 = engine_generate_room_connections(start, _(4), room_list, []);
+            room_map[start] = gen1.connections;
+            engine_generate_missing_edges(room_map, start);
+
+            console.log(room_map);
         };
 
         engine_build_map(rooms.rooms);
