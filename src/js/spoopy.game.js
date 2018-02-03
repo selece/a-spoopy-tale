@@ -46,6 +46,9 @@ define(
 
                     // NOTE: the provided context {} looks messy, but removes the jshint
                     // warning about function accessing outer scoped variables
+
+                    // NOTE: not sure why but using an arrow func. here breaks the filter
+                    // and causes it to pass duplicate values?
                     function(elem) {
                         return !(this._.contains(this.exc, elem));
                     },
@@ -113,7 +116,7 @@ define(
         };
 
         let engine_build_map = (rooms) => {
-            let room_list = _.range(10);
+            let room_list = _.range(50);
             let room_map = {};
             let exclusions = [];
             let start = 0;
@@ -122,7 +125,26 @@ define(
             room_map[start] = gen1.connections;
             engine_generate_missing_edges(room_map, start);
 
-            console.log(room_map);
+            console.log('*** GEN 2 ***');
+            let leaves = _.chain(room_map)
+                            .filter(function(elem) {return elem.toString() !== this.start.toString();}, {start: start})
+                            .first()
+                            .value();
+
+            for (let i in leaves) {
+                console.log('generating children for:', leaves[i]);
+                console.log(engine_generate_room_connections(leaves[i], _.random(2,4), room_list, gen1.exclusions));
+            }
+
+/*
+            for (let node in _.filter(room_map, function(elem) { return elem.toString() !== this.start.toString();}, {start: start})) {
+
+                if (node.toString() !== start.toString()) {
+                    console.log(node, room_map[node], gen1.exclusions);
+
+
+                }
+            }*/
         };
 
         engine_build_map(rooms.rooms);
