@@ -1,45 +1,52 @@
 'use strict';
 
-define(['spoopy.items', 'spoopy.rooms'], (items, rooms) => {
-    let inventory = [];
-    let map = [];
-    let location = '';
+define(['pubsub'], (PS) => {
 
-    let pickup_item = item => {
-        console.log('picking up', item, items.get_description(item));
-
-        inventory.push(item); 
-    };
-
-    let drop_item = item => {
-        console.log('dropping', item);
-
-        let target = _.contains(inventory, item);
-        if (target) {
-            inventory = _.without(inventory, item);
-        
-        } else {
-            console.error('drop_item(): could not drop non-existent', item);
+    // constructor
+    function Player() {
+        if (!(this instanceof Player)) {
+            throw new TypeError('Player constructor cannot be called as a function!');
         }
+
+        this.inventory = [];
+        this.map = [];
+        this.loc = Player.DEFAULT_STARTING_LOCATION;
+
+        // NOTE: we have to bind the context (this) for the handler otherwise 'this'
+        // turns into the Window/global-land and we lose the Player object context.
+        this.move_handler = PS.subscribe('ENGINE_NAV_CLICK', this.move.bind(this));
+    }
+
+    Player.DEFAULT_STARTING_LOCATION = 'Foyer';
+
+    Player.prototype = {
+        constructor: Player,
+
+        pickup_item: item => {
+            console.log('picking up', item);
+            this.inventory.push(item);
+        },
+
+        drop_item: item => {
+            console.log('dropping', item);
+
+            if (_.contains(this.inventory, item)) {
+                this.inventory = _.without(this.inventory, item);
+            } else {
+                console.error('drop_item() could not drop', item);
+            }
+        },
+
+        // NOTE: move() cannot be an arrow func. due to needing access to
+        // the Player context via 'this' for the bind() call in the constructor.
+        move: function(chan, new_loc) {
+            this.loc = new_loc;
+
+            if (!_.contains(this.map, new_loc)) { 
+                this.map.push(new_loc);
+            }
+        },
     };
 
-    let move = loc => {
-        location = loc;
-
-        if (_.contains(map, loc)) {
-            map.push(loc);
-        }
-    };
-
-    return {
-        // accessible props
-        inventory: inventory,
-        map: map,
-        location: location,
-
-        // functions
-        pickup_item: pickup_item,
-        drop_item: drop_item,
-        move: move,
-    };
+    return Player;
 });
