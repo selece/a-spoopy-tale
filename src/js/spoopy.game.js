@@ -10,36 +10,40 @@ require.config({
 });
 
 define(
-    ['jquery', 'underscore', 'pubsub', 'spoopy.rooms', 'spoopy.items', 'spoopy.player',],
-    ($, _, PS, rooms, items, Player) => {
+    ['jquery', 'underscore', 'pubsub', 'spoopy.rooms', 'spoopy.items', 'spoopy.player', 'spoopy.engine',],
+    ($, _, PS, rooms, items, Player, Engine) => {
     
+        this.available = _.range(25);
         this.player = new Player();
+        this.engine = new Engine(this.available);
 
         $(document).ready(() => {
-            engine_update_main(this.player);
 
+            this.engine.engine_build_map(0);
+/*
             _.mapObject(
                 rooms.rooms,
-                room => $('#nav ul').append(build_room_nav_link(room))
+                room => $('#nav ul').append(build_room_nav_link(room.name))
             );
+*/
         });
 
-        let build_room_nav_link = (room) => {
+        let build_room_nav_link = (_text) => {
             return $('<li>').html($('<a>', {
-                text: room.name,
+                text: _text,
                 href: '#',
-                click: () => PS.publish('ENGINE_NAV_CLICK', room.name)
+                click: () => PS.publish('ENGINE_NAV_CLICK', _text)
             }));
         };
-
+/*
 // TODO: Need to build this thing. :/
 // NOTE: Lots of trying stuff going on in here...
-        let engine_get_room = (available, exclusions) => {
+        let engine_get_room = (_available, _exclusions) => {
 
-            console.log('engine_get_room(): exc ->', exclusions);
+            // console.log('engine_get_room(): exc ->', _exclusions);
 
             let filtered = _.filter(
-                available,
+                _available,
 
                 // NOTE: the provided context {} looks messy, but removes the jshint
                 // warning about function accessing outer scoped variables
@@ -50,7 +54,7 @@ define(
                     return !(this._.contains(this.exc, elem));
                 },
                 {
-                    exc: exclusions,
+                    exc: _exclusions,
                     _: _,
                 }
             );
@@ -66,90 +70,84 @@ define(
             }
         };
 
-        let engine_update_exclusions = (existing, update) => {
-            return _.chain(existing)
-                    .union(update)
+        let engine_update_exclusions = (_existing, _update) => {
+            return _.chain(_existing)
+                    .union(_update)
                     .unique()
                     .value();
         };
 
-        let engine_update_adjacency = (adjacency, from, to) => {
-            if (adjacency[from] === undefined) {
-                adjacency[from] = [];
+        let engine_update_adjacency = (_adjacency, _start, _end) => {
+            if (_adjacency[_start] === undefined) {
+                _adjacency[_start] = [];
             }
 
-            if (adjacency[to] === undefined) {
-                adjacency[to] = [];
+            if (_adjacency[_end] === undefined) {
+                _adjacency[_end] = [];
             }
 
-            adjacency[from].push(to);
-            adjacency[to].push(from);
-            adjacency[from] = _.unique(adjacency[from]);
-            adjacency[to] = _.unique(adjacency[to]);
+            _adjacency[_start].push(_end);
+            _adjacency[_end].push(_start);
+            _adjacency[_start] = _.unique(_adjacency[_start]);
+            _adjacency[_end] = _.unique(_adjacency[_end]);
 
-            return adjacency;
+            return _adjacency;
         };
 
-        let engine_get_branches = (trunk, adjacency) => {
-            return _.chain(adjacency)
-                    .filter(function(elem) { return elem.toString() !== this.trunk.toString(); }, {trunk: trunk})
+        let engine_get_branches = (_trunk, _adjacency) => {
+            return _.chain(_adjacency)
+                    .filter(function(elem) { return elem.toString() !== this.t.toString(); }, {t: _trunk})
                     .first()
                     .value();
         };
 
-        let engine_build_at = (start, branch_count, available, exclusions, adjacency) => {
+        let engine_build_at = (_start, _branch_count, _available, _exclusions, _adjacency) => {
             for (let i in _.range(
-                _.isFunction(branch_count) ? branch_count() : branch_count
+                _.isFunction(_branch_count) ? _branch_count() : _branch_count
             )) {
 
-                let pick = engine_get_room(available, exclusions);
+                let pick = engine_get_room(_available, _exclusions);
 
                 if (pick === undefined) {
                     console.error('engine_build_at(): could not get available room for pick');
                     break;
                 
                 } else {
-                    adjacency = engine_update_adjacency(adjacency, start, pick);
-                    exclusions = engine_update_exclusions(exclusions, [pick]);                    
+                    _adjacency = engine_update_adjacency(_adjacency, _start, pick);
+                    _exclusions = engine_update_exclusions(_exclusions, [pick]);
                 } 
             }
 
             return {
-                updated_adjacency: adjacency,
-                updated_exclusions: exclusions,
+                updated_adjacency: _adjacency,
+                updated_exclusions: _exclusions,
             };
         };
 
         // NOTE: scope issue - might have to scope vars to global/persistent object        
-        let engine_build_map = (rooms) => {
-            let room_list = _.range(15);
-            let adjacency = {};
-            let exclusions = [];
+        let engine_build_map = (_start, _adjacency, _exclusions, _available) => {
 
-            let start = 0;
-            exclusions = engine_update_exclusions(exclusions, [start]);
+            console.log('engine_build_map():', _adjacency, _exclusions);
+            _exclusions = engine_update_exclusions(_exclusions, [_start]);
 
-            let gen = engine_build_at(start, _.random(3,6), room_list, exclusions, adjacency);
-            adjacency = gen.updated_adjacency;
-            exclusions = gen.updated_exclusions;
+            let gen = engine_build_at(_start, _.random(3,6), _available, _exclusions, _adjacency);
+            _adjacency = gen.updated_adjacency;
+            _exclusions = gen.updated_exclusions;
 
-            console.log('adj:', adjacency, ' exc:', exclusions);
+            console.log('adj:', _adjacency, ' exc:', _exclusions);
 
-            let branches = engine_get_branches(start, adjacency);
-            console.log('branches -> trunk @ ', start, branches);
+            let branches = engine_get_branches(_start, _adjacency);
+            console.log('branches -> trunk @ ', _start, branches);
 
             for (let i in branches) {
-                let branch_gen = engine_build_at(branches[i], _.random(1,2), room_list, exclusions, adjacency);
-                console.log('upds -> ', gen.updated_adjacency, gen.updated_exclusions);
+                let branch_gen = engine_build_at(branches[i], _.random(1,2), _available, _exclusions, _adjacency);
 
-                adjacency = gen.updated_adjacency;
-                exclusions = gen.updated_exclusions;
+                // _adjacency = gen.updated_adjacency;
+                _exclusions = gen.updated_exclusions;
 
-                console.log('branch @ ', branches[i], ', adj:', adjacency, ' exc:', exclusions);
+                console.log('branch @ ', branches[i], ', adj:', _adjacency, ' exc:', _exclusions);
             }
         };
-
-        engine_build_map(rooms.rooms);
 
         let engine_update_main = (player) => {
             $('#header h1').text(player.loc);
@@ -161,9 +159,10 @@ define(
                 _.filter(rooms.rooms),
                 room => $('#nav ul').append(build_room_nav_button(room))
             );
-*/
+
         };
 
         let engine_nav_handler = (channel, msg) => engine_update_main(this.player);
         let engine_nav_handler_sub = PS.subscribe('ENGINE_NAV_CLICK', engine_nav_handler);
+*/
 });
