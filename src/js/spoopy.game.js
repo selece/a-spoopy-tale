@@ -35,116 +35,118 @@ define(
 // TODO: Need to build this thing. :/
 // NOTE: Lots of trying stuff going on in here...
         let engine_get_room = (available, exclusions) => {
-            let draw;
 
-            console.log('engine_get_room():', exclusions);
+            console.log('engine_get_room(): exc ->', exclusions);
 
-            while (draw === undefined) {
+            let filtered = _.filter(
+                available,
 
-                let filtered = _.filter(
-                    available,
+                // NOTE: the provided context {} looks messy, but removes the jshint
+                // warning about function accessing outer scoped variables
 
-                    // NOTE: the provided context {} looks messy, but removes the jshint
-                    // warning about function accessing outer scoped variables
-
-                    // NOTE: not sure why but using an arrow func. here breaks the filter
-                    // and causes it to pass duplicate values?
-                    function(elem) {
-                        return !(this._.contains(this.exc, elem));
-                    },
-                    {
-                        exc: exclusions,
-                        _: _,
-                    }
-                );
-
-                if (filtered.length > 0) {
-                    draw = _.sample(filtered) || undefined;
-
-                } else {
-                    console.error('engine_get_room(): no valid rooms');
-                    break;
+                // NOTE: not sure why but using an arrow func. here breaks the filter
+                // and causes it to pass duplicate values?
+                function(elem) {
+                    return !(this._.contains(this.exc, elem));
+                },
+                {
+                    exc: exclusions,
+                    _: _,
                 }
+            );
+
+            if (filtered.length > 0) {
+                let draw = _.sample(filtered);
+                console.log('engine_get_room(): got ', draw);
+                return draw;
+
+            } else {
+                console.error('engine_get_room(): no valid rooms');
+                return undefined;
             }
-
-            console.log('engine_get_room():', _.contains(exclusions, draw), draw);
-
-            return draw;
         };
 
-        let engine_generate_room_connections = (start, conns, available, exclusions) => {
+        let engine_update_exclusions = (existing, update) => {
+            return _.chain(existing)
+                    .union(update)
+                    .unique()
+                    .value();
+        };
 
-            let connections = [];
-            let local_excludes = [start];
+        let engine_update_adjacency = (adjacency, from, to) => {
+            if (adjacency[from] === undefined) {
+                adjacency[from] = [];
+            }
 
-            for (let i in _.range(conns)) {
-                let new_conn = engine_get_room(available, _.union(local_excludes, exclusions));
+            if (adjacency[to] === undefined) {
+                adjacency[to] = [];
+            }
 
-                if (new_conn !== undefined) {
-                    connections.push(new_conn);
-                    local_excludes.push(new_conn);
+            adjacency[from].push(to);
+            adjacency[to].push(from);
+            adjacency[from] = _.unique(adjacency[from]);
+            adjacency[to] = _.unique(adjacency[to]);
 
-                    console.log('engine_generate_room_connections():', new_conn, local_excludes);
+            return adjacency;
+        };
 
+        let engine_get_branches = (trunk, adjacency) => {
+            return _.chain(adjacency)
+                    .filter(function(elem) { return elem.toString() !== this.trunk.toString(); }, {trunk: trunk})
+                    .first()
+                    .value();
+        };
+
+        let engine_build_at = (start, branch_count, available, exclusions, adjacency) => {
+            for (let i in _.range(
+                _.isFunction(branch_count) ? branch_count() : branch_count
+            )) {
+
+                let pick = engine_get_room(available, exclusions);
+
+                if (pick === undefined) {
+                    console.error('engine_build_at(): could not get available room for pick');
+                    break;
+                
                 } else {
-                    console.error('engine_generate_room_connections(): undefined from new_conn generator.');
-                }
+                    adjacency = engine_update_adjacency(adjacency, start, pick);
+                    exclusions = engine_update_exclusions(exclusions, [pick]);                    
+                } 
             }
 
             return {
-                connections: connections,
-                exclusions: _.union(exclusions, local_excludes),
+                updated_adjacency: adjacency,
+                updated_exclusions: exclusions,
             };
         };
 
-        let engine_generate_missing_edges = (room_map, target_node) => {
-
-            console.log('engine_generate_missing_edges(): looking at', room_map[target_node]);
-            for (let node in room_map[target_node]) {
-                let node_val = room_map[target_node][node];
-                console.log('engine_generate_missing_edges(): building missing edges for', node_val);
-                if (!_.has(room_map, node_val)) {
-                    room_map[node_val] = [];
-                }
-
-                if (!_.find(room_map[node_val], target_node)) {
-                    room_map[node_val].push(target_node);
-                } else {
-                    console.log('engine_generate_missing_edges(): edge already exists');
-                }
-            }
-        };
-
+        // NOTE: scope issue - might have to scope vars to global/persistent object        
         let engine_build_map = (rooms) => {
-            let room_list = _.range(50);
-            let room_map = {};
+            let room_list = _.range(15);
+            let adjacency = {};
             let exclusions = [];
+
             let start = 0;
+            exclusions = engine_update_exclusions(exclusions, [start]);
 
-            let gen1 = engine_generate_room_connections(start, _(4), room_list, []);
-            room_map[start] = gen1.connections;
-            engine_generate_missing_edges(room_map, start);
+            let gen = engine_build_at(start, _.random(3,6), room_list, exclusions, adjacency);
+            adjacency = gen.updated_adjacency;
+            exclusions = gen.updated_exclusions;
 
-            console.log('*** GEN 2 ***');
-            let leaves = _.chain(room_map)
-                            .filter(function(elem) {return elem.toString() !== this.start.toString();}, {start: start})
-                            .first()
-                            .value();
+            console.log('adj:', adjacency, ' exc:', exclusions);
 
-            for (let i in leaves) {
-                console.log('generating children for:', leaves[i]);
-                console.log(engine_generate_room_connections(leaves[i], _.random(2,4), room_list, gen1.exclusions));
+            let branches = engine_get_branches(start, adjacency);
+            console.log('branches -> trunk @ ', start, branches);
+
+            for (let i in branches) {
+                let branch_gen = engine_build_at(branches[i], _.random(1,2), room_list, exclusions, adjacency);
+                console.log('upds -> ', gen.updated_adjacency, gen.updated_exclusions);
+
+                adjacency = gen.updated_adjacency;
+                exclusions = gen.updated_exclusions;
+
+                console.log('branch @ ', branches[i], ', adj:', adjacency, ' exc:', exclusions);
             }
-
-/*
-            for (let node in _.filter(room_map, function(elem) { return elem.toString() !== this.start.toString();}, {start: start})) {
-
-                if (node.toString() !== start.toString()) {
-                    console.log(node, room_map[node], gen1.exclusions);
-
-
-                }
-            }*/
         };
 
         engine_build_map(rooms.rooms);
