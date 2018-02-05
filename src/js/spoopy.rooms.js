@@ -568,15 +568,23 @@ define(['underscore'], (_) => {
         },
     ];
 
-    let get_description = function get_description(search, conditions={}) {
+    let validate = (search) => {
+        let target = _.findWhere(rooms, {name: search});
+
+        if (target !== undefined) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    let get_description = (search, conditions={}) => {
         let target = _.findWhere(rooms, {name: search});
         if (target !== undefined) {
             return _.sample(
                 _.filter(
                     target.descriptions,
-                    (elem) => {
-                        return _.isEqual(elem.conditions, conditions);
-                    }
+                    elem => _.isEqual(elem.conditions, conditions)
                 )
             ).text || 'Error! Could not load valid description.';
 
@@ -587,7 +595,11 @@ define(['underscore'], (_) => {
     };
 
     return {
+        // accessible props
         rooms: rooms,
+
+        // functions
         get_description: get_description,
+        validate: validate,
     };
 });
