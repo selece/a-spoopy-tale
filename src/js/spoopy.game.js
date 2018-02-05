@@ -29,9 +29,10 @@ define(
 
                 gens: 1,
                 gens_fn: function() { return _.random(1,3); },
+                leaf_connections: 3,
             };
 
-            this.engine.engine_build_map(gen_params);
+            this.engine.build_map(gen_params);
             engine_update_main(this.player);
 /*
             _.mapObject(
