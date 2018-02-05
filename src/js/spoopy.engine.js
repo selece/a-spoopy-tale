@@ -14,83 +14,106 @@ define('spoopy.engine', ['underscore', 'jquery', 'pubsub'], (_, $, PS) => {
 
 	Engine.DEFAULT_STARTING_LOCATION = 'Foyer';
 
-	Engine.prototype.constructor = Engine;
+	Engine.prototype = {
 
-	function build_room_nav_link(_link_text) {
-		return $('<li>').html($('<a>', {
-			text: _link_text,
-			href: '#',
-			click: () => PS.publish('ENGINE_NAV_CLICK', _link_text),
-		}));
-	}
+		constructor: Engine,
 
-	Engine.prototype.engine_get_room = function() {
-		let filtered_list = _.filter(
-			this.available,
+		build_room_nav_link: function(_link_text) {
+			return $('<li>').html($('<a>', {
+				text: _link_text,
+				href: '#',
+				click: function() { PS.publish('ENGINE_NAV_CLICK', _link_text); },
+			}));
+		},
 
-			// NOTE: the provided context looks messy but clears the jshint
-			// warning about function accessing outer scoped variable
-			elem => { return !(this._.contains(this.exc, elem)); },
-			{ exc: this.exclusions, _: _ }
-		);
+		engine_get_room: function() {
+			let filtered_list = _.filter(
+				this.available,
+				function(elem) { return !(_.contains(this.exc, elem)); },
+				{ exc: this.exclusions }
+			);
 
-		if (filtered_list.length > 0) {
-			let draw = _.sample(filtered_list);
-			return draw;
+			if (filtered_list.length > 0) {
+				let draw = _.sample(filtered_list);
+				console.log('engine_get_room():', draw);
+				return draw;
 
-		} else {
-			return undefined;
-		}
-	};
-
-	Engine.prototype.engine_update_exclusions = function(_upd) {
-		return _.chain(this.exclusions)
-				.union(_upd)
-				.unique()
-				.value();
-	};
-
-	Engine.prototype.engine_update_adjacency = function(_start, _end) {
-		if (this.adjacency[_start] === undefined) { this.adjacency[_start] = []; }
-		if (this.adjacency[_end] === undefined) { this.adjacency[_end] = []; }
-
-		this.adjacency[_start].push(_end);
-		this.adjacency[_end].push(_start);
-
-		this.adjacency[_start] = _.unique(this.adjacency[_start]);
-		this.adjacency[_end] = _.unique(this.adjacency[_end]);
-	};
-
-	Engine.prototype.engine_get_branches = function(_trunk) {
-		return _.chain(this.adjacency)
-				.filter(function(elem) { return elem.toString() !== this.t.toString(); }, {t: _trunk})
-				.first()
-				.value();
-	};
-
-	Engine.prototype.engine_build_at = function(_t, _branches) {
-		for (let i in _.range(
-			_.isFunction(_branches) ? _branches() : _branches
-		)) {
-
-			let pick = this.engine_get_room();
-
-			if (pick === undefined) {
-				console.log('engine_build_at(): error, no available rooms');
-				break;
 			} else {
-				this.engine_update_adjacency(_t, pick);
-				this.engine_update_exclusions([pick]);
+				return undefined;
 			}
-		}
-	};
+		},
 
-	Engine.prototype.engine_build_map = function(_t) {
-		this.engine_update_exclusions([_t]);
-		console.log('engine_build_map(): start ->', this.adjacency, this.exclusions);
+		engine_update_exclusions: function(_upd) {
+			console.log('pre-upd exc:', this.exclusions);
+			this.exclusions =
+				_.chain(this.exclusions)
+				 .union(_upd)
+				 .unique()
+				 .value();
 
-		this.engine_build_at(_t, 4);
-		console.log('engine_build_map(): complete ->', this.adjacency, this.exclusions);
+			console.log('updated exc:', this.exclusions);
+		},
+
+		engine_update_adjacency: function(_start, _end) {
+			if (this.adjacency[_start] === undefined) { this.adjacency[_start] = []; }
+			if (this.adjacency[_end] === undefined) { this.adjacency[_end] = []; }
+
+			this.adjacency[_start].push(_end);
+			this.adjacency[_end].push(_start);
+
+			this.adjacency[_start] = _.unique(this.adjacency[_start]);
+			this.adjacency[_end] = _.unique(this.adjacency[_end]);
+		},
+
+		engine_get_branches: function(_trunk) {
+			return _.chain(this.adjacency)
+					.filter(function(elem) { return elem.toString() !== this.t.toString(); }, {t: _trunk})
+					.first()
+					.value();
+		},
+
+		engine_build_at: function(_t, _branches) {
+			this.engine_update_exclusions([_t]);
+			for (let i in _.range(
+				_.isFunction(_branches) ? _branches() : _branches
+			)) {
+
+				let pick = this.engine_get_room();
+
+				if (pick === undefined) {
+					console.log('engine_build_at(): error, no available rooms');
+					break;
+				} else {
+					this.engine_update_adjacency(_t, pick);
+					this.engine_update_exclusions([pick]);
+				}
+			}
+		},
+
+		engine_build_map: function(_gen) {
+			this.engine_build_at(
+				_gen.start.loc,
+				_.random(
+					_gen.start.min_branches,
+					_gen.start.max_branches
+				)
+			);
+
+			console.log('engine_build_map(): root complete ->', this.adjacency, this.exclusions);
+			console.log('engine_build_map(): branches @', _gen.start.loc, this.engine_get_branches(_gen.start.loc));
+
+			let branches = this.engine_get_branches(_gen.start.loc); 
+			for (let i in _.range(_gen.gens)) {
+				console.log('engine_build_map(): building generation', i);
+
+				for (let j in branches) {
+					console.log('engine_build_map(): building branch @', branches[j]);
+					this.engine_build_at(branches[j], _gen.gens_fn());
+				}
+			}
+
+			console.log('engine_build_map(): done branches ->', this.adjacency, this.exclusions);
+		},
 	};
 
 	return Engine;
