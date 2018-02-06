@@ -83,6 +83,10 @@ define('spoopy.engine', ['underscore', 'jquery', 'pubsub'], (_, $, PS) => {
 					.value();
 		},
 
+		get_map_at: function(_loc) {
+			return this.adjacency[_loc];
+		},
+
 		build_at: function(_t, _branches) {
 			this.update_exclusions([_t]);
 			for (let i in _.range(

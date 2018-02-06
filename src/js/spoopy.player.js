@@ -40,6 +40,7 @@ define(['pubsub'], (PS) => {
         // NOTE: move() cannot be an arrow func. due to needing access to
         // the Player context via 'this' for the bind() call in the constructor.
         move: function(chan, new_loc) {
+            console.log('player.move():', chan, new_loc);
             this.loc = new_loc;
 
             if (!_.contains(this.map, new_loc)) { 

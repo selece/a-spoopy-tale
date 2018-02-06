@@ -14,7 +14,7 @@ define(
     ['jquery', 'underscore', 'pubsub', 'spoopy.rooms', 'spoopy.items', 'spoopy.player', 'spoopy.engine',],
     ($, _, PS, rooms, items, Player, Engine) => {
     
-        this.available = _.range(25);
+        this.available = rooms.get_name_list();
         this.player = new Player();
         this.engine = new Engine(this.available);
 
@@ -22,7 +22,7 @@ define(
 
             let gen_params = {
                 start: {
-                    loc: 0,
+                    loc: 'Foyer',
                     min_branches: 3,
                     max_branches: 6,
                 },
@@ -34,12 +34,6 @@ define(
 
             this.engine.build_map(gen_params);
             engine_update_main(this.player);
-/*
-            _.mapObject(
-                rooms.rooms,
-                room => $('#nav ul').append(build_room_nav_link(room.name))
-            );
-*/
         });
 
         let build_room_nav_link = (_text) => {
@@ -51,16 +45,14 @@ define(
         };
 
         let engine_update_main = (player) => {
-            $('#header h1').text(player.loc);
-            $('#content p').text(rooms.get_description(player.loc));
+            $('#header h1').text(this.player.loc);
+            $('#content p').text(rooms.get_description(this.player.loc));
 
-/* TODO: Show buttons only for current room connections.
             $('#nav ul').empty();
             _.mapObject(
-                _.filter(rooms.rooms),
-                room => $('#nav ul').append(build_room_nav_button(room))
+                this.engine.get_map_at(this.player.loc),
+                elem => $('#nav ul').append(build_room_nav_link(elem))
             );
-*/
         };
 
         let engine_nav_handler = (channel, msg) => engine_update_main(this.player);

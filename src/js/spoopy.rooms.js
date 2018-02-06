@@ -10,7 +10,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'Shards of glass crunch under your feet, the remnants of skylit windows.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'The atrium is grimy with years of exposure to the elements.',
                    'conditions': {},
@@ -28,7 +28,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'You cough, the air of the attic thick with dust.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'You gaze uncertainly at the trunks and cloth-covered shapes filling the attic, wondering what memories have been lost from time.',
                    'conditions': {},
@@ -46,7 +46,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'You twirl once, twice, in the empty ballroom, leading an imaginary partner in a waltz.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'The ballroom is vast. Its walls bear gilded mirrors and sconces, and there is an orchestral stage in the far corner.',
                    'conditions': {},
@@ -64,7 +64,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'You gaze about the bathroom. A wash basin, the standard plumbing, and a large clawfoot tub.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'Marble, wood, and cast iron lend the bathroom an air of ageold majesty.',
                    'conditions': {},
@@ -82,7 +82,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'Though the billiard balls are present, the table and cues have seen better days.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'Aside from the peeling wallpaper and a thick layer of dust, the billiard room looks mostly untouched by age.',
                    'conditions': {},
@@ -100,7 +100,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'You tread lightly into the mistress\'s private sitting room, observing the feminine decor.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'The furniture in this room is feminine, and you discover an assortment of tarnished silver brushes and handmirrors on the dressing table.',
                    'conditions': {},
@@ -118,7 +118,7 @@ define(['underscore'], (_) => {
                {
                    'text': 'The few moth-eaten overcoats and fur wraps remaining in the cloakroom give off a musty smell.',
                    'conditions': {},
-               }
+               },
                {
                    'text': 'You see nothing more than a couple of sofas and some abandoned coats.',
                    'conditions': {},
@@ -136,7 +136,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The peeling plaster walls and cracked glass windows fill your view.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Wind whistles through gaps in the windows, spider-webbed with cracks.',
                     'conditions': {},
@@ -154,7 +154,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'Several tons of stone loom over your head as you move down the hallway.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Great stone slabs form the hallway floor. Blocks of stone form the hallway walls. And the arched ceiling? Also stone.',
                     'conditions': {},
@@ -172,7 +172,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'You gaze upon the ruins of a large dining room. Chairs lay broken, paintings hang crookedly from the walls, and the table lies set for a final meal no guest ever ate.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'The dining room wainscotting and plaster walls are chipped and peeling, and the table and chairs rot where they stand.',
                     'conditions': {},
@@ -190,7 +190,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'Several imposing tables and stiff-backed chairs furnish the room.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You glance at the ecclectic mix of art on the walls as you navigate the room\'s sparse furnishings.',
                     'conditions': {},
@@ -226,7 +226,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'You find the furnace room chillingly cold. It is decades since a fire was stoked here.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You spy a mountain of coal near a massive furnace.',
                     'conditions': {},
@@ -244,7 +244,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'You walk past the silent gaze of generations of a long-forgotten family.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Though you are the only one in the room, the gallery feels full of people.',
                     'conditions': {},
@@ -262,7 +262,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The bedroom contains only a wooden bedframe, a nightstand, and a washbasin.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You find the fixings of the guest bedroom rather spartan.',
                     'conditions': {},
@@ -306,7 +306,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The butter churn is rotten and dusty bones strewn on the floor are all that remain of the larder\'s cured meats.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Despite the smell of rot, you are in awe of the size of the house\'s larder.',
                     'conditions': {},
@@ -324,7 +324,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'You meander around rotting tables and washbasins.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Mildew and rot reign in the laundry room.',
                     'conditions': {},
@@ -342,7 +342,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'Motes of dust dance in your vision as you gaze upon a vast library.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'The library is silent and oppressive with the weight of a century\'s forgotten knowledge',
                     'conditions': {},
@@ -360,7 +360,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'You gaze for awhile at the hunting scene frescoed on the ceiling above the massive bedframe.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You feel slightly uneasy intruding upon the long-ago master\'s private chambers.',
                     'conditions': {},
@@ -378,7 +378,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'Sheets of music have crumpled to near-dust atop the surface of the grand piano.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'A grand piano stands in a corner of the music room. Heavy drapery along the walls adds to the heavy silence.',
                     'conditions': {},
@@ -396,7 +396,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'China dolls and hobby horses lay scattered, long ago abandoned.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Though probably much loved by their owners, you find the old-fashioned toys vaguely creepy.',
                     'conditions': {},
@@ -414,7 +414,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'Star charts, crumbling and faded, adorn the round walls while a telescope is prominently situated in the center of the room.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You step forward to try the telescope, only to find the lenses cracked beyond use.',
                     'conditions': {},
@@ -432,7 +432,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The pantry is stifling. No plates have been prepared here in some time.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'Not a thing is out of place in this pantry. You muse that a butler must have reigned here once.',
                     'conditions': {},
@@ -450,7 +450,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The once-vibrant upholstery of the parlour\'s furniture is now moth-eaten and sunfaded.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You enter the parlour, a room filled with an awkwardly placed chaise, three sofas, and two armchairs.',
                     'conditions': {},
@@ -468,7 +468,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The rotunda is completely empty of anything but dust.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You wonder at the purpose of an empty, round room.',
                     'conditions': {},
@@ -486,7 +486,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The hall is furnished only by a massive wooden table and two long benches.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You find the lack of artwork, decoration, and comfortable furniture a little alarming.',
                     'conditions': {},
@@ -504,7 +504,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The servants\' bedrooms are overly austere.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You can\'t help likening the servants\' quarters to prison cells.',
                     'conditions': {},
@@ -522,7 +522,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The stone stairs have begun to crumble in some places, and you tread with extra caution.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You cling to the wall of the staircase, avoiding the deadly drop in the center of the spiral.',
                     'conditions': {},
@@ -540,7 +540,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'The study features a stone fireplace with lamps on its lintel and a mahogany desk strewn with various odds and ends.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You spy a pipe and snuffbox atop the desk in the study, abandoned long decades ago.',
                     'conditions': {},
@@ -558,7 +558,7 @@ define(['underscore'], (_) => {
                 {
                     'text': 'An explorer\'s room, you decide. The room is filled with hunting trophies and curios from the depths of darkest Africa.',
                     'conditions': {},
-                }
+                },
                 {
                     'text': 'You can\'t help but notice the stuffed tiger\'s head mounted on the trophy room wall. Until you notice the rhinoceros, and the lion, and...',
                     'conditions': {},
@@ -594,6 +594,12 @@ define(['underscore'], (_) => {
         }
     };
 
+    let get_name_list = () => {
+        return _.chain(rooms)
+                .map(function(rm) { return rm.name; })
+                .value();
+    };
+
     return {
         // accessible props
         rooms: rooms,
@@ -601,5 +607,6 @@ define(['underscore'], (_) => {
         // functions
         get_description: get_description,
         validate: validate,
+        get_name_list: get_name_list,
     };
 });
