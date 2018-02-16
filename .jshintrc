@@ -5,7 +5,6 @@
 
     "globals": {
 
-        // mocha
         "describe": false,
         "it": false,
         "before": false,
@@ -17,10 +16,8 @@
         "swal": false,
         "document": false,
 
-        // underscore
         "_": false,
 
-        // requirejs
         "require": false,
         "define": false
     }

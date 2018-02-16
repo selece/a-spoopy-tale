@@ -3,11 +3,22 @@
   "version": "1.0.0",
   "description": "A spoopy tale! Text-based adventure game built in HTML5 & Javascript.",
   "main": "spoopy.server.js",
-  "scripts": {},
+  "scripts": {
+    "build": "webpack",
+    "dev-server": "webpack-dev-server --content-base build/"
+  },
   "author": "Jonathan Liaw",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "mobx": "^3.5.1",
+    "mobx-react": "^4.4.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-react": "^6.24.1",
     "chai": "^4.1.2",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.1.0",
@@ -19,13 +30,16 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
+    "html-webpack-plugin": "^2.30.1",
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
     "mocha": "^5.0.0",
     "node-sass": "^4.7.2",
     "pump": "^2.0.1",
     "uglify-es": "^3.3.9",
-    "uglify-js": "^3.3.9"
+    "uglify-js": "^3.3.9",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.11.1"
   },
   "directories": {
     "test": "test"

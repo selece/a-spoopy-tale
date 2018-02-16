@@ -1,6 +1,6 @@
 'use strict';
 
-define(['pubsub'], (PS) => {
+define([], () => {
 
     // constructor
     function Player() {
@@ -12,9 +12,7 @@ define(['pubsub'], (PS) => {
         this.map = [];
         this.loc = Player.DEFAULT_STARTING_LOCATION;
 
-        // NOTE: we have to bind the context (this) for the handler otherwise 'this'
-        // turns into the Window/global-land and we lose the Player object context.
-        this.move_handler = PS.subscribe('ENGINE_NAV_CLICK', this.move.bind(this));
+        console.log('Player() finished init.', this.map);
     }
 
     Player.DEFAULT_STARTING_LOCATION = 'Foyer';
@@ -37,15 +35,25 @@ define(['pubsub'], (PS) => {
             }
         },
 
+        visited: loc => {
+            return _.contains(this.map, loc);
+        },
+
+        update_map: loc => {
+            console.log('update_map():', loc);
+
+            if (!this.visited(loc)) {
+                this.map.push(loc);
+            }
+
+            console.log('update_map(): done', this.map);
+        },
+
         // NOTE: move() cannot be an arrow func. due to needing access to
         // the Player context via 'this' for the bind() call in the constructor.
-        move: function(chan, new_loc) {
-            console.log('player.move():', chan, new_loc);
-            this.loc = new_loc;
-
-            if (!_.contains(this.map, new_loc)) { 
-                this.map.push(new_loc);
-            }
+        move: loc => {
+            console.log('player.move():', loc);
+            this.loc = loc;
         },
     };
 

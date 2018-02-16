@@ -5,14 +5,13 @@ require.config({
     paths: {
         'jquery': '../jquery.min',
         'underscore': '../underscore.min',
-        'pubsub': '../pubsub',
     }
 });
 
 define(
     'spoopy.game',
-    ['jquery', 'underscore', 'pubsub', 'spoopy.rooms', 'spoopy.items', 'spoopy.player', 'spoopy.engine',],
-    ($, _, PS, rooms, items, Player, Engine) => {
+    ['jquery', 'underscore', 'spoopy.rooms', 'spoopy.items', 'spoopy.player', 'spoopy.engine',],
+    ($, _, rooms, items, Player, Engine) => {
     
         this.available = rooms.get_name_list();
         this.player = new Player();
@@ -33,28 +32,30 @@ define(
             };
 
             this.engine.build_map(gen_params);
-            engine_update_main(this.player);
+            display_update();
         });
 
-        let build_room_nav_link = (_text) => {
-            return $('<li>').html($('<a>', {
-                text: _text,
-                href: '#',
-                click: () => PS.publish('ENGINE_NAV_CLICK', _text)
-            }));
-        };
-
-        let engine_update_main = (player) => {
+        let display_update = function() {
+/*
             $('#header h1').text(this.player.loc);
             $('#content p').text(rooms.get_description(this.player.loc));
 
             $('#nav ul').empty();
             _.mapObject(
                 this.engine.get_map_at(this.player.loc),
-                elem => $('#nav ul').append(build_room_nav_link(elem))
+                elem => $('#nav ul').append(
+                    build_nav_link(
+                        elem, this.player.visited(elem)
+                    )
+                )
             );
+*/
         };
 
-        let engine_nav_handler = (channel, msg) => engine_update_main(this.player);
-        let engine_nav_handler_sub = PS.subscribe('ENGINE_NAV_CLICK', engine_nav_handler);
+        let build_nav_link = (_link_text, _visited) => {
+            return $('<li>').html($('<a>', {
+                text: _visited ? _link_text : 'A dark and mysterious doorway...',
+                href: '#',
+            }));
+        };
 });

@@ -1,4 +1,4 @@
-define('spoopy.engine', ['underscore', 'jquery', 'pubsub'], (_, $, PS) => {
+define('spoopy.engine', ['underscore', 'jquery'], (_, $) => {
 	'use strict';
 
 	// constructor
@@ -18,16 +18,8 @@ define('spoopy.engine', ['underscore', 'jquery', 'pubsub'], (_, $, PS) => {
 
 		constructor: Engine,
 
-		build_room_nav_link: function(_link_text) {
-			return $('<li>').html($('<a>', {
-				text: _link_text,
-				href: '#',
-				click: function() { PS.publish('ENGINE_NAV_CLICK', _link_text); },
-			}));
-		},
-
-		get_room: function(_params) {
-			let filtered_list = (_params === undefined) ?
+		get_room: function(_params=null) {
+			let filtered_list = (_params === null) ?
 				_.filter(
 					this.available,
 					function(elem) { return !(_.contains(this.exc, elem)); },
