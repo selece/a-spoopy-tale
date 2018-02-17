@@ -1,1 +1,0 @@
-"use strict";define(["jquery","underscore"],(t,e)=>{return{Button:(e,r)=>t("<button />",{text:e,click:r})}});
