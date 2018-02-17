@@ -14,17 +14,13 @@ export default class Player {
         this.map = map;
 
         this.updateMap(this.loc);
-
-        console.log('Player() finished constructor.', this.map);
     }
 
     @action pickupItem(item) {
         this.inventory.push(item);
-        console.log('pickupItem():', item, this.inventory);
     }
 
     @action dropItem(item) {
-        console.log('dropItem(): dropping', item);
         if (this.hasItem(item)) {
             this.inventory = without(this.inventory, item);
         
@@ -42,18 +38,12 @@ export default class Player {
     }
 
     @action updateMap(loc) {
-        console.log('updateMap():', loc);
-
         if (!this.visited(loc)) {
             this.map.push(loc);
         }
-
-        console.log('updateMap(): done', this.map);
     }
 
     @action move(loc) {
-        console.log('move():', loc);
-
         this.updateMap(loc);
         this.loc = loc;
     }

@@ -9,7 +9,6 @@ import Engine from './spoopy/engine';
 import './scss/main.scss';
 
 let engine = new Engine();
-
 engine.buildMap({
     start: {
         loc: 'Foyer',
@@ -27,6 +26,6 @@ engine.buildMap({
 });
 
 ReactDOM.render(
-    <SpoopyGUI player={engine.player}/>,
+    <SpoopyGUI engine={engine}/>,
     document.getElementById('SpoopyGUI')
 );

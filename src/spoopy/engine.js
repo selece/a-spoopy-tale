@@ -1,4 +1,5 @@
 import {filter, contains, sample, chain, range, isFunction, random} from 'underscore';
+import {computed, action} from 'mobx';
 
 import Player from './player';
 import ItemDB from './items';
@@ -13,7 +14,35 @@ export default class Engine {
 		this.adjacency = {};
 		this.exclusions = [];
 		this.available = this.roomDB.room_names;
-	}
+    }
+
+    playerVisitedLocation(loc) {
+        return this.player.visited(loc);
+    }
+
+    @action playerMove(loc) {
+        this.player.move(loc);
+    }
+
+    @action playerPickup(item) {
+        this.player.pickupItem(item);
+    }
+
+    @action playerDrop(item) {
+        this.player.dropItem(item);
+    }
+    
+    @computed get playerLocation() {
+        return this.player.loc;
+    }
+
+    @computed get playerLocationDescription() {
+        return this.roomDB.getDescription(this.player.loc);
+    }
+
+    @computed get playerLocationExits() {
+        return this.adjacency[this.player.loc];
+    }
 
 	getRoom(params=undefined) {
 		let filtered = params === undefined ?
@@ -59,19 +88,6 @@ export default class Engine {
 		if (!contains(this.adjacency[to], from)) { this.adjacency[to].push(from); }
 	}
 
-	getBranches(trunk) {
-		return chain(this.adjacency)
-
-				// NOTE: this refers to context provided, not Engine object
-				.filter(function(i) { return i.toString() !== this.t.toString(); }, {t: trunk})
-				.first()
-				.value();
-	}
-
-	getAdjacencyAt(loc) {
-		return this.adjacency[loc];
-	}
-
 	buildMapAt(loc, branches) {
 		this.updateExclusions([loc]);
 		for (let i in range(
@@ -105,7 +121,6 @@ export default class Engine {
 			let leaf_2 = this.getRoom(leaf_params);
 
 			this.updateAdjacency(leaf_1, leaf_2);
-			console.log('connectLeaves(): picked', leaf_1, leaf_2, '->', this.adjacency);
 		}
 	}
 
@@ -120,13 +135,8 @@ export default class Engine {
 			)
 		);
 
-		console.log('buildMap(): root complete ->', this.adjacency, this.exclusions);
-		console.log('buildMap(): branches @', params.start.loc, this.getBranches(params.start.loc));
-
-		let branches = this.getBranches(params.start.loc);
+        let branches = this.adjacency[params.start.loc];
 		for (let i in range(params.branches.gens)) {
-			console.log('buildMap(): building generation', i);
-
 			for (let j in branches) {
 				this.buildMapAt(
 					branches[j],
