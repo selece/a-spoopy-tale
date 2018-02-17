@@ -1,21 +1,32 @@
 const html_webpack_plugin = require('html-webpack-plugin');
-const html_webpack_plugin_config = new html_webpack_plugin({
-    template: __dirname + '\\src\\index.html',
-    filename: 'index.html',
-    inject: 'body'
-});
+const clean_webpack_plugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-        spoopy_gui: __dirname + '\\src\\react\\spoopy.jsx',
-        spoopy_game: __dirname + '\\src\\js\\spoopy.game.js'
+        spoopy__packed: __dirname + '\\src\\spoopy.jsx'
     },
     module: {
         loaders: [
             {
-                test: /\.jsx*$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
+            },
+            {
+                test: /\.scss$/,
+                exclude: /node_modules/,
+                loader: 'sass-loader'
+            }
+        ],
+        rules: [
+            {
+                test: /\.(s*)css$/,
+                use: ['style-loader', 'css-loader', 'sass-loader']
+            },
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: 'babel-loader'
             }
         ]
     },
@@ -24,10 +35,22 @@ module.exports = {
         path: __dirname + '\\build',
     },
     plugins: [
-        html_webpack_plugin_config
+        new clean_webpack_plugin(
+            ['build/*.*'],
+            {
+                verbose: true,
+                watch: true,
+                beforeEmit: true
+            }
+        ),
+        new html_webpack_plugin({
+            template: __dirname + '\\src\\index.html',
+            filename: 'index.html',
+            inject: 'body'
+        })
     ],
     resolve: {
-        // modulesDirectories: [__dirname + '\\src\\vendor'],
+        // requirejs aliases for webpack
         alias: {
             'jquery': __dirname + '\\src\\vendor\\jquery.min',
             'underscore': __dirname + '\\src\\vendor\\underscore.min',
