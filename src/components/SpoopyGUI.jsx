@@ -1,11 +1,18 @@
 import React, {Component} from 'react';
 import {observer} from 'mobx-react';
+import {observable} from 'mobx';
+import {Motion, spring} from 'react-motion'
 
 @observer
 class SpoopyGUIPlayerLocation extends Component {
     render() {
         return (
-            <h1>{this.props.loc}</h1>
+            <div>
+                <h1>{this.props.loc}</h1>
+                <Motion defaultStyle={{x: 0}} style={{x: spring(10)}}>
+                    {value => <p>{value.x}</p>}
+                </Motion>
+            </div>
         );
     }
 }
@@ -14,7 +21,7 @@ class SpoopyGUIPlayerLocation extends Component {
 class SpoopyGUIPlayerLocationDescription extends Component {
     render() {
         return (
-            <p>{this.props.desc}</p>
+            <p className='description'>{this.props.desc}</p>
         );
     }
 }
@@ -23,7 +30,12 @@ class SpoopyGUIPlayerLocationDescription extends Component {
 class SpoopyGUIPlayerLocationExitButton extends Component {
     render() {
         return (
-            <div onClick={this.onClickHandler}>
+            <div className='cursor-pointer nav-button'
+                onClick={this.onClickHandler}
+                onMouseEnter={this.onMouseEnterHandler}
+                onMouseLeave={this.onMouseLeaveHandler}
+            >
+
                 <p>{this.props.display}</p>
             </div>
         );
@@ -31,6 +43,14 @@ class SpoopyGUIPlayerLocationExitButton extends Component {
 
     onClickHandler = () => {
         this.props.engine.playerMove(this.props.exit);
+    }
+
+    onMouseEnterHandler = () => {
+        console.log('You are hovering', this.props.exit);
+    }
+
+    onMouseLeaveHandler = () => {
+        console.log('You stopped hovering', this.props.exit);
     }
 }
 
@@ -46,7 +66,7 @@ class SpoopyGUIPlayerLocationExits extends Component {
                     exits.map(
                         (elem, idx) => 
                             <SpoopyGUIPlayerLocationExitButton 
-                                display={engine.playerVisitedLocation(elem) ? elem : 'A mysterious cooridoor...'}
+                                display={engine.playerVisitedLocation(elem) ? elem : engine.randomUnexplored}
                                 exit={elem}
                                 engine={engine}
                                 key={idx}
@@ -64,12 +84,9 @@ export default class SpoopyGUI extends Component {
         const engine = this.props.engine;
 
         return (
-            <div>
+            <div className='gui center'>
                 <SpoopyGUIPlayerLocation loc={engine.playerLocation} />
                 <SpoopyGUIPlayerLocationDescription desc={engine.playerLocationDescription} />
-
-                <hr />
-
                 <SpoopyGUIPlayerLocationExits engine={engine} exits={engine.playerLocationExits} />
             </div>
         );

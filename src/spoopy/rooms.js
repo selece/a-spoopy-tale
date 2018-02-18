@@ -571,10 +571,22 @@ export default class RoomDB {
                 'tags': {},
             },
         ];
+
+        this.unexplored = [
+            'You can\'t quite seem to pierce the inky darkness beyond the doorway.',
+            'A mysterious corridor leads off into the distance.',
+            'Your eyes are unable to see beyond the layers of dust and cobwebs and into the room beyond.',
+            'Try as you might, you can\'t see anything beyond this doorway.',
+            'All you can discern is the creaking door and indistinct shapes in the dark room ahead.',
+        ];
     }
 
     exists(search) {
         return findWhere(this.rooms, {name: search}) !== undefined;
+    }
+
+    get random_unexplored() {
+        return sample(this.unexplored);
     }
 
     get room_names() {

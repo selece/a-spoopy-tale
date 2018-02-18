@@ -42,7 +42,11 @@ export default class Engine {
 
     @computed get playerLocationExits() {
         return this.adjacency[this.player.loc];
-    }
+	}
+	
+	get randomUnexplored() {
+		return this.roomDB.random_unexplored;
+	}
 
 	getRoom(params=undefined) {
 		let filtered = params === undefined ?
