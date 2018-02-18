@@ -1,19 +1,25 @@
 'use strict';
 
 import {contains, without} from 'underscore';
-import {observable, action} from 'mobx';
+import {observable, action, computed} from 'mobx';
 
 export default class Player {
     @observable inventory;
     @observable loc;
     @observable map;
+    @observable explored;
 
-    constructor(inv=[], map=[], loc='Foyer') {
+    constructor(inv=[], map=[], loc='Foyer', explored=[]) {
         this.inventory = inv;
         this.loc = loc;
         this.map = map;
+        this.explored = explored;
 
         this.updateMap(this.loc);
+    }
+
+    @computed get currentLocation() {
+        return this.loc;
     }
 
     @action pickupItem(item) {
@@ -33,14 +39,22 @@ export default class Player {
         return contains(this.inventory, item);
     }
 
-    visited(loc) {
+    hasVisited(loc) {
         return contains(this.map, loc);
     }
 
+    hasExplored(loc) {
+        return this.explored[loc];
+    }
+
     @action updateMap(loc) {
-        if (!this.visited(loc)) {
+        if (!this.hasVisited(loc)) {
             this.map.push(loc);
         }
+    }
+
+    @action updateExplored(loc, searched) {
+        this.explored[loc] = searched;
     }
 
     @action move(loc) {

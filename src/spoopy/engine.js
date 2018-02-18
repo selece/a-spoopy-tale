@@ -14,11 +14,26 @@ export default class Engine {
 		this.adjacency = {};
 		this.exclusions = [];
 		this.available = this.roomDB.room_names;
-    }
+	}
+	
+	@computed get playerLocationInfo() {
+		return {
+			current: {
+				loc: this.player.currentLocation,
+				desc: this.roomDB.getDescription(this.player.currentLocation),
+				explored: this.player.hasExplored(this.player.currentLocation),
+			},
 
-    playerVisitedLocation(loc) {
-        return this.player.visited(loc);
-    }
+			exits: this.adjacency[this.player.currentLocation].map(
+				exit => ({
+					display: (this.player.hasVisited(exit) && this.player.hasExplored(exit)) ? exit : this.randomUnexplored, 
+					loc: exit,
+					visited: this.player.hasVisited(exit),
+					explored: this.player.hasExplored(exit),
+				}) 
+			)
+		};
+	}
 
     @action playerMove(loc) {
         this.player.move(loc);
@@ -31,18 +46,6 @@ export default class Engine {
     @action playerDrop(item) {
         this.player.dropItem(item);
     }
-    
-    @computed get playerLocation() {
-        return this.player.loc;
-    }
-
-    @computed get playerLocationDescription() {
-        return this.roomDB.getDescription(this.player.loc);
-    }
-
-    @computed get playerLocationExits() {
-        return this.adjacency[this.player.loc];
-	}
 	
 	get randomUnexplored() {
 		return this.roomDB.random_unexplored;

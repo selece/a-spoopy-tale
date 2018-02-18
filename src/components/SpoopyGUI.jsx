@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
 import {observer} from 'mobx-react';
 import {observable} from 'mobx';
-import {Motion, spring} from 'react-motion'
+import {generate} from 'shortid';
 
 @observer
 class SpoopyGUIPlayerLocation extends Component {
     render() {
         return (
             <div>
-                <h1>{this.props.loc}</h1>
-                <Motion defaultStyle={{x: 0}} style={{x: spring(10)}}>
-                    {value => <p>{value.x}</p>}
-                </Motion>
+                <h1>{this.props.info.current.loc}</h1>
             </div>
         );
     }
@@ -21,7 +18,7 @@ class SpoopyGUIPlayerLocation extends Component {
 class SpoopyGUIPlayerLocationDescription extends Component {
     render() {
         return (
-            <p className='description'>{this.props.desc}</p>
+            <p className='description'>{this.props.info.current.desc}</p>
         );
     }
 }
@@ -58,7 +55,7 @@ class SpoopyGUIPlayerLocationExitButton extends Component {
 class SpoopyGUIPlayerLocationExits extends Component {
     render() {
         const engine = this.props.engine;
-        const exits = this.props.exits;
+        const exits = this.props.info.exits;
 
         return (
             <div>
@@ -66,10 +63,10 @@ class SpoopyGUIPlayerLocationExits extends Component {
                     exits.map(
                         (elem, idx) => 
                             <SpoopyGUIPlayerLocationExitButton 
-                                display={engine.playerVisitedLocation(elem) ? elem : engine.randomUnexplored}
-                                exit={elem}
+                                display={elem.display}
+                                exit={elem.loc}
                                 engine={engine}
-                                key={idx}
+                                key={generate()}
                             />
                     )
                 }
@@ -82,12 +79,13 @@ class SpoopyGUIPlayerLocationExits extends Component {
 export default class SpoopyGUI extends Component {
     render() {
         const engine = this.props.engine;
+        const info = engine.playerLocationInfo;
 
         return (
             <div className='gui center'>
-                <SpoopyGUIPlayerLocation loc={engine.playerLocation} />
-                <SpoopyGUIPlayerLocationDescription desc={engine.playerLocationDescription} />
-                <SpoopyGUIPlayerLocationExits engine={engine} exits={engine.playerLocationExits} />
+                <SpoopyGUIPlayerLocation info={info} />
+                <SpoopyGUIPlayerLocationDescription info={info} />
+                <SpoopyGUIPlayerLocationExits engine={engine} info={info} />
             </div>
         );
     }
