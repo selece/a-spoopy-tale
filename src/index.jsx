@@ -6,7 +6,7 @@ import GUIRoot from './components/GUIRoot.jsx';
 
 import Engine from './spoopy/engine';
 
-import './scss/globals.scss';
+import './globals.scss';
 
 let engine = new Engine();
 engine.buildMap({

@@ -5,11 +5,17 @@
     transition: $vals;
 }
 
-.button-large {
+%button-base {
     color: grey;
+    text-align: center;
+}
+
+.button-large {
+    @extend %button-base;
+
     border: 1px solid;
     text-align: center;
-    width: 375px;
+    width: 275px;
     margin: 10px auto;
     padding: 5px;
 
@@ -21,8 +27,8 @@
 }
 
 .button-small {
-    color: grey;
-    text-align: center;
+    @extend %button-base;
+
     margin: 5px auto;
     text-decoration-style: dashed;
     text-decoration-line: underline;
@@ -35,6 +41,5 @@
 }
 
 .button-inactive {
-    color: grey;
-    text-align: center;
+    @extend %button-base;
 }
