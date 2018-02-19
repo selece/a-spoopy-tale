@@ -1,4 +1,4 @@
-import {findWhere, chain, sample, filter, isEqual} from 'underscore';
+import {findWhere, chain, sample, filter, isEqual, pluck} from 'underscore';
 
 export default class RoomDB {
 
@@ -590,9 +590,12 @@ export default class RoomDB {
     }
 
     get room_names() {
+        /*
         return chain(this.rooms)
             .map(i => i.name)
             .value();
+        */
+       return pluck(this.rooms, 'name');
     }
 
     getDescription(search, conditions={}) {

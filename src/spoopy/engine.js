@@ -16,28 +16,58 @@ export default class Engine {
 		this.available = this.roomDB.room_names;
 	}
 	
-	@computed get playerLocationInfo() {
+	@computed get gameState() {
 		return {
-			current: {
-				loc: this.player.currentLocation,
-				desc: this.roomDB.getDescription(this.player.currentLocation),
-				explored: this.player.hasExplored(this.player.currentLocation),
+			gameMap: {
+				current: {
+					loc: this.player.currentLocation,
+					desc: this.roomDB.getDescription(this.player.currentLocation),
+					explored: this.player.hasExplored(this.player.currentLocation),
+				},
+
+				exits: this.adjacency[this.player.currentLocation].map(
+					exit => ({
+						display: (this.player.hasVisited(exit) && this.player.hasExplored(exit)) ? exit : this.randomUnexplored, 
+						loc: exit,
+						visited: this.player.hasVisited(exit),
+						explored: this.player.hasExplored(exit),
+					}) 
+				)
 			},
 
-			exits: this.adjacency[this.player.currentLocation].map(
-				exit => ({
-					display: (this.player.hasVisited(exit) && this.player.hasExplored(exit)) ? exit : this.randomUnexplored, 
-					loc: exit,
-					visited: this.player.hasVisited(exit),
-					explored: this.player.hasExplored(exit),
-				}) 
-			)
+			guiRender: {
+				propDisplayLocation: this.player.currentLocation,
+				propDisplayDescription: this.roomDB.getDescription(this.player.currentLocation),
+				propButtonGridActions: [
+					{
+						display: 'Hey!',
+						onClickHandler: () => console.log('AHMAIGAWD'),
+					}
+				],
+				propButtonGridExits: this.adjacency[this.player.currentLocation].map(
+					exit => ({
+						display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
+						onClickHandler: () => this.playerMove(exit),
+					})
+				),
+			},
+
+			player: {
+				loc: this.player.currentLocation,
+				inventory: this.player.currentInventory,
+				map: this.player.currentMap,
+				explored: this.player.currentExplored,
+			}
 		};
 	}
 
     @action playerMove(loc) {
         this.player.move(loc);
-    }
+	}
+	
+	@action playerExplore(loc) {
+		this.player.updateExplored(loc, true);
+	}
 
     @action playerPickup(item) {
         this.player.pickupItem(item);
@@ -45,8 +75,8 @@ export default class Engine {
 
     @action playerDrop(item) {
         this.player.dropItem(item);
-    }
-	
+	}
+		
 	get randomUnexplored() {
 		return this.roomDB.random_unexplored;
 	}

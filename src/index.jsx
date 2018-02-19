@@ -2,11 +2,11 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SpoopyGUI from './components/SpoopyGUI.jsx';
+import GUIRoot from './components/GUIRoot.jsx';
 
 import Engine from './spoopy/engine';
 
-import './scss/main.scss';
+import './scss/globals.scss';
 
 let engine = new Engine();
 engine.buildMap({
@@ -26,6 +26,6 @@ engine.buildMap({
 });
 
 ReactDOM.render(
-    <SpoopyGUI engine={engine}/>,
-    document.getElementById('SpoopyGUI')
+    <GUIRoot engineRef={engine}/>,
+    document.getElementById('root')
 );

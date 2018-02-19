@@ -3,7 +3,7 @@ const clean_webpack_plugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-        spoopy__packed: __dirname + '\\src\\spoopy.jsx'
+        bundle: __dirname + '\\src\\index.jsx'
     },
     module: {
         loaders: [

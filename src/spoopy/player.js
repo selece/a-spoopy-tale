@@ -18,6 +18,18 @@ export default class Player {
         this.updateMap(this.loc);
     }
 
+    @computed get currentMap() {
+        return this.map;
+    }
+
+    @computed get currentExplored() {
+        return this.explored;
+    }
+
+    @computed get currentInventory() {
+        return this.inventory;
+    }
+
     @computed get currentLocation() {
         return this.loc;
     }

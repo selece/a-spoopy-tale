@@ -1,0 +1,25 @@
+@mixin transition($vals) {
+    -webkit-transition: $vals;
+    -moz-transition: $vals;
+    -o-transition: $vals;
+    transition: $vals;
+}
+
+.button {
+    color: grey;
+    border: 1px solid;
+    text-align: center;
+    width: 250px;
+    margin: 10px auto;
+    padding: 10px;
+
+    @include transition(all 0.45s ease-in-out);
+}
+
+.button:hover {
+    color: white;
+}
+
+.pointer {
+    cursor: pointer;
+}
