@@ -8,14 +8,20 @@ export default class Player {
     @observable loc;
     @observable map;
     @observable explored;
+    @observable searched;
 
-    constructor(inv=[], map=[], loc='Foyer', explored=[]) {
-        this.inventory = inv;
-        this.loc = loc;
-        this.map = map;
-        this.explored = explored;
+    constructor() {
+        this.loc = 'Foyer';
+        this.inventory = [];
+        this.map = [];
+        this.explored = [];
+        this.searched = [];
 
         this.updateMap(this.loc);
+    }
+
+    @computed get currentSearched() {
+        return this.searched;
     }
 
     @computed get currentMap() {
@@ -56,7 +62,11 @@ export default class Player {
     }
 
     hasExplored(loc) {
-        return this.explored[loc];
+        return contains(this.explored, loc);
+    }
+
+    hasSearched(loc) {
+        return contains(this.searched, loc);
     }
 
     @action updateMap(loc) {
@@ -65,8 +75,16 @@ export default class Player {
         }
     }
 
-    @action updateExplored(loc, searched) {
-        this.explored[loc] = searched;
+    @action updateExplored(loc) {
+        if (!this.hasExplored(loc)) {
+            this.explored.push(loc);
+        }
+    }
+
+    @action updateSearched(loc) {
+        if (!this.hasSearched(loc)) {
+            this.searched.push(loc);
+        }
     }
 
     @action move(loc) {

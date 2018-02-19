@@ -5,21 +5,36 @@
     transition: $vals;
 }
 
-.button {
+.button-large {
     color: grey;
     border: 1px solid;
     text-align: center;
-    width: 250px;
+    width: 375px;
     margin: 10px auto;
-    padding: 10px;
+    padding: 5px;
 
     @include transition(all 0.45s ease-in-out);
+
+    &:hover {
+        color: white;
+    }
 }
 
-.button:hover {
-    color: white;
+.button-small {
+    color: grey;
+    text-align: center;
+    margin: 5px auto;
+    text-decoration-style: dashed;
+    text-decoration-line: underline;
+
+    @include transition(all 0.25s ease-in-out);
+
+    &:hover {
+        color: white;
+    }
 }
 
-.pointer {
-    cursor: pointer;
+.button-inactive {
+    color: grey;
+    text-align: center;
 }

@@ -10,17 +10,17 @@ import './ButtonGrid.scss';
 export default class ButtonGrid extends React.Component {
     render() {
         return (
-            <div>
+            <div className={this.props.classes}>
                 {
                     this.props.buttons.map(
                         (btn) =>
                         <Button 
                             display={btn.display}
                             onClickHandler={btn.onClickHandler}
-                            onClickHandlerTarget={btn.onClickHandlerTarget}
                             onMouseEnter={btn.onMouseEnterHandler}
                             onMouseLeave={btn.onMouseLeaveHandler}
                             key={generate()}
+                            classes={btn.classes}
                         /> 
                     )
                 }

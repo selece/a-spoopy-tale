@@ -18,38 +18,45 @@ export default class Engine {
 	
 	@computed get gameState() {
 		return {
-			gameMap: {
-				current: {
-					loc: this.player.currentLocation,
-					desc: this.roomDB.getDescription(this.player.currentLocation),
-					explored: this.player.hasExplored(this.player.currentLocation),
-				},
-
-				exits: this.adjacency[this.player.currentLocation].map(
-					exit => ({
-						display: (this.player.hasVisited(exit) && this.player.hasExplored(exit)) ? exit : this.randomUnexplored, 
-						loc: exit,
-						visited: this.player.hasVisited(exit),
-						explored: this.player.hasExplored(exit),
-					}) 
-				)
-			},
-
 			guiRender: {
-				propDisplayLocation: this.player.currentLocation,
-				propDisplayDescription: this.roomDB.getDescription(this.player.currentLocation),
-				propButtonGridActions: [
+				propDisplayLocation: this.player.hasExplored(this.player.currentLocation) ?
+					this.player.currentLocation : 'A dark and indistinct room',
+				propDisplayDescription: this.player.hasExplored(this.player.currentLocation) ?
+					this.roomDB.getDescription(this.player.currentLocation) : '',
+				propButtonGridActions: (
+					this.player.hasExplored(this.player.currentLocation) && 
+					!this.player.hasSearched(this.player.currentLocation
+				)) ? [
 					{
-						display: 'Hey!',
-						onClickHandler: () => console.log('AHMAIGAWD'),
+						display: 'Search the room for clues.',
+						onClickHandler: () => this.playerSearch(this.player.currentLocation),
+						classes: ['button-small', 'cursor-pointer'],
+					},
+				] : (this.player.hasSearched(this.player.currentLocation) ? [
+					{
+						display: 'There\'s nothing more here to find.',
+						classes: ['button-small'],
+					}
+				] : [
+					{
+						display: 'Take a look around.',
+						onClickHandler: () => this.playerExplore(this.player.currentLocation),
+						classes: ['button-small', 'cursor-pointer'],
+					}
+				]),
+				propButtonGridExits: this.player.hasExplored(this.player.currentLocation) ? 
+					this.adjacency[this.player.currentLocation].map(
+						exit => ({
+							display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
+							onClickHandler: () => this.playerMove(exit),
+							classes: ['button-large', 'cursor-pointer']
+						})
+				) : [
+					{
+						display: 'You can\'t really make out too much standing here.',
+						classes: ['button-inactive']
 					}
 				],
-				propButtonGridExits: this.adjacency[this.player.currentLocation].map(
-					exit => ({
-						display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
-						onClickHandler: () => this.playerMove(exit),
-					})
-				),
 			},
 
 			player: {
@@ -64,9 +71,13 @@ export default class Engine {
     @action playerMove(loc) {
         this.player.move(loc);
 	}
+
+	@action playerSearch(loc) {
+		this.player.updateSearched(loc);
+	}
 	
 	@action playerExplore(loc) {
-		this.player.updateExplored(loc, true);
+		this.player.updateExplored(loc);
 	}
 
     @action playerPickup(item) {

@@ -8,7 +8,7 @@ export default class DisplayLocation extends React.Component {
     render() {
         return (
             <div>
-                <h1>{this.props.gameState.guiRender.propDisplayLocation}</h1>
+                <h1>{this.props.guiRender.propDisplayLocation}</h1>
             </div>
         );
     }

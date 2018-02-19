@@ -7,7 +7,7 @@ import './DisplayDescription.scss'
 export default class DisplayDescription extends React.Component {
     render() {
         return (
-            <p id='DisplayDescription'>{this.props.gameState.guiRender.propDisplayDescription}</p>
+            <p id='DisplayDescription'>{this.props.guiRender.propDisplayDescription}</p>
         );
     }
 }

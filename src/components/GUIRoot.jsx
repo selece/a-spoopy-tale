@@ -14,15 +14,18 @@ import './GUIRoot.scss';
 
 @observer export default class GUIRoot extends React.Component {
     render() {
-        const engineRef = this.props.engineRef;
-        const gameState = this.props.engineRef.gameState;
+        const guiRender = this.props.engineRef.gameState.guiRender;
 
         return (
             <div id='GUIRoot' className='center'>
-                <DisplayLocation gameState={gameState} />
-                <DisplayDescription gameState={gameState} />
+                <DisplayLocation guiRender={guiRender} />
+                <DisplayDescription guiRender={guiRender} />
 
-                <ButtonGrid buttons={gameState.guiRender.propButtonGridExits} />
+                <hr />
+                <ButtonGrid buttons={guiRender.propButtonGridActions} classes='button-grid' />
+                <hr />
+
+                <ButtonGrid buttons={guiRender.propButtonGridExits} classes='button-grid' />
             </div>
         );
     }

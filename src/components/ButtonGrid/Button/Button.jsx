@@ -1,5 +1,6 @@
 import React from 'react';
 import {observer} from 'mobx-react';
+import classNames from 'classnames';
 
 import './Button.scss';
 
@@ -8,7 +9,7 @@ export default class Button extends React.Component {
     render() {
         return (
             <div 
-                className='cursor-pointer button'
+                className={classNames(this.props.classes)}
                 onClick={this.props.onClickHandler}
                 onMouseEnter={this.props.onMouseEnterHandler}
                 onMouseLeave={this.props.onMouseLeaveHandler}

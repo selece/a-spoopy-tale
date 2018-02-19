@@ -12,8 +12,8 @@ let engine = new Engine();
 engine.buildMap({
     start: {
         loc: 'Foyer',
-        min_branches: 4,
-        max_branches: 6,
+        min_branches: 3,
+        max_branches: 5,
     },
 
     branches: {
@@ -26,6 +26,6 @@ engine.buildMap({
 });
 
 ReactDOM.render(
-    <GUIRoot engineRef={engine}/>,
+    <GUIRoot engineRef={engine} />,
     document.getElementById('root')
 );
