@@ -21,10 +21,10 @@ export default class Engine {
     @computed get gameState() {
         // generate props for button grids (exits and actions)
         let propButtonGridActions, propButtonGridExits;
-        let loc = this.player.currentLocation;
+        let here = this.player.currentLocation;
 
         // completely new room (not explored, not searched)
-        if (!this.player.hasExplored(loc) && !this.player.hasSearched(loc)) {
+        if (!this.player.hasExplored(here) && !this.player.hasSearched(here)) {
             propButtonGridExits = [{
                 display: 'You can\'t really make out too much standing here.',
                 classes: ['button-inactive'],
@@ -33,12 +33,12 @@ export default class Engine {
             propButtonGridActions = [{
                 display: 'Take a look around.',
                 classes: ['button-small', 'cursor-pointer'],
-                onClickHandler: () => this.playerExplore(loc),
+                onClickHandler: () => this.playerExplore(here),
             }];
         
         // explored room, but NOT searched (should see exits, but no items)
-        } else if (this.player.hasExplored(loc) && !this.player.hasSearched(loc)) {
-            propButtonGridExits = this.adjacency[loc].map(
+        } else if (this.player.hasExplored(here) && !this.player.hasSearched(here)) {
+            propButtonGridExits = this.adjacency[here].map(
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
                     classes: ['button-large', 'cursor-pointer'],
@@ -49,13 +49,13 @@ export default class Engine {
             propButtonGridActions = [{
                 display: 'Search the room.',
                 classes: ['button-small', 'cursor-pointer'],
-                onClickHandler: () => this.playerSearch(loc),
+                onClickHandler: () => this.playerSearch(here),
             }];
         
         // explored room and searched room - should display items and exits
         // a bit of repeat code for propButtonGridExits - maybe refactor?
-        } else if (this.player.hasExplored(loc) && this.player.hasSearched(loc)) {
-            propButtonGridExits = this.adjacency[loc].map(
+        } else if (this.player.hasExplored(here) && this.player.hasSearched(here)) {
+            propButtonGridExits = this.adjacency[here].map(
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
                     classes: ['button-large', 'cursor-pointer'],
@@ -63,8 +63,8 @@ export default class Engine {
                 })
             );
 
-            propButtonGridActions = this.roomHasItems(loc) ? 
-                this.roomItems(loc).map(
+            propButtonGridActions = this.roomHasItems(here) ? 
+                this.roomItems(here).map(
                     item => ({
                         display: item.name,
                         classes: ['button-small', 'cursor-pointer'],
