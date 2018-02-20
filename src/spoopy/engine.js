@@ -1,4 +1,4 @@
-import {filter, contains, sample, chain, range, isFunction, random} from 'underscore';
+import {filter, contains, sample, chain, range, isFunction, random, without} from 'underscore';
 import {computed, action, observable} from 'mobx';
 
 import Player from './player';
@@ -6,7 +6,6 @@ import ItemDB from './items';
 import RoomDB from './rooms';
 
 export default class Engine {
-    @observable itemMap;
 
     constructor() {
         this.player = new Player();
@@ -20,46 +19,76 @@ export default class Engine {
     }
     
     @computed get gameState() {
+        // generate props for button grids (exits and actions)
+        let propButtonGridActions, propButtonGridExits;
+        let loc = this.player.currentLocation;
+
+        // completely new room (not explored, not searched)
+        if (!this.player.hasExplored(loc) && !this.player.hasSearched(loc)) {
+            propButtonGridExits = [{
+                display: 'You can\'t really make out too much standing here.',
+                classes: ['button-inactive'],
+            }];
+
+            propButtonGridActions = [{
+                display: 'Take a look around.',
+                classes: ['button-small', 'cursor-pointer'],
+                onClickHandler: () => this.playerExplore(loc),
+            }];
+        
+        // explored room, but NOT searched (should see exits, but no items)
+        } else if (this.player.hasExplored(loc) && !this.player.hasSearched(loc)) {
+            propButtonGridExits = this.adjacency[loc].map(
+                exit => ({
+                    display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
+                    classes: ['button-large', 'cursor-pointer'],
+                    onClickHandler: () => this.playerMove(exit)
+                })
+            );
+
+            propButtonGridActions = [{
+                display: 'Search the room.',
+                classes: ['button-small', 'cursor-pointer'],
+                onClickHandler: () => this.playerSearch(loc),
+            }];
+        
+        // explored room and searched room - should display items and exits
+        // a bit of repeat code for propButtonGridExits - maybe refactor?
+        } else if (this.player.hasExplored(loc) && this.player.hasSearched(loc)) {
+            propButtonGridExits = this.adjacency[loc].map(
+                exit => ({
+                    display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
+                    classes: ['button-large', 'cursor-pointer'],
+                    onClickHandler: () => this.playerMove(exit)
+                })
+            );
+
+            propButtonGridActions = this.roomHasItems(loc) ? 
+                this.roomItems(loc).map(
+                    item => ({
+                        display: item.name,
+                        classes: ['button-small', 'cursor-pointer'],
+                        onClickHandler: () => this.playerPickup(item)
+                    })
+
+                // no items, show nothing here to find
+                ) : [{
+                    display: 'There\'s nothing more here to find.',
+                    classes: ['button-small']
+                }];
+
+        } else {
+            console.error('Unexpected exploration/search case!');
+        }
+
         return {
             guiRender: {
                 propDisplayLocation: this.player.hasExplored(this.player.currentLocation) ?
                     this.player.currentLocation : 'A dark and indistinct room',
                 propDisplayDescription: this.player.hasExplored(this.player.currentLocation) ?
                     this.roomDB.getDescription(this.player.currentLocation) : '',
-                propButtonGridActions: (
-                    this.player.hasExplored(this.player.currentLocation) && 
-                    !this.player.hasSearched(this.player.currentLocation
-                )) ? [
-                    {
-                        display: 'Search the room for clues.',
-                        onClickHandler: () => this.playerSearch(this.player.currentLocation),
-                        classes: ['button-small', 'cursor-pointer'],
-                    },
-                ] : (this.player.hasSearched(this.player.currentLocation) ? [
-                    {
-                        display: 'There\'s nothing more here to find.',
-                        classes: ['button-small'],
-                    }
-                ] : [
-                    {
-                        display: 'Take a look around.',
-                        onClickHandler: () => this.playerExplore(this.player.currentLocation),
-                        classes: ['button-small', 'cursor-pointer'],
-                    }
-                ]),
-                propButtonGridExits: this.player.hasExplored(this.player.currentLocation) ? 
-                    this.adjacency[this.player.currentLocation].map(
-                        exit => ({
-                            display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
-                            onClickHandler: () => this.playerMove(exit),
-                            classes: ['button-large', 'cursor-pointer']
-                        })
-                ) : [
-                    {
-                        display: 'You can\'t really make out too much standing here.',
-                        classes: ['button-inactive']
-                    }
-                ],
+                propButtonGridActions: propButtonGridActions,
+                propButtonGridExits: propButtonGridExits,
             },
 
             player: {
@@ -85,14 +114,55 @@ export default class Engine {
 
     @action playerPickup(item) {
         this.player.pickupItem(item);
+        this.roomRemoveItem(item, this.player.currentLocation);
     }
 
     @action playerDrop(item) {
         this.player.dropItem(item);
+        this.roomPlaceItem(item, this.player.currentLocation);
     }
         
     get randomUnexplored() {
         return this.roomDB.random_unexplored;
+    }
+    
+    roomHasItems(loc) {
+        console.log('checking:', this.itemMap[loc].length);
+        return this.itemMap[loc] === undefined ? false : this.itemMap[loc].length > 0;
+    }
+
+    roomItems(loc) {
+        return this.roomHasItems(loc) ? this.itemMap[loc] : [];
+    }
+
+    @action roomPlaceItem(item, loc) {
+        // sanity checks
+        if (!contains(this.exclusions, loc)) {
+            console.error('roomPlaceItem():', loc, 'does not exist.');
+            return;
+        }
+
+        if (this.itemMap[loc] === undefined) {
+            this.itemMap[loc] = [];
+        }
+
+        this.itemMap[loc].push(item);
+    }
+
+    @action roomRemoveItem(item, loc) {
+        // sanity checks
+        if (!contains(this.exclusions, loc)) {
+            console.error('roomRemoveItem():', loc, 'does not exist.');
+            return;
+        }
+
+        if (!contains(this.itemMap[loc], item)) {
+            console.error('roomRemoveITem():', item, 'not found.');
+            return;
+        }
+
+        this.itemMap[loc] = without(this.itemMap[loc], item);
+        console.log(this.itemMap);
     }
 
     getRoom(params=undefined) {
@@ -119,11 +189,10 @@ export default class Engine {
     }
 
     updateExclusions(update) {
-        this.exclusions = chain(
-            this.exclusions
-        ).union(update)
-         .unique()
-         .value();
+        this.exclusions = chain(this.exclusions)
+            .union(update)
+            .unique()
+            .value();
     }
 
     updateAdjacency(from, to) {
@@ -201,5 +270,18 @@ export default class Engine {
 
         this.connectLeaves(params.leaf_connections);
         console.log('buildMap(): completed!', this.adjacency, this.exclusions);
+        
+        /* experimental item placement */
+        let random_room = this.getRoom({
+            use_list: this.exclusions,
+            filter_function: function(i) { return !contains(i, this.exc); },
+            context: {exc: 'Foyer'}
+        });
+
+        let random_item = this.itemDB.random_item([]);
+        // this.roomPlaceItem(random_item, random_room);
+        this.roomPlaceItem(random_item, 'Foyer');
+        console.log('placement done:', this.itemMap);
+        /* end experimental item placement */
     }
 }

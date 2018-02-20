@@ -612,11 +612,6 @@ export default class RoomDB {
     }
 
     get room_names() {
-        /*
-        return chain(this.rooms)
-            .map(i => i.name)
-            .value();
-        */
        return pluck(this.rooms, 'name');
     }
 
