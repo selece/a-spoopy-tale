@@ -8,8 +8,7 @@ import Engine from './spoopy/engine';
 
 import './globals.scss';
 
-let engine = new Engine();
-engine.buildMap({
+let engine = new Engine({
     start: {
         loc: 'Foyer',
         min_branches: 3,
@@ -26,6 +25,6 @@ engine.buildMap({
 });
 
 ReactDOM.render(
-    <GUIRoot engineRef={engine} />,
+    <GUIRoot GUIState={engine.GUIState} />,
     document.getElementById('root')
 );

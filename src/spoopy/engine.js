@@ -1,13 +1,14 @@
-import {filter, contains, sample, chain, range, isFunction, random, without} from 'underscore';
-import {computed, action, observable} from 'mobx';
+import { filter, contains, sample, chain, range, isFunction, random, without } from 'underscore';
+import { computed, action, observable } from 'mobx';
 
 import Player from './player';
 import ItemDB from './items';
 import RoomDB from './rooms';
+import EventManager from './eventmanager';
 
 export default class Engine {
 
-    constructor() {
+    constructor(build_params) {
         this.player = new Player();
         this.itemDB = new ItemDB();
         this.roomDB = new RoomDB();
@@ -16,32 +17,62 @@ export default class Engine {
         this.exclusions = [];
         this.available = this.roomDB.room_names;
         this.itemMap = {};
+
+        // slightly ugly non-decorator due to mobx only tracking object props that are
+        // there when the object is declared - need to use extendObservable() for dynamic 
+        // or look into observable.map()
+        this.GUIState = observable({
+            propDescription: undefined,
+            propLocation: undefined,
+            propButtonGridActions: undefined,
+            propButtonGridExits: undefined,
+            propHealth: undefined,
+            propInventory: undefined,
+            propBattery: undefined,
+            propClock: undefined,
+            animate: undefined,
+        });
+
+        this.buildMap(build_params);
+        
+        this.eventManager = new EventManager();
+        this.eventManager.add([{
+            name: 'Global',
+            timer: 60 * 60,
+            trigger: () => this.endGame(),
+            repeats: false,
+            startPaused: false,
+        }]);
+
+        // refresh gui state for game start
+        this.updateGUIState();
     }
-    
-    @computed get gameState() {
+
+    endGame() {
+        console.log('YOU LOST! :(');
+    }
+
+    updateGUIState() {
         // generate props for button grids (exits and actions)
         let propButtonGridActions, propButtonGridExits;
         let here = this.player.currentLocation;
 
         // completely new room (not explored, not searched)
         if (!this.player.hasExplored(here) && !this.player.hasSearched(here)) {
-            propButtonGridExits = [{
-                display: 'You can\'t really make out too much standing here.',
-                classes: ['button-inactive'],
-            }];
+            propButtonGridExits = [{}];
 
             propButtonGridActions = [{
                 display: 'Take a look around.',
                 classes: ['button-small', 'cursor-pointer'],
                 onClickHandler: () => this.playerExplore(here),
             }];
-        
+
         // explored room, but NOT searched (should see exits, but no items)
         } else if (this.player.hasExplored(here) && !this.player.hasSearched(here)) {
             propButtonGridExits = this.adjacency[here].map(
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
-                    classes: ['button-large', 'cursor-pointer'],
+                    classes: this.player.hasVisited(exit) ? ['button-large', 'cursor-pointer'] : ['button-large', 'cursor-pointer', 'text-italics'],
                     onClickHandler: () => this.playerMove(exit)
                 })
             );
@@ -51,7 +82,7 @@ export default class Engine {
                 classes: ['button-small', 'cursor-pointer'],
                 onClickHandler: () => this.playerSearch(here),
             }];
-        
+
         // explored room and searched room - should display items and exits
         // a bit of repeat code for propButtonGridExits - maybe refactor?
         } else if (this.player.hasExplored(here) && this.player.hasSearched(here)) {
@@ -63,7 +94,7 @@ export default class Engine {
                 })
             );
 
-            propButtonGridActions = this.roomHasItems(here) ? 
+            propButtonGridActions = this.roomHasItems(here) ?
                 this.roomItems(here).map(
                     item => ({
                         display: item.name,
@@ -81,53 +112,64 @@ export default class Engine {
             console.error('Unexpected exploration/search case!');
         }
 
-        return {
-            guiRender: {
-                propDisplayLocation: this.player.hasExplored(this.player.currentLocation) ?
-                    this.player.currentLocation : 'A dark and indistinct room',
-                propDisplayDescription: this.player.hasExplored(this.player.currentLocation) ?
-                    this.roomDB.getDescription(this.player.currentLocation) : '',
-                propButtonGridActions: propButtonGridActions,
-                propButtonGridExits: propButtonGridExits,
-            },
+        this.GUIState.propLocation = this.player.hasExplored(this.player.currentLocation) ?
+            this.player.currentLocation : 'A dark and indistinct room';
 
-            player: {
-                loc: this.player.currentLocation,
-                inventory: this.player.currentInventory,
-                map: this.player.currentMap,
-                explored: this.player.currentExplored,
-            }
-        };
+        this.GUIState.propDescription = this.player.hasExplored(this.player.currentLocation) ?
+            this.roomDB.getDescription(this.player.currentLocation) : 'You can\'t really make out too much standing here.';
+
+        this.GUIState.propButtonGridActions = propButtonGridActions;
+        this.GUIState.propButtonGridExits = propButtonGridExits;
+        this.GUIState.propHealth = this.playerHealthDescription;
+        this.GUIState.propInventory = this.playerInventoryDescription;
+        this.GUIState.propBattery = this.playerBatteryDescription;
+        this.GUIState.animate = true;
     }
 
     @action playerMove(loc) {
         this.player.move(loc);
+        this.updateGUIState();
     }
 
     @action playerSearch(loc) {
         this.player.updateSearched(loc);
+        this.updateGUIState();
     }
-    
+
     @action playerExplore(loc) {
         this.player.updateExplored(loc);
+        this.updateGUIState();
     }
 
     @action playerPickup(item) {
         this.player.pickupItem(item);
         this.roomRemoveItem(item, this.player.currentLocation);
+        this.updateGUIState();
     }
 
     @action playerDrop(item) {
         this.player.dropItem(item);
         this.roomPlaceItem(item, this.player.currentLocation);
+        this.updateGUIState();
     }
-        
+
+    get playerBatteryDescription() {
+        return this.player.currentBatteryDescription;
+    }
+
+    get playerHealthDescription() {
+        return this.player.currentHealthDescription;
+    }
+
+    get playerInventoryDescription() {
+        return this.player.currentInventoryDescription;
+    }
+
     get randomUnexplored() {
         return this.roomDB.random_unexplored;
     }
-    
+
     roomHasItems(loc) {
-        console.log('checking:', this.itemMap[loc].length);
         return this.itemMap[loc] === undefined ? false : this.itemMap[loc].length > 0;
     }
 
@@ -147,6 +189,7 @@ export default class Engine {
         }
 
         this.itemMap[loc].push(item);
+        this.updateGUIState();
     }
 
     @action roomRemoveItem(item, loc) {
@@ -162,18 +205,18 @@ export default class Engine {
         }
 
         this.itemMap[loc] = without(this.itemMap[loc], item);
-        console.log(this.itemMap);
+        this.updateGUIState();
     }
 
-    getRoom(params=undefined) {
+    getRoom(params = undefined) {
         let filtered = params === undefined ?
             filter(
                 this.available,
-                
+
                 // NOTE: this context below is the context provided, not the Engine object
-                function(i) { return !contains(this.exc, i); },
+                function (i) { return !contains(this.exc, i); },
                 { exc: this.exclusions }
-            
+
             ) : filter(
                 params.use_list,
                 params.filter_function,
@@ -213,7 +256,7 @@ export default class Engine {
         for (let i in range(
             isFunction(branches) ? branches() : branches
         )) {
-            
+
             let pick = this.getRoom();
 
             if (pick === undefined) {
@@ -228,10 +271,10 @@ export default class Engine {
     connectLeaves(leaves) {
         let leaf_params = {
             use_list: this.exclusions,
-            filter_function: function(i) {
+            filter_function: function (i) {
                 return this.adj[i].length === 1 && !contains(this.exc, i);
             },
-            context: {adj: this.adjacency, exc: []}
+            context: { adj: this.adjacency, exc: [] }
         };
 
         // TODO: connect n-random number of leaves, rather than just pairs?
@@ -270,12 +313,12 @@ export default class Engine {
 
         this.connectLeaves(params.leaf_connections);
         console.log('buildMap(): completed!', this.adjacency, this.exclusions);
-        
+
         /* experimental item placement */
         let random_room = this.getRoom({
             use_list: this.exclusions,
-            filter_function: function(i) { return !contains(i, this.exc); },
-            context: {exc: 'Foyer'}
+            filter_function: function (i) { return !contains(i, this.exc); },
+            context: { exc: 'Foyer' }
         });
 
         let random_item = this.itemDB.random_item([]);

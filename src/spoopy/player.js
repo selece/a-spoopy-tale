@@ -1,50 +1,109 @@
 'use strict';
 
 import {contains, without} from 'underscore';
-import {observable, action, computed} from 'mobx';
 
 export default class Player {
-    @observable inventory;
-    @observable loc;
-    @observable map;
-    @observable explored;
-    @observable searched;
-
     constructor() {
         this.loc = 'Foyer';
         this.inventory = [];
         this.map = [];
         this.explored = [];
         this.searched = [];
+        this.health = 100;
+        this.battery = 100;
 
         this.updateMap(this.loc);
     }
 
-    @computed get currentSearched() {
+    get currentInventoryDescription() {
+        // if the inventory is empty, return generic 'empty' response
+        // TODO: have list of random phrases to randomly select from
+        if (this.inventory.length === 0) {
+            return 'Your pockets are quite empty.';
+        
+        // otherwise, build the response based on what we have right now
+        } else {
+            return `You are currently holding: ${this.inventory.map(
+
+                // build the list for oxford comma correctness
+                (item, i, inv) => {
+
+                    // if the item.name starts with a vowel, prefix 'an', otherwise use 'a'
+                    let indefinite_article = contains(['a', 'e', 'i', 'o', 'u'], item.name[0].toLowerCase()) ? 'an' : 'a';
+
+                    // end of list, two cases to handle
+                    if (inv.length - 1 === i) {
+
+                        // list is exactly one item long, just return the item.name
+                        // e.g. Skull
+                        if (inv.length === 1) {
+                            return `${indefinite_article} ${item.name}`
+
+                        // list contains more than one item, return 'and item.name'
+                        // e.g. and Skull
+                        } else {
+                            return `and ${indefinite_article} ${item.name}`;
+                        }
+                        
+                    // not end of list, so we need to return a comma + name + space
+                    // e.g. Skull, 
+                    } else {
+                        return `${indefinite_article} ${item.name}, `
+                    }
+                })
+            }.`
+        }
+    }
+
+    get currentBatteryDescription() {
+        if (this.battery === 100) {
+            return 'Your phone\'s battery is full.';
+        } else {
+            return 'Boop!';
+        }
+    }
+
+    get currentBattery() {
+        return this.battery;
+    }
+
+    get currentHealthDescription() {
+        if (this.health === 100) {
+            return 'You feel perfectly healthy.';
+        } else {
+            return 'Welp.';
+        }
+    }
+
+    get currentHealth() {
+        return this.health;
+    }
+
+    get currentSearched() {
         return this.searched;
     }
 
-    @computed get currentMap() {
+    get currentMap() {
         return this.map;
     }
 
-    @computed get currentExplored() {
+    get currentExplored() {
         return this.explored;
     }
 
-    @computed get currentInventory() {
+    get currentInventory() {
         return this.inventory;
     }
 
-    @computed get currentLocation() {
+    get currentLocation() {
         return this.loc;
     }
 
-    @action pickupItem(item) {
+    pickupItem(item) {
         this.inventory.push(item);
     }
 
-    @action dropItem(item) {
+    dropItem(item) {
         if (this.hasItem(item)) {
             this.inventory = without(this.inventory, item);
         
@@ -69,25 +128,25 @@ export default class Player {
         return contains(this.searched, loc);
     }
 
-    @action updateMap(loc) {
+    updateMap(loc) {
         if (!this.hasVisited(loc)) {
             this.map.push(loc);
         }
     }
 
-    @action updateExplored(loc) {
+    updateExplored(loc) {
         if (!this.hasExplored(loc)) {
             this.explored.push(loc);
         }
     }
 
-    @action updateSearched(loc) {
+    updateSearched(loc) {
         if (!this.hasSearched(loc)) {
             this.searched.push(loc);
         }
     }
 
-    @action move(loc) {
+    move(loc) {
         this.updateMap(loc);
         this.loc = loc;
     }
