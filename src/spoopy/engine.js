@@ -5,6 +5,7 @@ import Player from './player';
 import ItemDB from './items';
 import RoomDB from './rooms';
 import EventManager from './eventmanager';
+import MapManager from './mapmanager';
 
 export default class Engine {
 
@@ -46,6 +47,25 @@ export default class Engine {
 
         // refresh gui state for game start
         this.updateGUIState();
+
+        // experimental
+        let mapManager = new MapManager(this.roomDB.room_names);
+        mapManager.generate(
+            {
+                start: {
+                    loc: 'Foyer',
+                    min_branches: 4,
+                    max_branches: 6,
+                },
+
+                branches: {
+                    min_branches: 1,
+                    max_branches: 3,
+                    connects: 2,
+                    generations: 1,
+                },
+            }
+        );
     }
 
     endGame() {

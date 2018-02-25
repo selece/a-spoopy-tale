@@ -49,18 +49,6 @@ module.exports = {
             inject: 'body'
         })
     ],
-    resolve: {
-        // requirejs aliases for webpack
-        alias: {
-            'jquery': __dirname + '\\src\\vendor\\jquery.min',
-            'underscore': __dirname + '\\src\\vendor\\underscore.min',
-
-            'spoopy.engine': __dirname + '\\src\\js\\spoopy.engine.js',
-            'spoopy.rooms': __dirname + '\\src\\js\\spoopy.rooms.js',
-            'spoopy.player': __dirname + '\\src\\js\\spoopy.player.js',
-            'spoopy.items': __dirname + '\\src\\js\\spoopy.items.js',
-        }
-    },
     cache: true,
     devtool: 'source-map',
 };

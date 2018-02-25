@@ -2,3 +2,5 @@
 /package-lock.json
 .vscode/
 .vscode/launch.json
+.nyc_output
+coverage/

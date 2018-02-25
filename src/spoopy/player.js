@@ -99,6 +99,16 @@ export default class Player {
         return this.loc;
     }
 
+    modifyHealth(amount) {
+        this.health += amount;
+        return this.health;
+    }
+
+    modifyBattery(amount) {
+        this.battery += amount;
+        return this.battery;
+    }
+
     pickupItem(item) {
         this.inventory.push(item);
     }
