@@ -119,11 +119,12 @@ export default class MapManager {
             }
     
             for (let i in range(connects)) {
-                let [a, b] = this.random(2, params);
+                let leaves = this.random(2, params);
                 
-                if (a === undefined || b === undefined) {
+                if (contains(leaves, undefined)) {
                     break;
                 } else {
+                    let [a, b] = leaves; 
                     this.connect(a, b);
                 }
             }
