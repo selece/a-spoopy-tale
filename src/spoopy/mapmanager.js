@@ -120,7 +120,12 @@ export default class MapManager {
     
             for (let i in range(connects)) {
                 let [a, b] = this.random(2, params);
-                this.connect(a, b);
+                
+                if (a === undefined || b === undefined) {
+                    break;
+                } else {
+                    this.connect(a, b);
+                }
             }
         }
     }
@@ -134,9 +139,9 @@ export default class MapManager {
             random(params.start.min_branches, params.start.max_branches)
         );
 
+        // leaf connections from given param.start.loc based on param.branches
         let current = params.start.loc;
         for (let i in range(params.branches.generations)) {
-            console.log(this.adjacency[current]);
             for (let branch in this.adjacency[current]) {
                 this.build(
                     this.adjacency[current][branch], 
@@ -145,7 +150,5 @@ export default class MapManager {
                 );
             }
         }
-
-        console.info(`MapManager.generate() completed! -> ${this.adjacency} w/ ${this.used}`);
     }
 }

@@ -277,12 +277,93 @@ describe('MapManager', () => {
             );
         });
 
+        it('builds no branches if list has nothing available', () => {
+            available.map(item => target.add(item));
+            target.build('a', 1);
+
+            target.used.map(
+                item => expect(target.adjacency[item].length).to.equal(0)
+            );
+        });
+
         it('throws an error if start node does not exist', () => {
             expect(() => target.build('a', 1)).to.throw(Error, /Can't build at/);
         });
     });
 
     describe('generate()', () => {
-        it(' -- tests not yet written -- ');
+        afterEach(() => {
+            target.used.map(item => target.remove(item));
+        });
+
+        it('builds a map containing a subset of available nodes, simple case', () => {
+            target.generate({
+                start: {
+                    loc: 'a',
+                    min_branches: 2,
+                    max_branches: 2,
+                },
+
+                branches: {
+                    generations: 1,
+                    min_branches: 1,
+                    max_branches: 1,
+                    connects: 0
+                },
+            });
+
+            const used = target.used;
+            const adj = target.adjacency;
+
+            expect(target.used.length).to.equal(5);
+            used.map(
+                item => {
+                    if (item === 'a') {
+                        expect(adj[item].length).to.equal(2);
+                    } else {
+                        if (contains(adj['a'], item)) {
+                            expect(adj[item].length).to.equal(2);
+                            expect(adj[item]).to.contain('a');
+                        } else {
+                            expect(adj[item].length).to.equal(1);
+                        }
+                    }
+                }
+            );
+        });
+
+        it('builds a map consisting of available nodes, non-simple case', () => {
+            target.generate({
+                start: {
+                    loc: 'a',
+                    min_branches: 1,
+                    max_branches: 3,
+                },
+
+                branches: {
+                    generations: 1,
+                    min_branches: 0,
+                    max_branches: 1,
+                    connects: 1,
+                },
+            });
+
+            const used = target.used;
+            const adj = target.adjacency;
+
+            used.map(
+                item => {
+                    if (item === 'a') {
+                        expect(adj[item].length).to.be.within(1, 3);
+                    } else {
+                        if (contains(adj['a'], item)) {
+                            expect(adj[item].length).to.be.within(2,3); 
+                        } else {
+                            expect(adj[item].length).to.be.within(1,2);
+                        }
+                    }
+                }
+            );
+        });
     });
 });
