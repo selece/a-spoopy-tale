@@ -53,8 +53,12 @@ export default class MapManager {
             throw new Error(`Cannot connect ${from} and ${to}, one or both are undefined in adjacency.`);
         }
 
-        if (!contains(this.adjacency[from], to)) { this.adjacency[from].push(to); }
-        if (!contains(this.adjacency[to], from) && !unidirectional) { this.adjacency[to].push(from); }
+        this.adjacency[from].push(to);
+        if (!unidirectional) { this.adjacency[to].push(from); }
+
+        // NOTE: do we have to check if the adjacecny contains the node being added?
+        // if (!contains(this.adjacency[from], to)) { this.adjacency[from].push(to); }
+        // if (!contains(this.adjacency[to], from) && !unidirectional) { this.adjacency[to].push(from); }
     }
 
     place(item, at) {
@@ -86,7 +90,7 @@ export default class MapManager {
             // otherwise, use the provided params object lists
             filter(params.available, params.operator);
 
-        if (filtered.length > 0) {
+        if (filtered.length >= count) {
             return sample(filtered, count);
         } else {
             return undefined;
@@ -121,7 +125,7 @@ export default class MapManager {
             for (let i in range(connects)) {
                 let leaves = this.random(2, params);
                 
-                if (contains(leaves, undefined)) {
+                if (leaves === undefined) {
                     break;
                 } else {
                     let [a, b] = leaves; 

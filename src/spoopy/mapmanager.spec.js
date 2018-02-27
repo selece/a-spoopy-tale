@@ -143,6 +143,13 @@ describe('MapManager', () => {
             expect(target.find('b').map).to.eql(['a']);
             expect(target.find('c').map).to.be.empty;
         });
+
+        it('connects unidirectional passages correctly', () => {
+            target.connect('a', 'c', true);
+
+            expect(target.find('a').map).to.contain('c');
+            expect(target.find('c').map).to.be.empty;
+        });
     });
 
     describe('place()', () => {
@@ -357,9 +364,43 @@ describe('MapManager', () => {
                         expect(adj[item].length).to.be.within(1, 3);
                     } else {
                         if (contains(adj['a'], item)) {
-                            expect(adj[item].length).to.be.within(2,3); 
+                            expect(adj[item].length).to.be.within(1,3); 
                         } else {
                             expect(adj[item].length).to.be.within(1,2);
+                        }
+                    }
+                }
+            );
+        });
+
+        it('stops building gracefully if we run out of rooms to generate', () => {
+            target.generate({
+                start: {
+                    loc: 'a',
+                    min_branches: 3,
+                    max_branches: 6,
+                },
+
+                branches: {
+                    generations: 1,
+                    min_branches: 3,
+                    max_branches: 5,
+                    connects: 3,
+                },
+            });
+
+            const used = target.used;
+            const adj = target.adjacency;
+
+            used.map(
+                item => {
+                    if (item === 'a') {
+                        expect(adj[item].length).to.be.within(3,6);
+                    } else {
+                        if (contains(adj['a'], item)) {
+                            expect(adj[item].length).to.be.within(1, 6);
+                        } else {
+                            expect(adj[item].length).to.be.within(1, 2);
                         }
                     }
                 }
