@@ -1,4 +1,4 @@
-import { expect, should } from 'chai';
+import { expect } from 'chai';
 import { contains, without } from 'underscore';
 
 import MapManager from './mapmanager';
@@ -343,7 +343,7 @@ describe('MapManager', () => {
             target.generate({
                 start: {
                     loc: 'a',
-                    min_branches: 1,
+                    min_branches: 2,
                     max_branches: 3,
                 },
 
@@ -361,7 +361,7 @@ describe('MapManager', () => {
             used.map(
                 item => {
                     if (item === 'a') {
-                        expect(adj[item].length).to.be.within(1, 3);
+                        expect(adj[item].length).to.be.within(2, 3);
                     } else {
                         if (contains(adj['a'], item)) {
                             expect(adj[item].length).to.be.within(1,3); 
