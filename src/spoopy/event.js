@@ -18,7 +18,6 @@ export default class Event {
             this.timer -= 1;
 
             if (this.timer <= 0) {
-                console.log(this.onDone);
                 this.onDone();
                 this.toggle();
 

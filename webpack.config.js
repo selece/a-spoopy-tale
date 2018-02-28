@@ -9,7 +9,7 @@ module.exports = {
         loaders: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.spec.(js|jsx)$/],
                 loader: 'babel-loader'
             },
             {
@@ -25,7 +25,7 @@ module.exports = {
             },
             {
                 test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.spec.(js|jsx)$/],
                 use: 'babel-loader'
             }
         ]
