@@ -23,22 +23,7 @@ export default class EventManager {
             throw new Error(`Could not find event with tag "${ev}".`);
         }
 
-        this.clear(ev);
         delete this.events[ev];
-    }
-
-    clear(ev) {
-        if (!this.exists(ev)) {
-            throw new Error(`Could not find event with tag "${ev}".`);
-        }
-
-        this.events[ev].clear();
-    }
-
-    clearAll() {
-        for (let event of this.events) {
-            event.clear();
-        }
     }
 
     exists(ev) {

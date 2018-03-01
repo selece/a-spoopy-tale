@@ -24,9 +24,6 @@ export default class Event {
                 if (this.repeats) {
                     this.reset();
                     this.toggle();
-
-                } else {
-                    this.clear();
                 }
             }
         }
@@ -42,9 +39,5 @@ export default class Event {
 
     reset() {
         this.timer = this.initial;
-    }
-
-    clear() {
-        clearInterval(this.tickHandle);
     }
 }

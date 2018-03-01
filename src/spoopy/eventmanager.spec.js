@@ -76,14 +76,4 @@ describe('EventManager', () => {
             expect(() => target.remove('fake')).toThrowError(/Could not find event/);
         });
     });
-
-    describe('clear', () => {
-        test('throws error if tag does not exists for event', () => {
-            expect(() => target.clear('fake')).toThrowError(/Could not find event/);
-        });
-    });
-
-    describe('clearAll', () => {
-        test(' -- test not yet written -- ');
-    });
 });

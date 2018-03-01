@@ -53,10 +53,6 @@ describe('Event', () => {
         });
     });
 
-    describe('clear', () => {
-        test(' -- tests not yet written -- ');
-    });
-
     describe('tick', () => {
         beforeEach(() => {
             target = new Event(5, spy);
@@ -84,11 +80,10 @@ describe('Event', () => {
 
             // t=10000ms
             // NOTE: 3 times due to previous jest.runTimersToTime(5000) in previous test?
+            // FIXME: isolate test states per test so this doesn't happen!
             jest.runTimersToTime(10000);
             expect(local.timer).toBe(5);
             expect(localSpy).toHaveBeenCalledTimes(3);
-
-            local.clear();
         });
     });
 });
