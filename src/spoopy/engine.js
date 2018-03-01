@@ -1,4 +1,4 @@
-import { filter, contains, sample, chain, range, isFunction, random, without } from 'underscore';
+import { filter, contains, sample, chain, range, isFunction, random, without, keys } from 'underscore';
 import { computed, action, observable } from 'mobx';
 
 import Player from './player';
@@ -45,10 +45,28 @@ export default class Engine {
             startPaused: false,
         }]);
 
+        // map player actions for playerAction()
+        this._playerActions = {
+            'PLAYER_MOVE': arg => this.player.move(arg),
+            'PLAYER_EXPLORE': arg => this.player.updateExplored(arg),
+            'PLAYER_SEARCH': arg => this.player.updateSearched(arg),
+
+            'PLAYER_PICKUP': arg => {
+                this.player.pickupItem(arg);
+                this.mapManager.pickup(arg, this.player.status.loc.value);
+            },
+
+            'PLAYER_DROP': arg => {
+                this.player.dropItem(arg);
+                this.mapManager.place(arg, this.player.status.loc.value);
+            },
+        };
+
         // refresh gui state for game start
         this.updateGUIState();
 
         // experimental
+        // TODO: move MapManager to this - replace map generator
         let mapManager = new MapManager(this.roomDB.room_names);
         mapManager.generate(
             {
@@ -75,7 +93,8 @@ export default class Engine {
     updateGUIState() {
         // generate props for button grids (exits and actions)
         let propButtonGridActions, propButtonGridExits;
-        let here = this.player.currentLocation;
+        let status = this.player.status;
+        let here = status.loc.value;
 
         // completely new room (not explored, not searched)
         if (!this.player.hasExplored(here) && !this.player.hasSearched(here)) {
@@ -84,7 +103,8 @@ export default class Engine {
             propButtonGridActions = [{
                 display: 'Take a look around.',
                 classes: ['button-small', 'cursor-pointer'],
-                onClickHandler: () => this.playerExplore(here),
+                onClickHandler: () => this.playerAction('PLAYER_EXPLORE', here),
+                // onClickHandler: () => this.playerExplore(here),
             }];
 
         // explored room, but NOT searched (should see exits, but no items)
@@ -93,14 +113,16 @@ export default class Engine {
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
                     classes: this.player.hasVisited(exit) ? ['button-large', 'cursor-pointer'] : ['button-large', 'cursor-pointer', 'text-italics'],
-                    onClickHandler: () => this.playerMove(exit)
+                    onClickHandler: () => this.playerAction('PLAYER_MOVE', exit),
+                    // onClickHandler: () => this.playerMove(exit)
                 })
             );
 
             propButtonGridActions = [{
                 display: 'Search the room.',
                 classes: ['button-small', 'cursor-pointer'],
-                onClickHandler: () => this.playerSearch(here),
+                onClickHandler: () => this.playerAction('PLAYER_SEARCH', here),
+                // onClickHandler: () => this.playerSearch(here),
             }];
 
         // explored room and searched room - should display items and exits
@@ -110,7 +132,8 @@ export default class Engine {
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.randomUnexplored,
                     classes: ['button-large', 'cursor-pointer'],
-                    onClickHandler: () => this.playerMove(exit)
+                    onClickHandler: () => this.playerAction('PLAYER_MOVE', exit),
+                    // onClickHandler: () => this.playerMove(exit)
                 })
             );
 
@@ -119,7 +142,8 @@ export default class Engine {
                     item => ({
                         display: item.name,
                         classes: ['button-small', 'cursor-pointer'],
-                        onClickHandler: () => this.playerPickup(item)
+                        onClickHandler: () => this.playerAction('PLAYER_PICKUP', item),
+                        // onClickHandler: () => this.playerPickup(item)
                     })
 
                 // no items, show nothing here to find
@@ -144,6 +168,15 @@ export default class Engine {
         this.GUIState.propInventory = this.playerInventoryDescription;
         this.GUIState.propBattery = this.playerBatteryDescription;
         this.GUIState.animate = true;
+    }
+
+    @action playerAction(action, arg) {
+        if (!contains(keys(this._playerActions), action)) {
+            throw new Error(`"${action}" is not a valid action.`);
+        }
+        
+        this._playerActions[action](arg);
+        this.updateGUIState();
     }
 
     @action playerMove(loc) {
@@ -332,7 +365,7 @@ export default class Engine {
         }
 
         this.connectLeaves(params.leaf_connections);
-        console.log('buildMap(): completed!', this.adjacency, this.exclusions);
+        // console.log('buildMap(): completed!', this.adjacency, this.exclusions);
 
         /* experimental item placement */
         let random_room = this.getRoom({
@@ -344,7 +377,7 @@ export default class Engine {
         let random_item = this.itemDB.random_item([]);
         // this.roomPlaceItem(random_item, random_room);
         this.roomPlaceItem(random_item, 'Foyer');
-        console.log('placement done:', this.itemMap);
+        // console.log('placement done:', this.itemMap);
         /* end experimental item placement */
     }
 }

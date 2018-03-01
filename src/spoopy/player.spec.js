@@ -31,35 +31,7 @@ describe('Player', () => {
 
     });
 
-    describe('get currentBattery()', () => {
-
-    });
-
     describe('get currentHealthDescription()', () => {
-
-    });
-
-    describe('get currentHealth()', () => {
-
-    });
-
-    describe('get currentSearched()', () => {
-
-    });
-
-    describe('get currentMap()', () => {
-
-    });
-
-    describe('get currentExplored()', () => {
-
-    });
-
-    describe('get currentInventory()', () => {
-
-    });
-
-    describe('get currentLocation()', () => {
 
     });
 

@@ -15,6 +15,41 @@ export default class Player {
         this.updateMap(this.loc);
     }
 
+    get status() {
+        return {
+            inventory: {
+                descriptive: this.currentInventoryDescription,
+                value: this.inventory,
+            },
+
+            map: {
+                value: this.map,
+            },
+
+            explored: {
+                value: this.explored,
+            },
+
+            searched: {
+                value: this.searched,
+            },
+
+            health: {
+                descriptive: this.currentHealthDescription,
+                value: this.health,
+            },
+
+            battery: {
+                descriptive: this.currentBatteryDescription,
+                value: this.battery,
+            },
+
+            loc: {
+                value: this.loc,
+            },
+        };
+    }
+
     get currentInventoryDescription() {
         // if the inventory is empty, return generic 'empty' response
         // TODO: have list of random phrases to randomly select from
