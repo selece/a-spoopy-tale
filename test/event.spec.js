@@ -1,4 +1,4 @@
-import Event from './event';
+import Event from '../src/spoopy/event';
 
 jest.useFakeTimers();
 

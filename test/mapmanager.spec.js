@@ -1,6 +1,6 @@
 import { contains, without } from 'underscore';
 
-import MapManager from './mapmanager';
+import MapManager from '../src/spoopy/mapmanager';
 
 
 describe('MapManager', () => {
@@ -62,7 +62,7 @@ describe('MapManager', () => {
 
         test('returns object with empty map & item lists for singleton room', () => {
             expect(target.find('a')).toEqual({
-                map: [],
+                adjacency: [],
                 items: [],
             });
         });
@@ -144,16 +144,16 @@ describe('MapManager', () => {
         test('updates <from> and <to> adjacency lists properly', () => {
             target.connect('a', 'b');
  
-            expect(target.find('a').map).toEqual(['b']);
-            expect(target.find('b').map).toEqual(['a']);
-            expect(target.find('c').map).toHaveLength(0);
+            expect(target.find('a').adjacency).toEqual(['b']);
+            expect(target.find('b').adjacency).toEqual(['a']);
+            expect(target.find('c').adjacency).toHaveLength(0);
         });
 
         test('connects unidirectional passages correctly', () => {
             target.connect('a', 'c', true);
 
-            expect(target.find('a').map).toContain('c');
-            expect(target.find('c').map).toHaveLength(0);
+            expect(target.find('a').adjacency).toContain('c');
+            expect(target.find('c').adjacency).toHaveLength(0);
         });
     });
 

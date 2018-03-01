@@ -1,4 +1,4 @@
-import Player from './player';
+import Player from '../src/spoopy/player';
 
 describe('Player', () => {
     let target;

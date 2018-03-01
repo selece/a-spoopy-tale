@@ -1,4 +1,4 @@
-import EventManager from './eventmanager';
+import EventManager from '../src/spoopy/eventmanager';
 
 jest.useFakeTimers();
 

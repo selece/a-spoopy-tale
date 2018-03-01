@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack",
     "dev-server": "webpack-dev-server --content-base build/",
-    "test": "jest src --coverage --verbose",
-    "ci": "jest src --coverage --watch --verbose"
+    "test": "jest test --coverage --verbose",
+    "ci": "jest test --coverage --watch --verbose"
   },
   "author": "Jonathan Liaw",
   "license": "ISC",
