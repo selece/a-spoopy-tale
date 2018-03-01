@@ -16,12 +16,11 @@ let engine = new Engine({
     },
 
     branches: {
-        gens: 1,
+        generations: 1,
         min_branches: 1,
         max_branches: 3,
+        connections: 4,
     },
-
-    leaf_connections: 4,
 });
 
 ReactDOM.render(

@@ -19,7 +19,7 @@ export default class MapManager {
         }
 
         return {
-            map: this.adjacency[room],
+            adjacency: this.adjacency[room],
             items: this.items[room]
         }
     }
