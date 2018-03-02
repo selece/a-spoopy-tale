@@ -61,31 +61,38 @@ export default class Player {
             return `You are currently holding: ${this.inventory.map(
 
                 // build the list for oxford comma correctness
-                (item, i, inv) => {
+                (item, index, list) => {
+                    
+                    // if the item starts with a vowel, prefix 'an', otherwise use 'a'
+                    let indefinite_article = contains(['a', 'e', 'i', 'o', 'u'], item.substring(0, 1).toLowerCase()) ? 'an' : 'a';
 
-                    // if the item.name starts with a vowel, prefix 'an', otherwise use 'a'
-                    let indefinite_article = contains(['a', 'e', 'i', 'o', 'u'], item.name[0].toLowerCase()) ? 'an' : 'a';
+                    // if the list is exactly one item
+                    if (list.length === 1) {
+                        return `${indefinite_article} ${item}`;
 
-                    // end of list, two cases to handle
-                    if (inv.length - 1 === i) {
-
-                        // list is exactly one item long, just return the item.name
-                        // e.g. Skull
-                        if (inv.length === 1) {
-                            return `${indefinite_article} ${item.name}`
-
-                        // list contains more than one item, return 'and item.name'
-                        // e.g. and Skull
-                        } else {
-                            return `and ${indefinite_article} ${item.name}`;
-                        }
-                        
-                    // not end of list, so we need to return a comma + name + space
-                    // e.g. Skull, 
+                    // otherwise we need to build a comma-separated list
                     } else {
-                        return `${indefinite_article} ${item.name}, `
+
+                        // if we're at the end of the list
+                        // return 'and item name', e.g. 'and Skull'
+                        if (index === list.length - 1) {
+                            return `and ${indefinite_article} ${item}`;
+                        
+                        } else {
+                            // if the list is only two items, don't add the oxford comma
+                            if (list.length == 2) {
+                                return `${indefinite_article} ${item} `;
+
+                            // otherwise, add the oxford comma
+                            } else {
+                                return `${indefinite_article} ${item}, `;
+                            }
+                        }
                     }
-                })
+                
+                // NOTE: map returns an array - use join compact it into a single string
+                // NOTE: no spaces in between the list items, already added above
+                }).join('')
             }.`
         }
     }
@@ -98,10 +105,6 @@ export default class Player {
         }
     }
 
-    get currentBattery() {
-        return this.battery;
-    }
-
     get currentHealthDescription() {
         if (this.health === 100) {
             return 'You feel perfectly healthy.';
@@ -110,36 +113,20 @@ export default class Player {
         }
     }
 
-    get currentHealth() {
-        return this.health;
-    }
-
-    get currentSearched() {
-        return this.searched;
-    }
-
-    get currentMap() {
-        return this.map;
-    }
-
-    get currentExplored() {
-        return this.explored;
-    }
-
-    get currentInventory() {
-        return this.inventory;
-    }
-
-    get currentLocation() {
-        return this.loc;
-    }
-
     modifyHealth(amount) {
+        if (isNaN(amount)) {
+            throw new Error(`Expected integer, got ${amount}.`);
+        }
+
         this.health += amount;
         return this.health;
     }
 
     modifyBattery(amount) {
+        if (isNaN(amount)) {
+            throw new Error(`Expected integer, got ${amount}.`);
+        }
+
         this.battery += amount;
         return this.battery;
     }
@@ -153,7 +140,7 @@ export default class Player {
             this.inventory = without(this.inventory, item);
         
         } else {
-            console.error('dropItem(): could not drop', item);
+            throw new Error(`Player does not have ${item} to drop.`);
         }
     }
 
