@@ -7,7 +7,7 @@
     "build": "webpack",
     "dev-server": "webpack-dev-server --content-base build/",
     "test": "jest test --coverage --verbose",
-    "ci": "jest test --coverage --watch --verbose"
+    "ci": "jest test --coverage --watch"
   },
   "author": "Jonathan Liaw",
   "license": "ISC",
@@ -16,7 +16,6 @@
     "mobx": "^3.5.1",
     "mobx-react": "^4.4.2",
     "react": "^16.2.0",
-    "react-animate-on-change": "^1.0.1",
     "react-dom": "^16.2.0",
     "shortid": "^2.2.8",
     "underscore": "^1.8.3"
@@ -27,18 +26,13 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-mobx": "^1.0.2",
-    "babel-preset-react": "^6.24.1",
     "babel-preset-react-plus": "^1.3.0",
     "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.28.9",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^22.4.2",
-    "mocha": "^5.0.1",
     "node-sass": "^4.7.2",
-    "nyc": "^11.4.1",
     "sass-loader": "^6.0.6",
-    "sinon": "^4.4.1",
     "style-loader": "^0.20.2",
     "webpack": "^3.11.0",
     "webpack-dev-server": "^2.11.1"

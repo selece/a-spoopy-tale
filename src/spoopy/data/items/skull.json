@@ -1,0 +1,11 @@
+{
+    "name": "Skull",
+    "descriptions": [
+        {
+            "text": "The hollow eyes and broken teeth leer at you with an oddly jovial grin.",
+            "conditions": {}
+        }
+    ],
+    "actions": {},
+    "tags": {}
+}

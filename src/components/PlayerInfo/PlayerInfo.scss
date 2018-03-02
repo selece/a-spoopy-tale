@@ -2,12 +2,3 @@
     height: 200px;
     margin-bottom: 35px;
 }
-
-.player-info-anim {
-    animation: player-info-anim-keyframes 2s ease-in-out;
-}
-
-@keyframes player-info-anim-keyframes {
-    from {opacity: 0.01}
-    to {opacity: 1}
-}

@@ -29,7 +29,6 @@ export default class Engine {
             propInventory: undefined,
             propBattery: undefined,
             propClock: undefined,
-            animate: undefined,
         });
         
         // set up our managers with game startup events, seeds etc.
@@ -50,9 +49,17 @@ export default class Engine {
 
         // map player actions for playerAction()
         this._playerActions = {
-            'PLAYER_MOVE': arg => this.player.move(arg),
-            'PLAYER_EXPLORE': arg => this.player.updateExplored(arg),
-            'PLAYER_SEARCH': arg => this.player.updateSearched(arg),
+            'PLAYER_MOVE': arg => {
+                this.player.move(arg);
+            },
+
+            'PLAYER_EXPLORE': arg => {
+                this.player.updateExplored(arg);
+            },
+
+            'PLAYER_SEARCH': arg => {
+                this.player.updateSearched(arg);
+            },
 
             'PLAYER_PICKUP': arg => {
                 this.player.pickupItem(arg);
@@ -135,25 +142,24 @@ export default class Engine {
             console.error(`Unexpected exploration/search case! - Error occured at ${here} with values ${room}.`);
         }
 
-        this.GUIState.propLocation = this.player.hasExplored(this.player.currentLocation) ?
+        this.GUIState.propLocation = this.player.hasExplored(status.loc.value) ?
             this.player.status.loc.value : 'A dark and indistinct room';
 
-        this.GUIState.propDescription = this.player.hasExplored(this.player.currentLocation) ?
-            this.roomDB.getDescription(this.player.currentLocation) : 'You can\'t really make out too much standing here.';
+        this.GUIState.propDescription = this.player.hasExplored(status.loc.value) ?
+            this.roomDB.getDescription(status.loc.value) : 'You can\'t really make out too much standing here.';
 
         this.GUIState.propButtonGridActions = propButtonGridActions;
         this.GUIState.propButtonGridExits = propButtonGridExits;
         this.GUIState.propHealth = this.player.status.health.descriptive;
         this.GUIState.propInventory = this.player.status.inventory.descriptive;
         this.GUIState.propBattery = this.player.status.battery.descriptive;
-        this.GUIState.animate = true;
     }
 
     @action playerAction(action, arg) {
         if (!contains(keys(this._playerActions), action)) {
             throw new Error(`"${action}" is not a valid action.`);
         }
-        
+
         this._playerActions[action](arg);
         this.updateGUIState();
     }
