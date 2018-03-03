@@ -3,13 +3,13 @@ const clean_webpack_plugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-        spoopy__packed: __dirname + '\\src\\spoopy.jsx'
+        bundle: __dirname + '\\src\\index.jsx'
     },
     module: {
         loaders: [
             {
                 test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.spec.(js|jsx)$/],
                 loader: 'babel-loader'
             },
             {
@@ -25,7 +25,7 @@ module.exports = {
             },
             {
                 test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.spec.(js|jsx)$/],
                 use: 'babel-loader'
             }
         ]
@@ -49,18 +49,6 @@ module.exports = {
             inject: 'body'
         })
     ],
-    resolve: {
-        // requirejs aliases for webpack
-        alias: {
-            'jquery': __dirname + '\\src\\vendor\\jquery.min',
-            'underscore': __dirname + '\\src\\vendor\\underscore.min',
-
-            'spoopy.engine': __dirname + '\\src\\js\\spoopy.engine.js',
-            'spoopy.rooms': __dirname + '\\src\\js\\spoopy.rooms.js',
-            'spoopy.player': __dirname + '\\src\\js\\spoopy.player.js',
-            'spoopy.items': __dirname + '\\src\\js\\spoopy.items.js',
-        }
-    },
     cache: true,
     devtool: 'source-map',
 };

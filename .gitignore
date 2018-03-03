@@ -1,5 +1,6 @@
-
-
 /node_modules/
-
-/package-lock.json
+.vscode/
+.vscode/launch.json
+.nyc_output
+coverage/
+/build/

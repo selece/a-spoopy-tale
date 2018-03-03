@@ -1,0 +1,46 @@
+@mixin transition($vals) {
+    -webkit-transition: $vals;
+    -moz-transition: $vals;
+    -o-transition: $vals;
+    transition: $vals;
+}
+
+%button-base {
+    color: grey;
+    text-align: center;
+    overflow: hidden;
+}
+
+.button-large {
+    @extend %button-base;
+
+    border: 1px solid;
+    text-align: center;
+    width: 275px;
+    margin: 10px auto;
+    padding: 5px;
+
+    @include transition(all 0.45s ease-in-out);
+
+    &:hover {
+        color: white;
+    }
+}
+
+.button-small {
+    @extend %button-base;
+
+    margin: 5px auto;
+    text-decoration-style: dashed;
+    text-decoration-line: underline;
+
+    @include transition(all 0.25s ease-in-out);
+
+    &:hover {
+        color: white;
+    }
+}
+
+.button-inactive {
+    @extend %button-base;
+}

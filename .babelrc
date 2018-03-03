@@ -1,4 +1,4 @@
 {
-    'presets': ['react-plus'],
-    'plugins': ['transform-decorators-legacy']
+    "presets": ["env", "react-plus"],
+    "plugins": ["transform-decorators-legacy"]
 }

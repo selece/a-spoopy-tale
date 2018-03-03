@@ -1,154 +1,170 @@
-import {filter, contains, sample, chain, range, isFunction, random} from 'underscore';
-import {computed, action} from 'mobx';
+import { filter, contains, sample, chain, range, isFunction, random, without, keys } from 'underscore';
+import { computed, action, observable } from 'mobx';
 
 import Player from './player';
 import ItemDB from './items';
 import RoomDB from './rooms';
+import EventManager from './eventmanager';
+import MapManager from './mapmanager';
 
 export default class Engine {
-	constructor() {
-		this.player = new Player();
-		this.itemDB = new ItemDB();
-		this.roomDB = new RoomDB();
 
-		this.adjacency = {};
-		this.exclusions = [];
-		this.available = this.roomDB.room_names;
+    constructor(params) {
+        this.player = new Player();
+        this.itemDB = new ItemDB();
+        this.roomDB = new RoomDB();
+
+        this.eventManager = new EventManager();
+        this.mapManager = new MapManager(this.roomDB.room_names);
+
+        // slightly ugly non-decorator due to mobx only tracking object props that exist
+        // when the object is declared
+        // see: extendObservable() or observable.map() for dynamic properties
+        this.GUIState = observable({
+            propDescription: undefined,
+            propLocation: undefined,
+            propButtonGridActions: undefined,
+            propButtonGridExits: undefined,
+            propHealth: undefined,
+            propInventory: undefined,
+            propBattery: undefined,
+            propClock: undefined,
+        });
+        
+        // set up our managers with game startup events, seeds etc.
+        this.eventManager.add(
+            [
+                // end of game event, occurs 60 minutes after start
+                {
+                    name: 'Global',
+                    timer: 60 * 60,
+                    trigger: () => this.endGame(),
+                    repeats: false,
+                    startPaused: false,
+                },
+            ]
+        );
+
+        this.mapManager.generate(params);
+
+        // map player actions for playerAction()
+        this._playerActions = {
+            'PLAYER_MOVE': arg => {
+                this.player.move(arg.loc);
+            },
+
+            'PLAYER_EXPLORE': arg => {
+                this.player.updateExplored(arg.loc);
+            },
+
+            'PLAYER_SEARCH': arg => {
+                this.player.updateSearched(arg.loc);
+            },
+
+            'PLAYER_PICKUP': arg => {
+                this.player.pickupItem(arg.item);
+                this.mapManager.pickup(arg.item, arg.loc);
+            },
+
+            'PLAYER_DROP': arg => {
+                this.player.dropItem(arg.item);
+                this.mapManager.place(arg.item, arg.loc);
+            },
+        };
+
+        // refresh gui state for game start
+        this.updateGUIState();
     }
 
-    playerVisitedLocation(loc) {
-        return this.player.visited(loc);
+    endGame() {
+        console.log('YOU LOST! :(');
     }
 
-    @action playerMove(loc) {
-        this.player.move(loc);
+    updateGUIState() {
+        // generate props for button grids (exits and actions)
+        let propButtonGridActions, propButtonGridExits;
+        let status = this.player.status;
+        let here = status.loc.value;
+        let room = this.mapManager.find(here);
+
+        // completely new room (not explored, not searched)
+        if (!this.player.hasExplored(here) && !this.player.hasSearched(here)) {
+            propButtonGridExits = [{}];
+
+            propButtonGridActions = [{
+                display: 'Take a look around.',
+                classes: ['button-small', 'cursor-pointer'],
+                onClickHandler: () => this.playerAction('PLAYER_EXPLORE', {loc: here}),
+            }];
+
+        // explored room, but NOT searched (should see exits, but no items)
+        } else if (this.player.hasExplored(here) && !this.player.hasSearched(here)) {
+            propButtonGridExits = room.adjacency.map(
+                exit => ({
+                    display: this.player.hasVisited(exit) ? exit : this.roomDB.random_unexplored,
+                    classes: this.player.hasVisited(exit) ? ['button-large', 'cursor-pointer'] : ['button-large', 'cursor-pointer', 'text-italics'],
+                    onClickHandler: () => this.playerAction('PLAYER_MOVE', {loc: exit}),
+                })
+            );
+
+            propButtonGridActions = [{
+                display: 'Search the room.',
+                classes: ['button-small', 'cursor-pointer'],
+                onClickHandler: () => this.playerAction('PLAYER_SEARCH', {loc: here}),
+            }];
+
+        // explored room and searched room - should display items and exits
+        // a bit of repeat code for propButtonGridExits - maybe refactor?
+        } else if (this.player.hasExplored(here) && this.player.hasSearched(here)) {
+            propButtonGridExits = room.adjacency.map(
+                exit => ({
+                    display: this.player.hasVisited(exit) ? exit : this.roomDB.random_unexplored,
+                    classes: ['button-large', 'cursor-pointer'],
+                    onClickHandler: () => this.playerAction('PLAYER_MOVE', {loc: exit}),
+                })
+            );
+
+            propButtonGridActions = room.items.length > 0 ?
+                room.items.map(
+                    item => ({
+                        display: item.name,
+                        classes: ['button-small', 'cursor-pointer'],
+                        onClickHandler: () => this.playerAction('PLAYER_PICKUP', {item: item, loc: here}),
+                    })
+
+                // no items, show nothing here to find
+                ) : [{
+                    display: 'There\'s nothing more here to find.',
+                    classes: ['button-small']
+                }];
+
+        } else {
+            console.error(`Unexpected exploration/search case! - Error occured at ${here} with values ${room}.`);
+        }
+
+        this.GUIState.propLocation = this.player.hasExplored(status.loc.value) ?
+            this.player.status.loc.value : 'A dark and indistinct room';
+
+        this.GUIState.propDescription = this.player.hasExplored(status.loc.value) ?
+            this.roomDB.getDescription(status.loc.value) : 'You can\'t really make out too much standing here.';
+
+        this.GUIState.propButtonGridActions = propButtonGridActions;
+        this.GUIState.propButtonGridExits = propButtonGridExits;
+        this.GUIState.propHealth = this.player.status.health.descriptive;
+        this.GUIState.propInventory = this.player.status.inventory.descriptive;
+        this.GUIState.propBattery = this.player.status.battery.descriptive;
     }
 
-    @action playerPickup(item) {
-        this.player.pickupItem(item);
+    @action playerAction(action, arg) {
+        if (!contains(keys(this._playerActions), action)) {
+            throw new Error(`"${action}" is not a valid action.`);
+        }
+
+        if (typeof arg !== 'object' || arg === undefined || arg === null) {
+            throw new Error(`${arg} is not a valid parameter.`);
+        }
+
+        this._playerActions[action](arg);
+        this.updateGUIState();
     }
-
-    @action playerDrop(item) {
-        this.player.dropItem(item);
-    }
-    
-    @computed get playerLocation() {
-        return this.player.loc;
-    }
-
-    @computed get playerLocationDescription() {
-        return this.roomDB.getDescription(this.player.loc);
-    }
-
-    @computed get playerLocationExits() {
-        return this.adjacency[this.player.loc];
-    }
-
-	getRoom(params=undefined) {
-		let filtered = params === undefined ?
-			filter(
-				this.available,
-				
-				// NOTE: this context below is the context provided, not the Engine object
-				function(i) { return !contains(this.exc, i); },
-				{ exc: this.exclusions }
-			
-			) : filter(
-				params.use_list,
-				params.filter_function,
-				params.context
-			);
-
-		if (filtered.length > 0) {
-			return sample(filtered);
-		} else {
-			console.error('getRoom(): no valid rooms available');
-			return undefined;
-		}
-	}
-
-	updateExclusions(update) {
-		this.exclusions = chain(
-			this.exclusions
-		).union(update)
-		 .unique()
-		 .value();
-	}
-
-	updateAdjacency(from, to) {
-		if (from === undefined || to === undefined) {
-			console.error('updateAdjacency(): cannot update adjacency to undefined');
-			return;
-		}
-
-		if (this.adjacency[from] === undefined) { this.adjacency[from] = []; }
-		if (this.adjacency[to] === undefined) { this.adjacency[to] = []; }
-
-		if (!contains(this.adjacency[from], to)) { this.adjacency[from].push(to); }
-		if (!contains(this.adjacency[to], from)) { this.adjacency[to].push(from); }
-	}
-
-	buildMapAt(loc, branches) {
-		this.updateExclusions([loc]);
-		for (let i in range(
-			isFunction(branches) ? branches() : branches
-		)) {
-			
-			let pick = this.getRoom();
-
-			if (pick === undefined) {
-				break;
-			} else {
-				this.updateAdjacency(loc, pick);
-				this.updateExclusions([pick]);
-			}
-		}
-	}
-
-	connectLeaves(leaves) {
-		let leaf_params = {
-			use_list: this.exclusions,
-			filter_function: function(i) {
-				return this.adj[i].length === 1 && !contains(this.exc, i);
-			},
-			context: {adj: this.adjacency, exc: []}
-		};
-
-		// TODO: connect n-random number of leaves, rather than just pairs?
-		for (let i in range(leaves)) {
-			let leaf_1 = this.getRoom(leaf_params);
-			leaf_params.context.exc.push(leaf_1);
-			let leaf_2 = this.getRoom(leaf_params);
-
-			this.updateAdjacency(leaf_1, leaf_2);
-		}
-	}
-
-	// TODO: make recursive for n-generations
-	// NOTE: for now, we just do one generation of branches
-	buildMap(params) {
-		this.buildMapAt(
-			params.start.loc,
-			random(
-				params.start.min_branches,
-				params.start.max_branches
-			)
-		);
-
-        let branches = this.adjacency[params.start.loc];
-		for (let i in range(params.branches.gens)) {
-			for (let j in branches) {
-				this.buildMapAt(
-					branches[j],
-					random(
-						params.branches.min_branches,
-						params.branches.max_branches
-					)
-				);
-			}
-		}
-
-		this.connectLeaves(params.leaf_connections);
-		console.log('buildMap(): completed!', this.adjacency, this.exclusions);
-	}
 }

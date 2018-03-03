@@ -1,0 +1,11 @@
+{
+    "name": "Tome",
+    "descriptions": [
+        {
+            "text": "The pages are yellowed with age and the ink is barely readable.",
+            "conditions": {}
+        }
+    ],
+    "actions": {},
+    "tags": {}
+}

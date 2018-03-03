@@ -1,4 +1,4 @@
-import {findWhere, sample, filter, isEqual} from 'underscore';
+import {findWhere, sample, filter, isEqual, pluck, chain, contains} from 'underscore';
 
 export default class ItemDB {
     constructor() {
@@ -15,6 +15,17 @@ export default class ItemDB {
                 'tags': {},
             }
         ];
+    }
+
+    get item_names() {
+        return pluck(this.items, 'name');
+    }
+
+    random_item(exclude) {
+        return chain(this.items)
+            .filter( (elem) => !contains(exclude, elem) )
+            .sample()
+            .value();
     }
 
     exists(search) {
