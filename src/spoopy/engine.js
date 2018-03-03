@@ -50,25 +50,25 @@ export default class Engine {
         // map player actions for playerAction()
         this._playerActions = {
             'PLAYER_MOVE': arg => {
-                this.player.move(arg);
+                this.player.move(arg.loc);
             },
 
             'PLAYER_EXPLORE': arg => {
-                this.player.updateExplored(arg);
+                this.player.updateExplored(arg.loc);
             },
 
             'PLAYER_SEARCH': arg => {
-                this.player.updateSearched(arg);
+                this.player.updateSearched(arg.loc);
             },
 
             'PLAYER_PICKUP': arg => {
-                this.player.pickupItem(arg);
-                this.mapManager.pickup(arg, this.player.status.loc.value);
+                this.player.pickupItem(arg.item);
+                this.mapManager.pickup(arg.item, arg.loc);
             },
 
             'PLAYER_DROP': arg => {
-                this.player.dropItem(arg);
-                this.mapManager.place(arg, this.player.status.loc.value);
+                this.player.dropItem(arg.item);
+                this.mapManager.place(arg.item, arg.loc);
             },
         };
 
@@ -94,7 +94,7 @@ export default class Engine {
             propButtonGridActions = [{
                 display: 'Take a look around.',
                 classes: ['button-small', 'cursor-pointer'],
-                onClickHandler: () => this.playerAction('PLAYER_EXPLORE', here),
+                onClickHandler: () => this.playerAction('PLAYER_EXPLORE', {loc: here}),
             }];
 
         // explored room, but NOT searched (should see exits, but no items)
@@ -103,14 +103,14 @@ export default class Engine {
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.roomDB.random_unexplored,
                     classes: this.player.hasVisited(exit) ? ['button-large', 'cursor-pointer'] : ['button-large', 'cursor-pointer', 'text-italics'],
-                    onClickHandler: () => this.playerAction('PLAYER_MOVE', exit),
+                    onClickHandler: () => this.playerAction('PLAYER_MOVE', {loc: exit}),
                 })
             );
 
             propButtonGridActions = [{
                 display: 'Search the room.',
                 classes: ['button-small', 'cursor-pointer'],
-                onClickHandler: () => this.playerAction('PLAYER_SEARCH', here),
+                onClickHandler: () => this.playerAction('PLAYER_SEARCH', {loc: here}),
             }];
 
         // explored room and searched room - should display items and exits
@@ -120,7 +120,7 @@ export default class Engine {
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.roomDB.random_unexplored,
                     classes: ['button-large', 'cursor-pointer'],
-                    onClickHandler: () => this.playerAction('PLAYER_MOVE', exit),
+                    onClickHandler: () => this.playerAction('PLAYER_MOVE', {loc: exit}),
                 })
             );
 
@@ -129,7 +129,7 @@ export default class Engine {
                     item => ({
                         display: item.name,
                         classes: ['button-small', 'cursor-pointer'],
-                        onClickHandler: () => this.playerAction('PLAYER_PICKUP', item),
+                        onClickHandler: () => this.playerAction('PLAYER_PICKUP', {item: item, loc: here}),
                     })
 
                 // no items, show nothing here to find
@@ -158,6 +158,10 @@ export default class Engine {
     @action playerAction(action, arg) {
         if (!contains(keys(this._playerActions), action)) {
             throw new Error(`"${action}" is not a valid action.`);
+        }
+
+        if (typeof arg !== 'object' || arg === undefined || arg === null) {
+            throw new Error(`${arg} is not a valid parameter.`);
         }
 
         this._playerActions[action](arg);
