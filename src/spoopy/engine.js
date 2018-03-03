@@ -9,7 +9,7 @@ import MapManager from './mapmanager';
 
 export default class Engine {
 
-    constructor(build_params) {
+    constructor(params) {
         this.player = new Player();
         this.itemDB = new ItemDB();
         this.roomDB = new RoomDB();
@@ -45,7 +45,7 @@ export default class Engine {
             ]
         );
 
-        this.mapManager.generate(build_params);
+        this.mapManager.generate(params);
 
         // map player actions for playerAction()
         this._playerActions = {
