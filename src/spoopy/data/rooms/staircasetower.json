@@ -1,0 +1,18 @@
+{
+    "name": "Staircase Tower",
+    "descriptions": [
+        {
+            "text": "Standing at the bottom, you gaze up along the spiral of the stone staircase.",
+            "conditions": {}
+        },
+        {
+            "text": "The stone stairs have begun to crumble in some places, and you tread with extra caution.",
+            "conditions": {}
+        },
+        {
+            "text": "You cling to the wall of the staircase, avoiding the deadly drop in the center of the spiral.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Drawing Room",
+    "descriptions": [
+        {
+            "text": "The floorboards creak as you wander through the sparsely furnished drawing room.",
+            "conditions": {}
+        },
+        {
+            "text": "Several imposing tables and stiff-backed chairs furnish the room.",
+            "conditions": {}
+        },
+        {
+            "text": "You glance at the ecclectic mix of art on the walls as you navigate the room's sparse furnishings.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

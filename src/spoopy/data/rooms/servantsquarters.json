@@ -1,0 +1,18 @@
+{
+    "name": "Servants' Quarters",
+    "descriptions": [
+        {
+            "text": "You pass room after room down the hallway. Each room holds a single bed, a wash basin, and a chest of drawers.",
+            "conditions": {}
+        },
+        {
+            "text": "The servants' bedrooms are overly austere.",
+            "conditions": {}
+        },
+        {
+            "text": "You can't help likening the servants' quarters to prison cells.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

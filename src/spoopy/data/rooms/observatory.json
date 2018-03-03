@@ -1,0 +1,18 @@
+{
+    "name": "Observatory",
+    "descriptions": [
+        {
+            "text": "The domain of an astronomer of old, the observatory is dominated by a gargantuan telescope of wood and iron.",
+            "conditions": {}
+        },
+        {
+            "text": "Star charts, crumbling and faded, adorn the round walls while a telescope is prominently situated in the center of the room.",
+            "conditions": {}
+        },
+        {
+            "text": "You step forward to try the telescope, only to find the lenses cracked beyond use.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

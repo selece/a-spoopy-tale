@@ -1,20 +1,15 @@
 import {findWhere, sample, filter, isEqual, pluck, chain, contains} from 'underscore';
 
+import Loader from './loader';
 export default class ItemDB {
     constructor() {
-        this.items = [
-            {
-                'name': 'Skull',
-                'descriptions': [
-                    {
-                        'text': 'The hollow eyes and broken teeth leer at you with an oddly jovial grin.',
-                        'conditions': {},
-                    }
-                ],
-                'actions': {},
-                'tags': {},
-            }
-        ];
+        this.items = new Loader(
+            [
+                'skull.json',
+                'tome.json',
+            ],
+            './data/items/'
+        ).res;
     }
 
     get item_names() {

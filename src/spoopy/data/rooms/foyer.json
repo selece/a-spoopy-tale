@@ -1,0 +1,18 @@
+{
+    "name": "Foyer",
+    "descriptions": [
+        {
+            "text": "A musty smell fills your nostrils as you survey the dust-covered entranceway.",
+            "conditions": {}
+        },
+        {
+            "text": "The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.",
+            "conditions": {}
+        },
+        {
+            "text": "It isn\"t hard for you to imagine the former grandeur of the decaying foyer.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Atrium",
+    "descriptions": [
+        {
+            "text": "You gaze in awe of the intricate wrought-iron skeleton of the atrium skylight, its glass panes long-since shattered.",
+            "conditions": {}
+        },
+        {
+            "text": "Shards of glass crunch under your feet, the remnants of skylit windows.",
+            "conditions": {}
+        },
+        {
+            "text": "The atrium is grimy with years of exposure to the elements.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

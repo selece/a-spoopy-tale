@@ -1,0 +1,26 @@
+{
+    "name": "Kitchen",
+    "descriptions": [
+        {
+            "text": "The faint smell of rot wafts towards you. Nothing edible has been prepared here for a long time.",
+            "conditions": {}
+        },
+        {
+            "text": "You enter what must be the kitchen, if the giant stone hearth and scorched pots are any indication.",
+            "conditions": {}
+        },
+        {
+            "text": "The kitchen is barren. You see little beyond a sink, a countertop, some pots, and, of course, the giant stone hearth.",
+            "conditions": {}
+        },
+        {
+            "text": "!!! CONDITIONAL DESCRIPTION TEST !!! The skull almost glows with an odd glint as you enter the moudly-smelling kitchen.",
+            "conditions": { "has_item": ["Skull"] }
+        },
+        {
+            "text": "!!! CONDITIONAL DESCRIPTION TEST !!! You feel the hollow eye sockets of the skull staring into you as you explore the dirty kitchen.",
+            "conditions": { "has_item": ["Skull"] }
+        }
+    ],
+    "tags": {}
+}

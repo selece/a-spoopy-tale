@@ -5,7 +5,7 @@
   "main": "spoopy.server.js",
   "scripts": {
     "build": "webpack",
-    "dev-server": "webpack-dev-server --content-base build/",
+    "dev-server": "webpack-dev-server",
     "test": "jest test --coverage --verbose",
     "ci": "jest test --coverage --watch"
   },

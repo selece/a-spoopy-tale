@@ -1,0 +1,18 @@
+{
+    "name": "Gallery",
+    "descriptions": [
+        {
+            "text": "The gallery is filled with statuary and portraits.",
+            "conditions": {}
+        },
+        {
+            "text": "You walk past the silent gaze of generations of a long-forgotten family.",
+            "conditions": {}
+        },
+        {
+            "text": "Though you are the only one in the room, the gallery feels full of people.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}
