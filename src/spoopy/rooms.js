@@ -39,6 +39,7 @@ export default class RoomDB {
                 'trophy.json',
             ],
             './data/rooms/'
+            // path is relative to loader.js location!
         ).res;
 
         this.unexplored = [

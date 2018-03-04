@@ -1,0 +1,10 @@
+{
+    "name": "Test Fixture",
+    "data": {
+        "prop1": "prop1data",
+        "prop2": [
+            "prop2-array-01",
+            "prop2-array-02"
+        ]
+    }
+}

@@ -9,6 +9,7 @@ export default class ItemDB {
                 'tome.json',
             ],
             './data/items/'
+            // path is relative to loader.js location!
         ).res;
     }
 
@@ -18,7 +19,7 @@ export default class ItemDB {
 
     random_item(exclude) {
         return chain(this.items)
-            .filter( (elem) => !contains(exclude, elem) )
+            .filter(item => !contains(exclude, item))
             .sample()
             .value();
     }

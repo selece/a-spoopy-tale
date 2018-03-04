@@ -5,7 +5,6 @@ export default class Loader {
         this.loaded = [];
 
         for (let file of files) {
-            console.log(`Loading ${file}...`);
             this.loaded.push(
                 require(`${this.path}${file}`)
             );
