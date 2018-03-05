@@ -18,10 +18,16 @@ export default class ItemDB {
     }
 
     random_item(exclude) {
-        return chain(this.items)
-            .filter(item => !contains(exclude, item))
-            .sample()
-            .value();
+        return findWhere(
+            this.items, 
+            {
+                name: chain(this.items)
+                .pluck('name')
+                .filter(item => !contains(exclude, item))
+                .sample()
+                .value()
+            }
+        );
     }
 
     exists(search) {
@@ -31,16 +37,24 @@ export default class ItemDB {
     getDescription(search, conditions={}) {
         let target = findWhere(this.items, {name: search});
         if (target !== undefined) {
-            return sample(
-                filter(
-                    target.descriptions,
-                    i => isEqual(i.conditions, conditions)
-                )
-            ).text || 'Error! Could not load a valid description.';
-        
+            
+            let filteredConditions = filter(
+                target.descriptions,
+                desc => isEqual(desc.conditions, conditions)
+            );
+
+            if (filteredConditions.length > 0) {
+                return sample(filteredConditions).text;
+            } else {
+                return chain(target.descriptions)
+                .filter(desc => isEqual(desc.conditions, {}))
+                .sample()
+                .value()
+                .text;
+            }
+
         } else {
-            console.error('getDescription():', search, 'not found in', this.items);
-            return 'Error! No valid descriptions for' + search;
+            throw new Error(`Item not found: ${search}.`);
         }
     }
 }
