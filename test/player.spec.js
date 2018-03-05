@@ -28,14 +28,14 @@ describe('Player', () => {
 
         test('returns singleton list for ["Skull"]', () => {
             target.pickupItem('Skull');
-            expect(target.currentInventoryDescription).toBe(
+            expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: a Skull.'
             );
         });
 
         test('returns singleton list for ["Apple"]', () => {
             target.pickupItem('Apple');
-            expect(target.currentInventoryDescription).toBe(
+            expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple.'
             );
         });
@@ -43,7 +43,7 @@ describe('Player', () => {
         test('returns multiple item list for ["Apple", "Skull"]', () => {
             target.pickupItem('Apple');
             target.pickupItem('Skull');
-            expect(target.currentInventoryDescription).toBe(
+            expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple and a Skull.'
             );
         });
@@ -52,7 +52,7 @@ describe('Player', () => {
             target.pickupItem('Apple');
             target.pickupItem('Skull');
             target.pickupItem('Pop');
-            expect(target.currentInventoryDescription).toBe(
+            expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple, a Skull, and a Pop.'
             );
         });
@@ -64,12 +64,12 @@ describe('Player', () => {
         });
 
         test('returns "Your phone\'s battery is full." when battery is 100', () => {
-            expect(target.currentBatteryDescription).toBe('Your phone\'s battery is full.');
+            expect(target.currentBatteryDescription).toEqual('Your phone\'s battery is full.');
         });
 
         test('returns "Boop!" when battery is not full', () => {
             target.battery = 50;
-            expect(target.currentBatteryDescription).toBe('Boop!');
+            expect(target.currentBatteryDescription).toEqual('Boop!');
         });
     });
 
@@ -79,12 +79,12 @@ describe('Player', () => {
         });
 
         test('returns "You feel perfectly healthy" when health is 100', () => {
-            expect(target.currentHealthDescription).toBe('You feel perfectly healthy.');
+            expect(target.currentHealthDescription).toEqual('You feel perfectly healthy.');
         });
 
         test('returns "Welp." when health is not full', () => {
             target.health = 50;
-            expect(target.currentHealthDescription).toBe('Welp.');
+            expect(target.currentHealthDescription).toEqual('Welp.');
         });
     });
 
@@ -95,17 +95,17 @@ describe('Player', () => {
 
         test('does not modify on a zero input', () => {
             target.modifyHealth(0);
-            expect(target.health).toBe(100);
+            expect(target.health).toEqual(100);
         });
 
         test('adds expected amount on positive input', () =>  {
             target.modifyHealth(100);
-            expect(target.health).toBe(200);
+            expect(target.health).toEqual(200);
         });
 
         test('subtracts expected amount on negative input', () => {
             target.modifyHealth(-50);
-            expect(target.health).toBe(50);
+            expect(target.health).toEqual(50);
         });
 
         test('throws error on non-integer input', () => {
@@ -120,17 +120,17 @@ describe('Player', () => {
 
         test('does not modify on a zero input', () => {
             target.modifyBattery(0);
-            expect(target.battery).toBe(100);
+            expect(target.battery).toEqual(100);
         });
 
         test('adds expected amount on positive input', () =>  {
             target.modifyBattery(100);
-            expect(target.battery).toBe(200);
+            expect(target.battery).toEqual(200);
         });
 
         test('subtracts expected amount on negative input', () => {
             target.modifyBattery(-50);
-            expect(target.battery).toBe(50);
+            expect(target.battery).toEqual(50);
         });
 
         test('throws error on non-integer input', () => {
@@ -172,11 +172,11 @@ describe('Player', () => {
         });
 
         test('returns true for items in inventory', () => {
-            expect(target.hasItem('Skull')).toBe(true);
+            expect(target.hasItem('Skull')).toEqual(true);
         });
 
         test('throws error if player has no such item', () => {
-            expect(target.hasItem('Bad')).toBe(false);
+            expect(target.hasItem('Bad')).toEqual(false);
         });
     });
 
@@ -186,11 +186,11 @@ describe('Player', () => {
         });
 
         test('returns true for visited rooms', () => {
-            expect(target.hasVisited('Foyer')).toBe(true);
+            expect(target.hasVisited('Foyer')).toEqual(true);
         });
 
         test('throws false for unvisited rooms', () => {
-            expect(target.hasVisited('Other')).toBe(false);
+            expect(target.hasVisited('Other')).toEqual(false);
         });
     });
 
@@ -201,11 +201,11 @@ describe('Player', () => {
         });
 
         test('returns true for explored rooms', () => {
-            expect(target.hasExplored('Foyer')).toBe(true);
+            expect(target.hasExplored('Foyer')).toEqual(true);
         });
 
         test('throws false for unexplored rooms', () => {
-            expect(target.hasExplored('Other')).toBe(false);
+            expect(target.hasExplored('Other')).toEqual(false);
         });
     });
 
@@ -216,11 +216,11 @@ describe('Player', () => {
         });
 
         test('returns true for searched rooms', () => {
-            expect(target.hasSearched('Foyer')).toBe(true);
+            expect(target.hasSearched('Foyer')).toEqual(true);
         });
 
         test('throws false for unsearched rooms', () => {
-            expect(target.hasSearched('Other')).toBe(false);
+            expect(target.hasSearched('Other')).toEqual(false);
         });
     });
 
@@ -284,13 +284,13 @@ describe('Player', () => {
         test('moving to current location does not update anything', () => {
             // NOTE: we start at Foyer from constructor (default start loc)
             target.move('Foyer');
-            expect(target.loc).toBe('Foyer');
+            expect(target.loc).toEqual('Foyer');
             expect(target.map).toEqual(['Foyer']);
         });
 
         test('moving to new location updates loc & map vars', () => {
             target.move('Other');
-            expect(target.loc).toBe('Other');
+            expect(target.loc).toEqual('Other');
             expect(target.map).toEqual(['Foyer', 'Other']);
         });
     });

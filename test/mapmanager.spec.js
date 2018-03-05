@@ -39,11 +39,11 @@ describe('MapManager', () => {
         });
 
         test('returns true for an expected room', () => {
-            expect(target.exists('a')).toBe(true);
+            expect(target.exists('a')).toEqual(true);
         });
 
         test('returns false for an invalid room', () => {
-            expect(target.exists('abc')).toBe(false);
+            expect(target.exists('abc')).toEqual(false);
         });
     });
 
@@ -114,8 +114,8 @@ describe('MapManager', () => {
                 expect(target.items['a']).toHaveLength(0);
 
                 expect(target.used).not.toContain('b');
-                expect(target.adjacency['b']).toBe(undefined);
-                expect(target.items['b']).toBe(undefined);
+                expect(target.adjacency['b']).toEqual(undefined);
+                expect(target.items['b']).toEqual(undefined);
             }
         );
     });
@@ -285,7 +285,7 @@ describe('MapManager', () => {
                     if (item === 'a') {
                         target.adjacency[item].map(sub => expect(picked).toContain(sub));
                     } else {
-                        expect(target.adjacency[item].length).toBe(2);
+                        expect(target.adjacency[item].length).toEqual(2);
                         expect(target.adjacency[item]).toEqual(without(picked, item));
                     }
                 }
@@ -297,7 +297,7 @@ describe('MapManager', () => {
             target.build('a', 1);
 
             target.used.map(
-                item => expect(target.adjacency[item].length).toBe(0)
+                item => expect(target.adjacency[item].length).toEqual(0)
             );
         });
 
@@ -332,17 +332,17 @@ describe('MapManager', () => {
                 const used = target.used;
                 const adj = target.adjacency;
 
-                expect(target.used.length).toBe(5);
+                expect(target.used.length).toEqual(5);
                 used.map(
                     item => {
                         if (item === 'a') {
-                            expect(adj[item].length).toBe(2);
+                            expect(adj[item].length).toEqual(2);
                         } else {
                             if (contains(adj['a'], item)) {
-                                expect(adj[item].length).toBe(2);
+                                expect(adj[item].length).toEqual(2);
                                 expect(adj[item]).toContain('a');
                             } else {
-                                expect(adj[item].length).toBe(1);
+                                expect(adj[item].length).toEqual(1);
                             }
                         }
                     }

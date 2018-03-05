@@ -59,7 +59,7 @@ describe('Engine', () => {
             expect(GUIState).toHaveProperty('propLocation', 'A dark and indistinct room');
 
             expect(GUIState).toHaveProperty('propButtonGridActions');
-            expect(GUIState.propButtonGridActions.length).toBe(1);
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
 
             expect(GUIState).toHaveProperty('propButtonGridExits');
             expect(GUIState.propButtonGridExits.length).toBeGreaterThanOrEqual(1);
@@ -101,44 +101,44 @@ describe('Engine', () => {
         test('responds to PLAYER_MOVE', () => {
             target.playerAction('PLAYER_MOVE', {loc: 'Test'});
 
-            expect(target.player.move.mock.calls.length).toBe(1);
-            expect(target.player.move.mock.calls[0][0]).toBe('Test');
+            expect(target.player.move.mock.calls.length).toEqual(1);
+            expect(target.player.move.mock.calls[0][0]).toEqual('Test');
          });
 
         test('responds to PLAYER_EXPLORE', () => {
             target.playerAction('PLAYER_EXPLORE', {loc: 'Test'});
 
-            expect(target.player.updateExplored.mock.calls.length).toBe(1);
-            expect(target.player.updateExplored.mock.calls[0][0]).toBe('Test');
+            expect(target.player.updateExplored.mock.calls.length).toEqual(1);
+            expect(target.player.updateExplored.mock.calls[0][0]).toEqual('Test');
         });
 
         test('responds to PLAYER_SEARCH', () => {
             target.playerAction('PLAYER_SEARCH', {loc: 'Test'});
 
-            expect(target.player.updateSearched.mock.calls.length).toBe(1);
-            expect(target.player.updateSearched.mock.calls[0][0]).toBe('Test');
+            expect(target.player.updateSearched.mock.calls.length).toEqual(1);
+            expect(target.player.updateSearched.mock.calls[0][0]).toEqual('Test');
         });
 
         test('responds to PLAYER_PICKUP', () => {
             target.playerAction('PLAYER_PICKUP', {loc: 'Test', item: 'Skull'});
 
-            expect(target.player.pickupItem.mock.calls.length).toBe(1);
-            expect(target.player.pickupItem.mock.calls[0][0]).toBe('Skull');
+            expect(target.player.pickupItem.mock.calls.length).toEqual(1);
+            expect(target.player.pickupItem.mock.calls[0][0]).toEqual('Skull');
 
-            expect(target.mapManager.pickup.mock.calls.length).toBe(1);
-            expect(target.mapManager.pickup.mock.calls[0][0]).toBe('Skull');
-            expect(target.mapManager.pickup.mock.calls[0][1]).toBe('Test');
+            expect(target.mapManager.pickup.mock.calls.length).toEqual(1);
+            expect(target.mapManager.pickup.mock.calls[0][0]).toEqual('Skull');
+            expect(target.mapManager.pickup.mock.calls[0][1]).toEqual('Test');
         });
 
         test('responds to PLAYER_DROP', () => {
             target.playerAction('PLAYER_DROP', {loc: 'Test', item: 'Skull'});
 
-            expect(target.player.dropItem.mock.calls.length).toBe(1);
-            expect(target.player.dropItem.mock.calls[0][0]).toBe('Skull');
+            expect(target.player.dropItem.mock.calls.length).toEqual(1);
+            expect(target.player.dropItem.mock.calls[0][0]).toEqual('Skull');
 
-            expect(target.mapManager.place.mock.calls.length).toBe(1);
-            expect(target.mapManager.place.mock.calls[0][0]).toBe('Skull');
-            expect(target.mapManager.place.mock.calls[0][1]).toBe('Test');
+            expect(target.mapManager.place.mock.calls.length).toEqual(1);
+            expect(target.mapManager.place.mock.calls[0][0]).toEqual('Skull');
+            expect(target.mapManager.place.mock.calls[0][1]).toEqual('Test');
         });
     });
 });

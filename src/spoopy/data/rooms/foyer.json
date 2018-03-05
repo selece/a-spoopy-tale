@@ -12,6 +12,10 @@
         {
             "text": "It isn\"t hard for you to imagine the former grandeur of the decaying foyer.",
             "conditions": {}
+        },
+        {
+            "text": "!!! CONDITIONAL TEST !!!",
+            "conditions": {"hasItem": "Skull"}
         }
     ],
     "tags": {}

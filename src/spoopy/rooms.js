@@ -88,16 +88,21 @@ export default class RoomDB {
     getDescription(search, conditions={}) {
         let target = findWhere(this.rooms, {name: search});
         if (target !== undefined) {
-            return sample(
-                filter(
-                    target.descriptions,
-                    i => isEqual(i.conditions, conditions)
-                )
-            ).text || 'Error! Could not load valid description.';
-        
+            let filteredConditions = chain(target.descriptions)
+                .filter(desc => isEqual(desc.conditions, conditions))
+                .value();
+            
+            if (filteredConditions.length > 0) {
+                return sample(filteredConditions).text;
+            } else {
+                return chain(target.descriptions)
+                    .filter(desc => isEqual(desc.conditions, {}))
+                    .sample()
+                    .value()
+                    .text;
+            }     
         } else {
-            console.error('getDescription():', search, 'not found in', this.rooms);
-            return 'Error! No valid descriptions - check conditions?';
+            throw new Error(`Could not find room: ${search}.`);
         }
     }
 }

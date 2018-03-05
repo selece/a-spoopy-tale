@@ -27,17 +27,17 @@ describe('ItemDB', () => {
 
         test('returns a random item using exclusion list', () => {
             const res = target.random_item(['Skull']);
-            expect(res.name).toBe('Tome');
+            expect(res.name).toEqual('Tome');
         });
     });
 
     describe('exists()', () => {
         test('returns true for exisiting items', () => {
-            expect(target.exists('Skull')).toBe(true);
+            expect(target.exists('Skull')).toEqual(true);
         });
 
         test('returns false for non-existent items', () => {
-            expect(target.exists('Bad')).toBe(false);
+            expect(target.exists('Bad')).toEqual(false);
         });
     });
 

@@ -13,10 +13,10 @@ describe('Event', () => {
         });
 
         test('inits all parameters to expected values', () => {
-            expect(target.initial).toBe(timer);
-            expect(target.onDone).toBe(spy);
-            expect(target.repeats).toBe(false);
-            expect(target.paused).toBe(false);
+            expect(target.initial).toEqual(timer);
+            expect(target.onDone).toEqual(spy);
+            expect(target.repeats).toEqual(false);
+            expect(target.paused).toEqual(false);
         });
     });
 
@@ -25,7 +25,7 @@ describe('Event', () => {
             const current = target.paused;
             target.toggle();
 
-            expect(target.paused).toBe(!current);
+            expect(target.paused).toEqual(!current);
         });
     });
 
@@ -61,7 +61,7 @@ describe('Event', () => {
         test('spy is only called after timer <= 0', () => {
             jest.runTimersToTime(5000);
 
-            expect(target.timer).toBe(0);
+            expect(target.timer).toEqual(0);
             expect(spy).toHaveBeenCalledTimes(1);
         });
 
@@ -70,19 +70,19 @@ describe('Event', () => {
             const local = new Event(5, localSpy, true);
 
             // initial state
-            expect(local.timer).toBe(5);
+            expect(local.timer).toEqual(5);
             expect(localSpy).toHaveBeenCalledTimes(0);
 
             // t=5000ms 
             jest.runTimersToTime(5000);
-            expect(local.timer).toBe(5);
+            expect(local.timer).toEqual(5);
             expect(localSpy).toHaveBeenCalledTimes(1);
 
             // t=10000ms
             // NOTE: 3 times due to previous jest.runTimersToTime(5000) in previous test?
             // FIXME: isolate test states per test so this doesn't happen!
             jest.runTimersToTime(10000);
-            expect(local.timer).toBe(5);
+            expect(local.timer).toEqual(5);
             expect(localSpy).toHaveBeenCalledTimes(3);
         });
     });

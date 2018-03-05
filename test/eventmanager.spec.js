@@ -25,12 +25,12 @@ describe('EventManager', () => {
 
     describe('exists', () => {
         test('returns false when event is not found', () => {
-            expect(target.exists('fake')).toBe(false);
+            expect(target.exists('fake')).toEqual(false);
         });
 
         test('returns true when event is found', () => {
             target.add([props]);
-            expect(target.exists('Test')).toBe(true);
+            expect(target.exists('Test')).toEqual(true);
             target.remove('Test');
         });
     });
