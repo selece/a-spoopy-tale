@@ -4,6 +4,8 @@ export default class Loader {
         this.files = files;
         this.loaded = [];
 
+        // NOTE: currently, path is relative to loader.js location
+        // TODO: make path absolute rather than relative?
         for (let file of files) {
             this.loaded.push(
                 require(`${this.path}${file}`)
