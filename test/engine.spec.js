@@ -6,6 +6,10 @@ import RoomDB from '../src/spoopy/rooms';
 import EventManager from '../src/spoopy/eventmanager';
 import MapManager from '../src/spoopy/mapmanager';
 
+import { toJS } from 'mobx';
+
+jest.useFakeTimers();
+
 describe('Engine', () => {
     let target;
     const params = {
@@ -21,6 +25,27 @@ describe('Engine', () => {
             generations: 1,
         },
     };
+
+    const FOYER_LOCATION = 'Foyer';
+    const FOYER_DESCRIPTIONS = [
+        "A musty smell fills your nostrils as you survey the dust-covered entranceway.",
+        "The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.",
+        "It isn\"t hard for you to imagine the former grandeur of the decaying foyer.",
+    ];
+
+    const UNEXPLORED_LOCATION = 'A dark and indistinct room';
+    const UNEXPLORED_DESCRIPTION = 'You can\'t really make out too much standing here.';
+    const HEALTH_DESCRIPTION = 'You feel perfectly healthy.';
+    const INVENTORY_DESCRIPTION = 'Your pockets are quite empty.';
+    const BATTERY_DESCRIPTION = 'Your phone\'s battery is full.';
+
+    const INVENTORY_HOLDING_DESCRIPTION = 'You are currently holding: a Skull.';
+
+    const ACTION_EXPLORE_TEXT = 'Take a look around.';
+    const ACTION_SEARCH_TEXT = 'Search the room.';
+    const ACTION_NOTHING = 'There\'s nothing more here to find.';
+    const ACTION_CLASSES = expect.objectContaining(['button-small', 'cursor-pointer']);
+    const ACTION_CLASSES_NOCLICK = expect.objectContaining(['button-small']);
 
     describe('constructor', () => {
         beforeEach(() => {
@@ -52,11 +77,14 @@ describe('Engine', () => {
             target = new Engine(params);
         });
 
+        // NOTE: propClock is not yet implemented
+        // TODO: once propClock is implemented, check it in tests
+
         test('initial state is correct', () => {
             const GUIState = target.GUIState;
 
-            expect(GUIState).toHaveProperty('propDescription', 'You can\'t really make out too much standing here.');
-            expect(GUIState).toHaveProperty('propLocation', 'A dark and indistinct room');
+            expect(GUIState).toHaveProperty('propDescription', UNEXPLORED_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propLocation', UNEXPLORED_LOCATION);
 
             expect(GUIState).toHaveProperty('propButtonGridActions');
             expect(GUIState.propButtonGridActions.length).toEqual(1);
@@ -64,13 +92,194 @@ describe('Engine', () => {
             expect(GUIState).toHaveProperty('propButtonGridExits');
             expect(GUIState.propButtonGridExits.length).toBeGreaterThanOrEqual(1);
 
-            expect(GUIState).toHaveProperty('propHealth', 'You feel perfectly healthy.');
-            expect(GUIState).toHaveProperty('propInventory', 'Your pockets are quite empty.');
-            expect(GUIState).toHaveProperty('propBattery', 'Your phone\'s battery is full.');
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('state is correct after PLAYER_MOVE at fresh location', () => {
+            // explore; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // take the first exit
+            target.GUIState.propButtonGridExits[0].onClickHandler();
+
+            const GUIState = target.GUIState;
+
+            expect(GUIState).toHaveProperty('propDescription', UNEXPLORED_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propLocation', UNEXPLORED_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_EXPLORE_TEXT);
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('state is correct after PLAYER_MOVE at explored location', () => {
+            // explore; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // take the first exit
+            target.GUIState.propButtonGridExits[0].onClickHandler();
+
+            // explore at new location; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // move back to original location
+            target.GUIState.propButtonGridExits[0].onClickHandler();
+
+            const GUIState = target.GUIState;
+
+            expect(FOYER_DESCRIPTIONS).toContain(GUIState.propDescription);
+            expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_SEARCH_TEXT);
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('state is correct after PLAYER_MOVE at searched location', () => {
+            // explore; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // search
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // take the first exit
+            target.GUIState.propButtonGridExits[0].onClickHandler();
+
+            // explore at new location; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // move back to original location
+            target.GUIState.propButtonGridExits[0].onClickHandler();
+
+            const GUIState = target.GUIState;
+
+            expect(FOYER_DESCRIPTIONS).toContain(GUIState.propDescription);
+            expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_NOTHING);
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES_NOCLICK);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('state is correct after PLAYER_EXPLORE at fresh location', () => {
+            // explore; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            const GUIState = target.GUIState;
+
+            expect(FOYER_DESCRIPTIONS).toContain(GUIState.propDescription);
+            expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_SEARCH_TEXT);
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('state is correct after PLAYER_SEARCH at explored location', () => {
+            // explore; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // search
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            const GUIState = target.GUIState;
+
+            expect(FOYER_DESCRIPTIONS).toContain(GUIState.propDescription);
+            expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_NOTHING);
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES_NOCLICK);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('state is correct with items in list, displays after search', () => {
+            target.mapManager.place(
+                target.itemDB.item('Skull'),
+                'Foyer'
+            );
+            target.updateGUIState();
             
-            // note propClock is not yet implemented - we're not checking much here
-            // TODO: once propClock is implemented, rewrite this test
-            expect(GUIState).toHaveProperty('propClock', undefined);
+            // explore; can't see exits until we explore
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // search
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            let GUIState = toJS(target.GUIState);
+
+            expect(FOYER_DESCRIPTIONS).toContain(GUIState.propDescription);
+            expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual('Skull');
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+
+            // pick up the item
+            target.GUIState.propButtonGridActions[0].onClickHandler();
+
+            // recheck GUIState
+            GUIState = target.GUIState;
+
+            expect(FOYER_DESCRIPTIONS).toContain(GUIState.propDescription);
+            expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
+
+            expect(GUIState).toHaveProperty('propButtonGridActions');
+            expect(GUIState.propButtonGridActions.length).toEqual(1);
+
+            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_NOTHING);
+            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES_NOCLICK);
+
+            expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propInventory', INVENTORY_HOLDING_DESCRIPTION);
+            expect(GUIState).toHaveProperty('propBattery', BATTERY_DESCRIPTION);
+        });
+
+        test('corner case throws error', () => {
+            // replace functions with forced bad return value mocks
+            target.player.hasExplored = jest.fn().mockReturnValue(false);
+            target.player.hasSearched = jest.fn().mockReturnValue(true);
+
+            expect(
+                () => target.updateGUIState()
+            ).toThrowError(/Unexpected/);
         });
     });
 
@@ -139,6 +348,22 @@ describe('Engine', () => {
             expect(target.mapManager.place.mock.calls.length).toEqual(1);
             expect(target.mapManager.place.mock.calls[0][0]).toEqual('Skull');
             expect(target.mapManager.place.mock.calls[0][1]).toEqual('Test');
+        });
+    });
+
+    describe('events', () => {
+        beforeEach(() => {
+            target = new Engine(params);
+        });
+
+        test('game ends at 60 minutes', () => {
+            // replace endGame() with mock function to test trigger
+            target.endGame = jest.fn();
+
+            // skip time to 60m
+            jest.runTimersToTime(60 * 60 * 1000);
+
+            expect(target.endGame).toHaveBeenCalled();
         });
     });
 });

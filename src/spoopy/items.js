@@ -13,6 +13,17 @@ export default class ItemDB {
         ).res;
     }
 
+    item(search) {
+        if (this.exists(search)) {
+            return chain(this.items)
+                .filter(item => item.name === search)
+                .first()
+                .value();
+        } else {
+            throw new Error(`Item does not exist: ${search}.`);
+        }
+    }
+
     get item_names() {
         return pluck(this.items, 'name');
     }

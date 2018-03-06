@@ -2,6 +2,45 @@ import Player from '../src/spoopy/player';
 
 describe('Player', () => {
     let target;
+    const skull = {
+        'name': 'Skull',
+        'descriptions': [
+            {
+                'text': 'The hollow eyes and broken teeth leer at you with an oddly jovial grin.',
+                'conditions': {}
+            },
+            {
+                'text': '!!! CONDITIONAL TEST !!!',
+                'conditions': {'atLoc': 'Foyer'}
+            }
+        ],
+        'actions': {},
+        'tags': {}
+    };
+
+    const apple = {
+        'name': 'Apple',
+        'descriptions': [
+            {
+                'text': 'Shiny and red.',
+                'conditions': {}
+            },
+        ],
+        'actions': {},
+        'tags': {}
+    };
+
+    const pop = {
+        'name': 'Pop',
+        'descriptions': [
+            {
+                'text': 'Fizzy.',
+                'conditions': {}
+            },
+        ],
+        'actions': {},
+        'tags': {}
+    };
 
     describe('constructor', () => {
         test('takes no arguments, returns player with proper init values', () => {
@@ -27,31 +66,31 @@ describe('Player', () => {
         });
 
         test('returns singleton list for ["Skull"]', () => {
-            target.pickupItem('Skull');
+            target.pickupItem(skull);
             expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: a Skull.'
             );
         });
 
         test('returns singleton list for ["Apple"]', () => {
-            target.pickupItem('Apple');
+            target.pickupItem(apple);
             expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple.'
             );
         });
 
         test('returns multiple item list for ["Apple", "Skull"]', () => {
-            target.pickupItem('Apple');
-            target.pickupItem('Skull');
+            target.pickupItem(apple);
+            target.pickupItem(skull);
             expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple and a Skull.'
             );
         });
 
         test('returns multiple item list for ["Apple", "Skull", "Pop"]', () => {
-            target.pickupItem('Apple');
-            target.pickupItem('Skull');
-            target.pickupItem('Pop');
+            target.pickupItem(apple);
+            target.pickupItem(skull);
+            target.pickupItem(pop);
             expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple, a Skull, and a Pop.'
             );

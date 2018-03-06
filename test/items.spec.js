@@ -74,4 +74,39 @@ describe('ItemDB', () => {
             ).toThrowError(/Item not found/);
         });
     });
+
+    describe('item()', () => {
+        test('returns a full JS object for valid item', () => {
+            const res = target.item('Skull');
+            
+            expect(res.name).toEqual('Skull');
+
+            expect(res.descriptions).toContainEqual(
+                expect.objectContaining(
+                    {
+                        text: 'The hollow eyes and broken teeth leer at you with an oddly jovial grin.',
+                        conditions: {}
+                    }
+                )
+            );
+
+            expect(res.descriptions).toContainEqual(
+                expect.objectContaining(
+                    {
+                        text: '!!! CONDITIONAL TEST !!!',
+                        conditions: {atLoc: 'Foyer'}
+                    }
+                )
+            );
+
+            expect(res.actions).toEqual({});
+            expect(res.tags).toEqual({});
+        });
+
+        test('throws error if item does not exist', () => {
+            expect(
+                () => target.item('Bad')
+            ).toThrowError(/Item does not exist/);
+        });
+    });
 });
