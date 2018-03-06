@@ -77,7 +77,7 @@ export default class Engine {
     }
 
     endGame() {
-        console.log('YOU LOST! :(');
+        // TODO: implement endgame sequence, update GUI etc.
     }
 
     updateGUIState() {
@@ -139,7 +139,7 @@ export default class Engine {
                 }];
 
         } else {
-            console.error(`Unexpected exploration/search case! - Error occured at ${here} with values ${room}.`);
+            throw new Error(`Unexpected exploration/search case! @ ${here} w/ ${room}.`);
         }
 
         this.GUIState.propLocation = this.player.hasExplored(status.loc.value) ?

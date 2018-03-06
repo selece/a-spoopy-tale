@@ -64,11 +64,14 @@ export default class Player {
                 (item, index, list) => {
                     
                     // if the item starts with a vowel, prefix 'an', otherwise use 'a'
-                    let indefinite_article = contains(['a', 'e', 'i', 'o', 'u'], item.substring(0, 1).toLowerCase()) ? 'an' : 'a';
+                    let indefinite_article = contains(
+                        ['a', 'e', 'i', 'o', 'u'],
+                        String(item.name).substring(0, 1).toLowerCase()
+                    ) ? 'an' : 'a';
 
                     // if the list is exactly one item
                     if (list.length === 1) {
-                        return `${indefinite_article} ${item}`;
+                        return `${indefinite_article} ${item.name}`;
 
                     // otherwise we need to build a comma-separated list
                     } else {
@@ -76,16 +79,16 @@ export default class Player {
                         // if we're at the end of the list
                         // return 'and item name', e.g. 'and Skull'
                         if (index === list.length - 1) {
-                            return `and ${indefinite_article} ${item}`;
+                            return `and ${indefinite_article} ${item.name}`;
                         
                         } else {
                             // if the list is only two items, don't add the oxford comma
                             if (list.length == 2) {
-                                return `${indefinite_article} ${item} `;
+                                return `${indefinite_article} ${item.name} `;
 
                             // otherwise, add the oxford comma
                             } else {
-                                return `${indefinite_article} ${item}, `;
+                                return `${indefinite_article} ${item.name}, `;
                             }
                         }
                     }
