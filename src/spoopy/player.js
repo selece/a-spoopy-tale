@@ -116,7 +116,7 @@ export default class Player {
     get currentInventoryDescription() {
         // if the inventory is empty, return generic 'empty' response
         // TODO: have list of random phrases to randomly select from
-        if (this.inventory.length === 0) {
+        if (!this.inventory.length) {
             return 'Your pockets are quite empty.';
         
         // otherwise, build the response based on what we have right now

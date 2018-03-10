@@ -84,13 +84,14 @@ export default class Engine {
 
     updateGUIState() {
         // generate props for button grids (exits and actions)
-        let propButtonGridActions, propButtonGridExits;
         const status = this.player.status;
         const here = status.loc.value;
         const room = this.mapManager.find(here);
-
+        
+        let propButtonGridActions, propButtonGridExits;
+        
         // completely new room (not explored, not searched)
-        if (!this.player.hasExplored(here) && !this.player.hasSearched(here)) {
+        if (!this.player.query({hasExplored: here}) && !this.player.query({hasSearched: here})) {
             propButtonGridExits = [{}];
 
             propButtonGridActions = [{
@@ -100,11 +101,11 @@ export default class Engine {
             }];
 
         // explored room, but NOT searched (should see exits, but no items)
-        } else if (this.player.hasExplored(here) && !this.player.hasSearched(here)) {
+        } else if (this.player.query({hasExplored: here}) && !this.player.query({hasSearched: here})) {
             propButtonGridExits = room.adjacency.map(
                 exit => ({
-                    display: this.player.hasVisited(exit) ? exit : this.roomDB.random_unexplored,
-                    classes: this.player.hasVisited(exit) ? ['button-large', 'cursor-pointer'] : ['button-large', 'cursor-pointer', 'text-italics'],
+                    display: this.player.query({hasVisited: exit}) ? exit : this.roomDB.random_unexplored,
+                    classes: this.player.query({hasVisited: exit}) ? ['button-large', 'cursor-pointer'] : ['button-large', 'cursor-pointer', 'text-italics'],
                     onClickHandler: () => this.playerAction('PLAYER_MOVE', {loc: exit}),
                 })
             );
@@ -117,7 +118,7 @@ export default class Engine {
 
         // explored room and searched room - should display items and exits
         // a bit of repeat code for propButtonGridExits - maybe refactor?
-        } else if (this.player.hasExplored(here) && this.player.hasSearched(here)) {
+        } else if (this.player.query({hasExplored: here}) && this.player.query({hasSearched: here})) {
             propButtonGridExits = room.adjacency.map(
                 exit => ({
                     display: this.player.hasVisited(exit) ? exit : this.roomDB.random_unexplored,
@@ -126,7 +127,7 @@ export default class Engine {
                 })
             );
 
-            propButtonGridActions = room.items.length > 0 ?
+            propButtonGridActions = room.items.length ?
                 room.items.map(
                     item => ({
                         display: item.name,
@@ -144,10 +145,10 @@ export default class Engine {
             throw new Error(`Unexpected exploration/search case! @ ${here} w/ ${room}.`);
         }
 
-        this.GUIState.propLocation = this.player.hasExplored(status.loc.value) ?
+        this.GUIState.propLocation = this.player.query({hasExplored: status.loc.value}) ?
             this.player.status.loc.value : 'A dark and indistinct room';
 
-        this.GUIState.propDescription = this.player.hasExplored(status.loc.value) ?
+        this.GUIState.propDescription = this.player.query({hasExplored: status.loc.value}) ?
             this.roomDB.getDescription(status.loc.value) : 'You can\'t really make out too much standing here.';
 
         this.GUIState.propButtonGridActions = propButtonGridActions;

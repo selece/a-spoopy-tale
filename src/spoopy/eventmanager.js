@@ -1,3 +1,5 @@
+'use strict';
+
 import { contains } from 'underscore';
 
 import Event from './event';

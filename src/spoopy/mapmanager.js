@@ -1,3 +1,5 @@
+'use strict';
+
 import { filter, contains, sample, range, random, without } from 'underscore';
 
 export default class MapManager {
@@ -45,16 +47,18 @@ export default class MapManager {
     }
 
     connect(from, to, unidirectional = false) {
-        if (from === undefined || to === undefined) {
+        if (!from || !to ) {
             throw new Error(`Cannot connect ${from} and ${to}.`);
         }
 
-        if (this.adjacency[from] === undefined || this.adjacency[to] === undefined) {
+        if (!this.adjacency[from] || !this.adjacency[to]) {
             throw new Error(`Cannot connect ${from} and ${to}, one or both are undefined in adjacency.`);
         }
 
         this.adjacency[from].push(to);
-        if (!unidirectional) { this.adjacency[to].push(from); }
+        if (!unidirectional) { 
+            this.adjacency[to].push(from);
+        }
 
         // NOTE: do we have to check if the adjacecny contains the node being added?
         // if (!contains(this.adjacency[from], to)) { this.adjacency[from].push(to); }
@@ -105,7 +109,7 @@ export default class MapManager {
         range(branches).forEach(branch => {
             const picks = this.random();
 
-            if (picks !== undefined) {
+            if (picks) {
                 picks.map(room => {
                     this.add(room);
                     this.connect(at, room);
@@ -116,7 +120,7 @@ export default class MapManager {
         // if we're doing leaf connetions...
         // NOTE: we have to set params here, not at the top because
         // this will be AFTER the used/adjacency lists are updated
-        if (connects !== 0) {
+        if (connects) {
             const params = {
                 available: this.used,
                 operator: (room) => this.adjacency[room].length === 1, 
@@ -125,7 +129,7 @@ export default class MapManager {
             range(connects).forEach(room => {
                 const leaves = this.random(2, params);
 
-                if (leaves !== undefined) {
+                if (leaves) {
                     const [a, b] = leaves;
                     this.connect(a, b);
                 }

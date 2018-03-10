@@ -1,4 +1,13 @@
-import {findWhere, chain, sample, filter, isEqual, pluck} from 'underscore';
+'use strict';
+
+import {
+    findWhere,
+    chain,
+    sample,
+    filter,
+    isEqual,
+    pluck
+} from 'underscore';
 
 import Loader from './loader';
 export default class RoomDB {
@@ -67,14 +76,16 @@ export default class RoomDB {
             'You see the threshold of another room.',
             'Another room adjoins this one.',
             'An archway leads to another room.',
-            'A door leads to another of the house\'s rooms.', 
+            'A door leads to another of the house\'s rooms.',
             'The doorway is shadowed.',
             'You cannot see which room lies in this direction.',
         ];
     }
 
     exists(search) {
-        return findWhere(this.rooms, {name: search}) !== undefined;
+        return findWhere(this.rooms, {
+            name: search
+        }) !== undefined;
     }
 
     get random_unexplored() {
@@ -82,17 +93,19 @@ export default class RoomDB {
     }
 
     get room_names() {
-       return pluck(this.rooms, 'name');
+        return pluck(this.rooms, 'name');
     }
 
-    getDescription(search, conditions={}) {
-        const target = findWhere(this.rooms, {name: search});
-        if (target !== undefined) {
+    getDescription(search, conditions = {}) {
+        const target = findWhere(this.rooms, {
+            name: search
+        });
+        if (target) {
             const filteredConditions = chain(target.descriptions)
                 .filter(desc => isEqual(desc.conditions, conditions))
                 .value();
-            
-            if (filteredConditions.length > 0) {
+
+            if (filteredConditions.length) {
                 return sample(filteredConditions).text;
             } else {
                 return chain(target.descriptions)
@@ -100,7 +113,7 @@ export default class RoomDB {
                     .sample()
                     .value()
                     .text;
-            }     
+            }
         } else {
             throw new Error(`Could not find room: ${search}.`);
         }

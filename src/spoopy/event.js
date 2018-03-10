@@ -1,3 +1,5 @@
+'use strict';
+
 export default class Event {
     constructor(timer, onDone, repeats=false, startPaused=false) {
         this.initial = timer;
