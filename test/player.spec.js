@@ -11,7 +11,7 @@ describe('Player', () => {
             },
             {
                 'text': '!!! CONDITIONAL TEST !!!',
-                'conditions': { 'atLoc': 'Foyer' }
+                'conditions': {'atLoc': 'Foyer'}
             }
         ],
         'actions': {},
@@ -82,6 +82,7 @@ describe('Player', () => {
         test('returns multiple item list for ["Apple", "Skull"]', () => {
             target.pickup(apple);
             target.pickup(skull);
+
             expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple and a Skull.'
             );
@@ -91,6 +92,7 @@ describe('Player', () => {
             target.pickup(apple);
             target.pickup(skull);
             target.pickup(pop);
+
             expect(target.currentInventoryDescription).toEqual(
                 'You are currently holding: an Apple, a Skull, and a Pop.'
             );
