@@ -1,3 +1,5 @@
+'use strict';
+
 import { filter, contains, sample, chain, range, isFunction, random, without, keys } from 'underscore';
 import { computed, action, observable } from 'mobx';
 
@@ -54,20 +56,20 @@ export default class Engine {
             },
 
             'PLAYER_EXPLORE': arg => {
-                this.player.updateExplored(arg.loc);
+                this.player.explore(arg.loc);
             },
 
             'PLAYER_SEARCH': arg => {
-                this.player.updateSearched(arg.loc);
+                this.player.search(arg.loc);
             },
 
             'PLAYER_PICKUP': arg => {
-                this.player.pickupItem(arg.item);
+                this.player.pickup(arg.item);
                 this.mapManager.pickup(arg.item, arg.loc);
             },
 
             'PLAYER_DROP': arg => {
-                this.player.dropItem(arg.item);
+                this.player.drop(arg.item);
                 this.mapManager.place(arg.item, arg.loc);
             },
         };

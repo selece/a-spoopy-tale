@@ -1,6 +1,6 @@
 'use strict';
 
-import {contains, without} from 'underscore';
+import {pluck, contains, without, keys} from 'underscore';
 
 export default class Player {
     constructor() {
@@ -13,6 +13,53 @@ export default class Player {
         this.battery = 100;
 
         this.updateMap(this.loc);
+
+        // condition resolver bindings
+        this._conditionMap = {
+            hasItem: arg => {
+                return contains(pluck(this.inventory, 'name'), arg);
+            },
+
+            atLocation: arg => {
+                return this.loc === arg;
+            },
+
+            hasSearched: arg => {
+                return this.hasSearched(arg);
+            },
+
+            hasExplored: arg => {
+                return this.hasExplored(arg);
+            },
+
+            hasVisited: arg => {
+                return this.hasVisited(arg);
+            },
+
+            hasHealth: arg => {
+                return this.health === arg;
+            },
+
+            hasHealthGreaterThan: arg => {
+                return this.health >= arg;
+            },
+
+            hasHealthLessThan: arg => {
+                return this.health <= arg;
+            },
+
+            hasBattery: arg => {
+                return this.battery === arg;
+            },
+
+            hasBatteryGreaterThan: arg => {
+                return this.battery >= arg;
+            },
+
+            hasBatteryLessThan: arg => {
+                return this.battery <= arg;
+            },
+        }
     }
 
     get status() {
@@ -47,7 +94,23 @@ export default class Player {
             loc: {
                 value: this.loc,
             },
+
+            conditions: this.currentConditions,
         };
+    }
+
+    get currentConditions() {
+        let conditions = [];
+
+        // current location condition
+        conditions.push({atLoc: this.loc});
+
+        // current items in inventory
+        this.inventory.forEach(item => {
+            conditions.push({hasItem: item.name});
+        });
+
+        return conditions;
     }
 
     get currentInventoryDescription() {
@@ -134,11 +197,11 @@ export default class Player {
         return this.battery;
     }
 
-    pickupItem(item) {
+    pickup(item) {
         this.inventory.push(item);
     }
 
-    dropItem(item) {
+    drop(item) {
         if (this.hasItem(item)) {
             this.inventory = without(this.inventory, item);
         
@@ -169,13 +232,13 @@ export default class Player {
         }
     }
 
-    updateExplored(loc) {
+    explore(loc) {
         if (!this.hasExplored(loc)) {
             this.explored.push(loc);
         }
     }
 
-    updateSearched(loc) {
+    search(loc) {
         if (!this.hasSearched(loc)) {
             this.searched.push(loc);
         }
@@ -184,5 +247,21 @@ export default class Player {
     move(loc) {
         this.updateMap(loc);
         this.loc = loc;
+    }
+
+    query(arg) {
+        let res = [];
+
+        Object.entries(arg).forEach(set => {
+            let [key, val] = set;
+            
+            if (!contains(keys(this._conditionMap), key)) {
+                throw new Error(`Invalid condition: ${key}.`);
+            }
+
+            res.push(this._conditionMap[key](val));
+        });
+
+        return res.every(elem => elem === true);
     }
 }

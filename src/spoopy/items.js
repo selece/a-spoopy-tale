@@ -1,3 +1,5 @@
+'use strict';
+
 import {findWhere, sample, filter, isEqual, pluck, chain, contains} from 'underscore';
 
 import Loader from './loader';

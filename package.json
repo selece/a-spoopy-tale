@@ -7,7 +7,7 @@
     "build": "webpack",
     "dev-server": "webpack-dev-server",
     "test": "jest test --coverage --verbose",
-    "ci": "jest test --coverage --watch"
+    "watch": "jest test --coverage --watch"
   },
   "author": "Jonathan Liaw",
   "license": "ISC",

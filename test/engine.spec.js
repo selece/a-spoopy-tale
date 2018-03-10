@@ -287,10 +287,10 @@ describe('Engine', () => {
 
             // replace playerAction function targets with Jest mocks
             target.player.move = jest.fn();
-            target.player.updateExplored = jest.fn();
-            target.player.updateSearched = jest.fn();
-            target.player.pickupItem = jest.fn();
-            target.player.dropItem = jest.fn();
+            target.player.explore = jest.fn();
+            target.player.search = jest.fn();
+            target.player.pickup = jest.fn();
+            target.player.drop = jest.fn();
             target.mapManager.pickup = jest.fn();
             target.mapManager.place = jest.fn();
         });
@@ -315,22 +315,22 @@ describe('Engine', () => {
         test('responds to PLAYER_EXPLORE', () => {
             target.playerAction('PLAYER_EXPLORE', {loc: 'Test'});
 
-            expect(target.player.updateExplored.mock.calls.length).toEqual(1);
-            expect(target.player.updateExplored.mock.calls[0][0]).toEqual('Test');
+            expect(target.player.explore.mock.calls.length).toEqual(1);
+            expect(target.player.explore.mock.calls[0][0]).toEqual('Test');
         });
 
         test('responds to PLAYER_SEARCH', () => {
             target.playerAction('PLAYER_SEARCH', {loc: 'Test'});
 
-            expect(target.player.updateSearched.mock.calls.length).toEqual(1);
-            expect(target.player.updateSearched.mock.calls[0][0]).toEqual('Test');
+            expect(target.player.search.mock.calls.length).toEqual(1);
+            expect(target.player.search.mock.calls[0][0]).toEqual('Test');
         });
 
         test('responds to PLAYER_PICKUP', () => {
             target.playerAction('PLAYER_PICKUP', {loc: 'Test', item: 'Skull'});
 
-            expect(target.player.pickupItem.mock.calls.length).toEqual(1);
-            expect(target.player.pickupItem.mock.calls[0][0]).toEqual('Skull');
+            expect(target.player.pickup.mock.calls.length).toEqual(1);
+            expect(target.player.pickup.mock.calls[0][0]).toEqual('Skull');
 
             expect(target.mapManager.pickup.mock.calls.length).toEqual(1);
             expect(target.mapManager.pickup.mock.calls[0][0]).toEqual('Skull');
@@ -340,8 +340,8 @@ describe('Engine', () => {
         test('responds to PLAYER_DROP', () => {
             target.playerAction('PLAYER_DROP', {loc: 'Test', item: 'Skull'});
 
-            expect(target.player.dropItem.mock.calls.length).toEqual(1);
-            expect(target.player.dropItem.mock.calls[0][0]).toEqual('Skull');
+            expect(target.player.drop.mock.calls.length).toEqual(1);
+            expect(target.player.drop.mock.calls[0][0]).toEqual('Skull');
 
             expect(target.mapManager.place.mock.calls.length).toEqual(1);
             expect(target.mapManager.place.mock.calls[0][0]).toEqual('Skull');
