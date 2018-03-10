@@ -85,9 +85,9 @@ export default class Engine {
     updateGUIState() {
         // generate props for button grids (exits and actions)
         let propButtonGridActions, propButtonGridExits;
-        let status = this.player.status;
-        let here = status.loc.value;
-        let room = this.mapManager.find(here);
+        const status = this.player.status;
+        const here = status.loc.value;
+        const room = this.mapManager.find(here);
 
         // completely new room (not explored, not searched)
         if (!this.player.hasExplored(here) && !this.player.hasSearched(here)) {

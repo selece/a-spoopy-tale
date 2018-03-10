@@ -7,15 +7,15 @@ export default class EventManager {
         this.events = {};
     }
 
-    add(evs) {
-        for (let ev of evs) {
+    add(events) {
+        events.forEach(ev => {
             this.events[ev.name] = new Event(
                 ev.timer,
                 ev.trigger,
                 ev.repeats,
                 ev.startPaused,
-            );
-        }
+            )
+        });
     }
 
     remove(ev) {

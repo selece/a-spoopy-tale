@@ -100,7 +100,7 @@ export default class Player {
     }
 
     get currentConditions() {
-        let conditions = [];
+        const conditions = [];
 
         // current location condition
         conditions.push({atLoc: this.loc});
@@ -127,7 +127,7 @@ export default class Player {
                 (item, index, list) => {
                     
                     // if the item starts with a vowel, prefix 'an', otherwise use 'a'
-                    let indefinite_article = contains(
+                    const indefinite_article = contains(
                         ['a', 'e', 'i', 'o', 'u'],
                         String(item.name).substring(0, 1).toLowerCase()
                     ) ? 'an' : 'a';
@@ -250,10 +250,10 @@ export default class Player {
     }
 
     query(arg) {
-        let res = [];
+        const res = [];
 
         Object.entries(arg).forEach(set => {
-            let [key, val] = set;
+            const [key, val] = set;
             
             if (!contains(keys(this._conditionMap), key)) {
                 throw new Error(`Invalid condition: ${key}.`);

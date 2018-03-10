@@ -8,7 +8,7 @@ import Engine from './spoopy/engine';
 
 import './globals.scss';
 
-let engine = new Engine({
+const engine = new Engine({
     start: {
         loc: 'Foyer',
         min_branches: 3,

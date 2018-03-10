@@ -82,7 +82,7 @@ export default class MapManager {
     }
 
     random(count = 1, params = undefined) {
-        let filtered = (params === undefined) ?
+        const filtered = (params === undefined) ?
 
             // if no params provided, use current manager lists
             filter(this.available, room => !contains(this.used, room)) :
@@ -102,36 +102,34 @@ export default class MapManager {
             throw new Error(`Can't build at ${at} - doesn't exist in map.`);
         }
 
-        for (let i in range(branches)) {
-            let picks = this.random();
+        range(branches).forEach(branch => {
+            const picks = this.random();
 
-            if (picks === undefined) {
-                break;
-            } else {
-                picks.map(item => this.add(item));
-                picks.map(item => this.connect(at, item));
+            if (picks !== undefined) {
+                picks.map(room => {
+                    this.add(room);
+                    this.connect(at, room);
+                });
             }
-        }
+        });
 
         // if we're doing leaf connetions...
         // NOTE: we have to set params here, not at the top because
         // this will be AFTER the used/adjacency lists are updated
         if (connects !== 0) {
-            let params = {
+            const params = {
                 available: this.used,
                 operator: (room) => this.adjacency[room].length === 1, 
             }
     
-            for (let i in range(connects)) {
-                let leaves = this.random(2, params);
-                
-                if (leaves === undefined) {
-                    break;
-                } else {
-                    let [a, b] = leaves; 
+            range(connects).forEach(room => {
+                const leaves = this.random(2, params);
+
+                if (leaves !== undefined) {
+                    const [a, b] = leaves;
                     this.connect(a, b);
                 }
-            }
+            });
         }
     }
 
@@ -145,15 +143,16 @@ export default class MapManager {
         );
 
         // leaf connections from given param.start.loc based on param.branches
-        let current = params.start.loc;
-        for (let i in range(params.branches.generations)) {
-            for (let branch in this.adjacency[current]) {
+        const current = params.start.loc;
+
+        range(params.branches.generations).forEach(gen => {
+            this.adjacency[current].forEach(branch => {
                 this.build(
-                    this.adjacency[current][branch], 
+                    branch,
                     random(params.branches.min_branches, params.branches.max_branches),
                     params.branches.connects
                 );
-            }
-        }
+            });
+        });
     }
 }

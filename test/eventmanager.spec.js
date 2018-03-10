@@ -4,8 +4,8 @@ jest.useFakeTimers();
 
 describe('EventManager', () => {
     let target = new EventManager();
-    let spy = jest.fn();
-    let props = {
+    const spy = jest.fn();
+    const props = {
         name: 'Test',
         timer: 5,
         trigger: spy,
@@ -42,7 +42,7 @@ describe('EventManager', () => {
 
         test('returns event object if tag is found', () => {
             target.add([props]);
-            let local = target.find('Test');
+            const local = target.find('Test');
 
             expect(local).toHaveProperty('timer', 5);
             expect(local).toHaveProperty('onDone', spy);
@@ -54,7 +54,7 @@ describe('EventManager', () => {
     describe('add', () => {
         test('adds the specified event to the list', () => {
             target.add([props]);
-            let local = target.events['Test'];
+            const local = target.events['Test'];
 
             expect(local).toHaveProperty('timer', 5);
             expect(local).toHaveProperty('onDone', spy);

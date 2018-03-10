@@ -212,7 +212,7 @@ describe('MapManager', () => {
         });
 
         test('returns a (1) room within params list', () => {
-            let avail = ['ab', 'bc', 'cd']
+            const avail = ['ab', 'bc', 'cd']
             target.random(1, {
                 available: avail,
                 operator: item => item !== 'ab',
@@ -220,7 +220,7 @@ describe('MapManager', () => {
         });
 
         test('returns >1 rooms within params list', () => {
-            let avail = ['ab', 'bc', 'cd', 'ef'];
+            const avail = ['ab', 'bc', 'cd', 'ef'];
             target.random(3, {
                 available: avail,
                 operator: item => item !== 'ab',
@@ -237,7 +237,7 @@ describe('MapManager', () => {
         );
 
         test('returns undefined with params if none are available', () => {
-            let avail = ['ab', 'bc', 'cd'];
+            const avail = ['ab', 'bc', 'cd'];
             expect(target.random(2, {
                 available: avail,
                 operator: item => !contains(avail, item)

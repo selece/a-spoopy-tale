@@ -86,9 +86,9 @@ export default class RoomDB {
     }
 
     getDescription(search, conditions={}) {
-        let target = findWhere(this.rooms, {name: search});
+        const target = findWhere(this.rooms, {name: search});
         if (target !== undefined) {
-            let filteredConditions = chain(target.descriptions)
+            const filteredConditions = chain(target.descriptions)
                 .filter(desc => isEqual(desc.conditions, conditions))
                 .value();
             

@@ -10,7 +10,7 @@ export default class Button extends React.Component {
     render() {
         // NOTE - since this.props.classes was converted to an observable
         // we need to either access it through $mobx.values or mobx.toJS
-        let classes = toJS(this.props.classes);
+        const classes = toJS(this.props.classes);
         return (
             <div
                 className={classNames(classes)}

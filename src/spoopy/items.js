@@ -48,10 +48,10 @@ export default class ItemDB {
     }
 
     getDescription(search, conditions={}) {
-        let target = findWhere(this.items, {name: search});
+        const target = findWhere(this.items, {name: search});
         if (target !== undefined) {
             
-            let filteredConditions = filter(
+            const filteredConditions = filter(
                 target.descriptions,
                 desc => isEqual(desc.conditions, conditions)
             );
