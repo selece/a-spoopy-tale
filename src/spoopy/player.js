@@ -167,6 +167,7 @@ export default class Player {
         if (this.battery === 100) {
             return 'Your phone\'s battery is full.';
         } else {
+            // TODO: finish descriptive outputs
             return 'Boop!';
         }
     }
@@ -175,6 +176,7 @@ export default class Player {
         if (this.health === 100) {
             return 'You feel perfectly healthy.';
         } else {
+            // TODO: finish descriptive outputs
             return 'Welp.';
         }
     }
