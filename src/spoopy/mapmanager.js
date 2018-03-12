@@ -1,10 +1,11 @@
 'use strict';
 
-import { filter, contains, sample, range, random, without } from 'underscore';
+import { filter, contains, sample, range, random, without, times } from 'underscore';
 
 export default class MapManager {
-    constructor(available) {
+    constructor(available, itemDB) {
         this.available = available;
+        this.itemDB = itemDB;
 
         this.used = [];
         this.adjacency = {};
@@ -106,14 +107,13 @@ export default class MapManager {
             throw new Error(`Can't build at ${at} - doesn't exist in map.`);
         }
 
-        range(branches).forEach(branch => {
-            const picks = this.random();
+        times(branches, () => {
+        // range(branches).forEach(branch => {
+            const pick = this.random();
 
-            if (picks) {
-                picks.map(room => {
-                    this.add(room);
-                    this.connect(at, room);
-                });
+            if (pick) {
+                this.add(pick[0]);
+                this.connect(at, pick[0]);
             }
         });
 
@@ -126,7 +126,8 @@ export default class MapManager {
                 operator: (room) => this.adjacency[room].length === 1, 
             }
     
-            range(connects).forEach(room => {
+            times(connects, () => {
+            // range(connects).forEach(room => {
                 const leaves = this.random(2, params);
 
                 if (leaves) {
@@ -149,7 +150,8 @@ export default class MapManager {
         // leaf connections from given param.start.loc based on param.branches
         const current = params.start.loc;
 
-        range(params.branches.generations).forEach(gen => {
+        times(params.branches.generations, () => {
+        // range(params.branches.generations).forEach(gen => {
             this.adjacency[current].forEach(branch => {
                 this.build(
                     branch,
@@ -157,6 +159,24 @@ export default class MapManager {
                     params.branches.connects
                 );
             });
+        });
+
+        // place items into the map
+        const excludeItems = [];
+        const excludeRooms = [];
+        
+        // times(params.items, () => {
+        range(params.items).forEach(num => {
+            const item = this.itemDB.random_item(excludeItems);
+            excludeItems.push(item.name);
+
+            const room = this.random(1, {
+                available: this.used,
+                operator: room => !contains(excludeRooms, room) 
+            })[0];
+            excludeRooms.push(room);
+
+            this.place(item, room);
         });
     }
 }

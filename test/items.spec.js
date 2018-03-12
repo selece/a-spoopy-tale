@@ -1,6 +1,14 @@
 import ItemDB from '../src/spoopy/items';
 
 describe('ItemDB', () => {
+    const ITEMS_LIST = [
+        'Skull',
+        'Tome',
+        'Amulet',
+        'Bottle',
+        'Pen',
+    ];
+
     let target;
 
     beforeEach(() => {
@@ -22,12 +30,13 @@ describe('ItemDB', () => {
     describe('random_item()', () => {
         test('returns a random item', () => {
             const res = target.random_item([]);
-            expect(['Skull', 'Tome']).toContain(res.name);
+            expect(ITEMS_LIST).toContain(res.name);
         });
 
         test('returns a random item using exclusion list', () => {
             const res = target.random_item(['Skull']);
-            expect(res.name).toEqual('Tome');
+            expect(ITEMS_LIST).toContain(res.name);
+            expect(res.name).not.toEqual('Skull');
         });
     });
 

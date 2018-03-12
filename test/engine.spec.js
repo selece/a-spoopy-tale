@@ -1,3 +1,6 @@
+// TODO: Redo tests for dynamic item generation.
+// NOTE: See MapManager.items for item locs.
+
 import Engine from '../src/spoopy/engine';
 
 import Player from '../src/spoopy/player';
@@ -22,6 +25,7 @@ describe('Engine', () => {
             connects: 2,
             generations: 1,
         },
+        items: 2,
     };
 
     const FOYER_LOCATION = 'Foyer';

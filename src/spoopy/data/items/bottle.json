@@ -1,0 +1,11 @@
+{
+    "name": "Bottle",
+    "descriptions": [
+        {
+            "text": "The contents have dried out, but the vessel still carries an oddly sweet smell.",
+            "conditions": {}
+        }
+    ],
+    "actions": {},
+    "tags": {}
+}
