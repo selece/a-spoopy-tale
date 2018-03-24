@@ -17,7 +17,7 @@ export default class Engine {
         this.roomDB = new RoomDB();
 
         this.eventManager = new EventManager();
-        this.mapManager = new MapManager(this.roomDB.room_names);
+        this.mapManager = new MapManager(this.roomDB.room_names, this.itemDB);
 
         // slightly ugly non-decorator due to mobx only tracking object props that exist
         // when the object is declared

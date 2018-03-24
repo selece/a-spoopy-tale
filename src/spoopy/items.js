@@ -9,6 +9,9 @@ export default class ItemDB {
             [
                 'skull.json',
                 'tome.json',
+                'amulet.json',
+                'bottle.json',
+                'pen.json',
             ],
             './data/items/'
             // path is relative to loader.js location!

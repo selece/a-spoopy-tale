@@ -21,6 +21,8 @@ const engine = new Engine({
         max_branches: 3,
         connections: 4,
     },
+
+    items: 4,
 });
 
 ReactDOM.render(

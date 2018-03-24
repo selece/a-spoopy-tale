@@ -3,8 +3,9 @@
 import { includes, filter, sampleSize, times, random, without } from 'lodash';
 
 export default class MapManager {
-    constructor(available) {
+    constructor(available, itemDB) {
         this.available = available;
+        this.itemDB = itemDB;
 
         this.used = [];
         this.adjacency = {};
@@ -109,11 +110,9 @@ export default class MapManager {
         times(branches, () => {
             const picks = this.random();
 
-            if (picks) {
-                picks.map(room => {
-                    this.add(room);
-                    this.connect(at, room);
-                });
+            if (pick) {
+                this.add(pick[0]);
+                this.connect(at, pick[0]);
             }
         });
 /*
@@ -168,6 +167,24 @@ export default class MapManager {
                     params.branches.connects
                 );
             });
+        });
+
+        // place items into the map
+        const excludeItems = [];
+        const excludeRooms = [];
+        
+        // times(params.items, () => {
+        range(params.items).forEach(num => {
+            const item = this.itemDB.random_item(excludeItems);
+            excludeItems.push(item.name);
+
+            const room = this.random(1, {
+                available: this.used,
+                operator: room => !contains(excludeRooms, room) 
+            })[0];
+            excludeRooms.push(room);
+
+            this.place(item, room);
         });
     }
 }
