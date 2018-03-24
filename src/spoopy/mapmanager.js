@@ -110,23 +110,12 @@ export default class MapManager {
         times(branches, () => {
             const picks = this.random();
 
-            if (pick) {
-                this.add(pick[0]);
-                this.connect(at, pick[0]);
-            }
-        });
-/*
-        range(branches).forEach(branch => {
-            const picks = this.random();
-
             if (picks) {
-                picks.map(room => {
-                    this.add(room);
-                    this.connect(at, room);
-                });
+                this.add(picks[0]);
+                this.connect(at, picks[0]);
             }
         });
-*/
+
         // if we're doing leaf connetions...
         // NOTE: we have to set params here, not at the top because
         // this will be AFTER the used/adjacency lists are updated
@@ -173,14 +162,13 @@ export default class MapManager {
         const excludeItems = [];
         const excludeRooms = [];
         
-        // times(params.items, () => {
-        range(params.items).forEach(num => {
+        times(params.items, () => {
             const item = this.itemDB.random_item(excludeItems);
             excludeItems.push(item.name);
 
             const room = this.random(1, {
                 available: this.used,
-                operator: room => !contains(excludeRooms, room) 
+                operator: room => !includes(excludeRooms, room) 
             })[0];
             excludeRooms.push(room);
 
