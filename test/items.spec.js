@@ -29,6 +29,11 @@ describe('ItemDB', () => {
             const res = target.random_item(['Skull']);
             expect(res.name).toEqual('Tome');
         });
+
+        test('returns a random item with default param for exclusion', () => {
+            const res = target.random_item();
+            expect(['Skull', 'Tome']).toContain(res.name);
+        });
     });
 
     describe('exists()', () => {

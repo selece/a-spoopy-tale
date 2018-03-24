@@ -1,6 +1,6 @@
 'use strict';
 
-import {pluck, contains, without, keys} from 'underscore';
+import {map, includes, without, keys} from 'lodash';
 
 export default class Player {
     constructor() {
@@ -17,7 +17,7 @@ export default class Player {
         // condition resolver bindings
         this._conditionMap = {
             hasItem: arg => {
-                return contains(pluck(this.inventory, 'name'), arg);
+                return includes(map(this.inventory, 'name'), arg);
             },
 
             atLocation: arg => {
@@ -127,7 +127,7 @@ export default class Player {
                 (item, index, list) => {
                     
                     // if the item starts with a vowel, prefix 'an', otherwise use 'a'
-                    const indefinite_article = contains(
+                    const indefinite_article = includes(
                         ['a', 'e', 'i', 'o', 'u'],
                         String(item.name).substring(0, 1).toLowerCase()
                     ) ? 'an' : 'a';
@@ -213,19 +213,19 @@ export default class Player {
     }
 
     hasItem(item) {
-        return contains(this.inventory, item);
+        return includes(this.inventory, item);
     }
 
     hasVisited(loc) {
-        return contains(this.map, loc);
+        return includes(this.map, loc);
     }
 
     hasExplored(loc) {
-        return contains(this.explored, loc);
+        return includes(this.explored, loc);
     }
 
     hasSearched(loc) {
-        return contains(this.searched, loc);
+        return includes(this.searched, loc);
     }
 
     updateMap(loc) {
@@ -257,7 +257,7 @@ export default class Player {
         Object.entries(arg).forEach(set => {
             const [key, val] = set;
             
-            if (!contains(keys(this._conditionMap), key)) {
+            if (!includes(keys(this._conditionMap), key)) {
                 throw new Error(`Invalid condition: ${key}.`);
             }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import { filter, contains, sample, range, random, without } from 'underscore';
+import { includes, filter, sampleSize, times, random, without } from 'lodash';
 
 export default class MapManager {
     constructor(available) {
@@ -12,7 +12,7 @@ export default class MapManager {
     }
 
     exists(room) {
-        return contains(this.used, room);
+        return includes(this.used, room);
     }
 
     find(room) {
@@ -47,7 +47,7 @@ export default class MapManager {
     }
 
     connect(from, to, unidirectional = false) {
-        if (!from || !to ) {
+        if (!from || !to) {
             throw new Error(`Cannot connect ${from} and ${to}.`);
         }
 
@@ -56,7 +56,7 @@ export default class MapManager {
         }
 
         this.adjacency[from].push(to);
-        if (!unidirectional) { 
+        if (!unidirectional) {
             this.adjacency[to].push(from);
         }
 
@@ -78,7 +78,7 @@ export default class MapManager {
             throw new Error(`Cannot pickup ${item} at ${at}, room doesn't exist.`);
         }
 
-        if (!contains(this.items[at], item)) {
+        if (!includes(this.items[at], item)) {
             throw new Error(`${item} not found at ${at}.`);
         }
 
@@ -89,13 +89,13 @@ export default class MapManager {
         const filtered = (params === undefined) ?
 
             // if no params provided, use current manager lists
-            filter(this.available, room => !contains(this.used, room)) :
+            filter(this.available, room => !includes(this.used, room)) :
 
             // otherwise, use the provided params object lists
             filter(params.available, params.operator);
 
         if (filtered.length >= count) {
-            return sample(filtered, count);
+            return sampleSize(filtered, count);
         } else {
             return undefined;
         }
@@ -106,6 +106,17 @@ export default class MapManager {
             throw new Error(`Can't build at ${at} - doesn't exist in map.`);
         }
 
+        times(branches, () => {
+            const picks = this.random();
+
+            if (picks) {
+                picks.map(room => {
+                    this.add(room);
+                    this.connect(at, room);
+                });
+            }
+        });
+/*
         range(branches).forEach(branch => {
             const picks = this.random();
 
@@ -116,17 +127,17 @@ export default class MapManager {
                 });
             }
         });
-
+*/
         // if we're doing leaf connetions...
         // NOTE: we have to set params here, not at the top because
         // this will be AFTER the used/adjacency lists are updated
         if (connects) {
             const params = {
                 available: this.used,
-                operator: (room) => this.adjacency[room].length === 1, 
+                operator: (room) => this.adjacency[room].length === 1,
             }
-    
-            range(connects).forEach(room => {
+
+            times(connects, () => {
                 const leaves = this.random(2, params);
 
                 if (leaves) {
@@ -149,7 +160,7 @@ export default class MapManager {
         // leaf connections from given param.start.loc based on param.branches
         const current = params.start.loc;
 
-        range(params.branches.generations).forEach(gen => {
+        times(params.branches.generations, () => {
             this.adjacency[current].forEach(branch => {
                 this.build(
                     branch,

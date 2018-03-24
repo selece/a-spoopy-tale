@@ -1,6 +1,6 @@
 'use strict';
 
-import {findWhere, sample, filter, isEqual, pluck, chain, contains} from 'underscore';
+import {find, sampleSize, chain, map, head, filter, includes, isEqual} from 'lodash';
 
 import Loader from './loader';
 export default class ItemDB {
@@ -19,7 +19,7 @@ export default class ItemDB {
         if (this.exists(search)) {
             return chain(this.items)
                 .filter(item => item.name === search)
-                .first()
+                .head()
                 .value();
         } else {
             throw new Error(`Item does not exist: ${search}.`);
@@ -27,28 +27,29 @@ export default class ItemDB {
     }
 
     get item_names() {
-        return pluck(this.items, 'name');
+        return map(this.items, 'name');
     }
 
-    random_item(exclude) {
-        return findWhere(
+    random_item(exclude=[]) {
+        return find(
             this.items, 
             {
-                name: chain(this.items)
-                .pluck('name')
-                .filter(item => !contains(exclude, item))
-                .sample()
+                'name': chain(this.items)
+                .map('name')
+                .filter(item => !includes(exclude, item))
+                .sampleSize()
+                .head()
                 .value()
             }
         );
     }
 
     exists(search) {
-        return findWhere(this.items, {name: search}) !== undefined;
+        return find(this.items, {name: search}) !== undefined;
     }
 
     getDescription(search, conditions={}) {
-        const target = findWhere(this.items, {name: search});
+        const target = find(this.items, {name: search});
         if (target) {
             
             const filteredConditions = filter(
@@ -57,11 +58,17 @@ export default class ItemDB {
             );
 
             if (filteredConditions.length) {
-                return sample(filteredConditions).text;
+                return chain(filteredConditions)
+                    .sampleSize()
+                    .head()
+                    .value()
+                    .text;
+
             } else {
                 return chain(target.descriptions)
                 .filter(desc => isEqual(desc.conditions, {}))
-                .sample()
+                .sampleSize()
+                .head()
                 .value()
                 .text;
             }
