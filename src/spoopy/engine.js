@@ -1,6 +1,6 @@
 'use strict';
 
-import { filter, contains, sample, chain, range, isFunction, random, without, keys } from 'underscore';
+import { includes, keys } from 'lodash';
 import { computed, action, observable } from 'mobx';
 
 import Player from './player';
@@ -146,20 +146,20 @@ export default class Engine {
         }
 
         this.GUIState.propLocation = this.player.query({hasExplored: status.loc.value}) ?
-            this.player.status.loc.value : 'A dark and indistinct room';
+            status.loc.value : 'A dark and indistinct room';
 
         this.GUIState.propDescription = this.player.query({hasExplored: status.loc.value}) ?
             this.roomDB.getDescription(status.loc.value) : 'You can\'t really make out too much standing here.';
 
         this.GUIState.propButtonGridActions = propButtonGridActions;
         this.GUIState.propButtonGridExits = propButtonGridExits;
-        this.GUIState.propHealth = this.player.status.health.descriptive;
-        this.GUIState.propInventory = this.player.status.inventory.descriptive;
-        this.GUIState.propBattery = this.player.status.battery.descriptive;
+        this.GUIState.propHealth = status.health.descriptive;
+        this.GUIState.propInventory = status.inventory.descriptive;
+        this.GUIState.propBattery = status.battery.descriptive;
     }
 
     @action playerAction(action, arg) {
-        if (!contains(keys(this._playerActions), action)) {
+        if (!includes(keys(this._playerActions), action)) {
             throw new Error(`"${action}" is not a valid action.`);
         }
 

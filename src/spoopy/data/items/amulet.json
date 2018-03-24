@@ -1,0 +1,15 @@
+{
+    "name": "Amulet",
+    "descriptions": [
+        {
+            "text": "The faded sigil feels oddly heavy in your hands.",
+            "conditions": {}
+        },
+        {
+            "text": "You can't quite make out the etched symbol on the front, but holding the amulet makes you feel strangely calm.",
+            "conditions": {}
+        }
+    ],
+    "actions": {},
+    "tags": {}
+}

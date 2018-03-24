@@ -1,13 +1,6 @@
 'use strict';
 
-import {
-    findWhere,
-    chain,
-    sample,
-    filter,
-    isEqual,
-    pluck
-} from 'underscore';
+import { map, chain, find, isEqual } from 'lodash';
 
 import Loader from './loader';
 export default class RoomDB {
@@ -83,34 +76,45 @@ export default class RoomDB {
     }
 
     exists(search) {
-        return findWhere(this.rooms, {
-            name: search
+        return find(this.rooms, {
+            'name': search
         }) !== undefined;
     }
 
     get random_unexplored() {
-        return sample(this.unexplored);
+        return chain(this.unexplored)
+            .sampleSize()
+            .head()
+            .value();
     }
 
     get room_names() {
-        return pluck(this.rooms, 'name');
+        return map(this.rooms, 'name');
     }
 
     getDescription(search, conditions = {}) {
-        const target = findWhere(this.rooms, {
-            name: search
+        const target = find(this.rooms, {
+            'name': search
         });
+
         if (target) {
             const filteredConditions = chain(target.descriptions)
                 .filter(desc => isEqual(desc.conditions, conditions))
                 .value();
 
             if (filteredConditions.length) {
-                return sample(filteredConditions).text;
+                return chain(filteredConditions)
+                    .sampleSize()
+                    .head()
+                    .value()
+                    .text;
+
+                // return sample(filteredConditions).text;
             } else {
                 return chain(target.descriptions)
                     .filter(desc => isEqual(desc.conditions, {}))
-                    .sample()
+                    .sampleSize()
+                    .head()
                     .value()
                     .text;
             }

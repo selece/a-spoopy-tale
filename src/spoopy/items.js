@@ -1,6 +1,6 @@
 'use strict';
 
-import {find, sampleSize, chain, map, head, filter, includes, isEqual} from 'lodash';
+import {find, chain, map, filter, includes, isEqual} from 'lodash';
 
 import Loader from './loader';
 export default class ItemDB {

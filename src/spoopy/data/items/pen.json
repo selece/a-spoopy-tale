@@ -1,0 +1,11 @@
+{
+    "name": "Pen",
+    "descriptions": [
+        {
+            "text": "The ink has long since dried out, but the fountain pen feels heavy and authoritative in your hands.",
+            "conditions": {}
+        }
+    ],
+    "actions": {},
+    "tags": {}
+}

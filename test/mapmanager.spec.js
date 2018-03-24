@@ -1,4 +1,4 @@
-import { contains, without } from 'underscore';
+import { includes, without } from 'lodash';
 
 import MapManager from '../src/spoopy/mapmanager';
 
@@ -9,12 +9,9 @@ describe('MapManager', () => {
     let target = new MapManager(available);
 
     describe('constructor', () => {
-        test(
-            'accepts a list as a constructor arg and stores that list (as .available)',
-            () => {
+        test('accepts a list as a constructor arg and stores that list (as .available)', () => {
                 expect(target.available === available);
-            }
-        );
+        });
 
         test('inits used list as empty', () => {
             expect(target.used).toHaveLength(0);
@@ -103,21 +100,18 @@ describe('MapManager', () => {
             expect(() => target.remove('b')).toThrowError(Error);
         });
 
-        test(
-            'removes a valid room, clears relevant data and does not modify other data',
-            () => {
-                target.add('b');
-                target.remove('b');
+        test('removes a valid room, clears relevant data and does not modify other data', () => {
+            target.add('b');
+            target.remove('b');
 
-                expect(target.used).toContain('a');
-                expect(target.adjacency['a']).toHaveLength(0);
-                expect(target.items['a']).toHaveLength(0);
+            expect(target.used).toContain('a');
+            expect(target.adjacency['a']).toHaveLength(0);
+            expect(target.items['a']).toHaveLength(0);
 
-                expect(target.used).not.toContain('b');
-                expect(target.adjacency['b']).toEqual(undefined);
-                expect(target.items['b']).toEqual(undefined);
-            }
-        );
+            expect(target.used).not.toContain('b');
+            expect(target.adjacency['b']).toEqual(undefined);
+            expect(target.items['b']).toEqual(undefined);
+        });
     });
 
     describe('connect()', () => {
@@ -227,20 +221,17 @@ describe('MapManager', () => {
             }).map(item => expect(avail).toContain(item));
         });
 
-        test(
-            'returns undefined with current list given no params if none are available',
-            () => {
-                available.map(item => target.add(item));
-                expect(target.random()).toBeUndefined();
-                available.map(item => target.remove(item));
-            }
-        );
+        test('returns undefined with current list given no params if none are available', () => {
+            available.map(item => target.add(item));
+            expect(target.random()).toBeUndefined();
+            available.map(item => target.remove(item));
+        });
 
         test('returns undefined with params if none are available', () => {
             const avail = ['ab', 'bc', 'cd'];
             expect(target.random(2, {
                 available: avail,
-                operator: item => !contains(avail, item)
+                operator: item => !includes(avail, item)
             })).toBeUndefined();
         });
     });
@@ -311,44 +302,41 @@ describe('MapManager', () => {
             target.used.map(item => target.remove(item));
         });
 
-        test(
-            'builds a map containing a subset of available nodes, simple case',
-            () => {
-                target.generate({
-                    start: {
-                        loc: 'a',
-                        min_branches: 2,
-                        max_branches: 2,
-                    },
+        test('builds a map containing a subset of available nodes, simple case', () => {
+            target.generate({
+                start: {
+                    loc: 'a',
+                    min_branches: 2,
+                    max_branches: 2,
+                },
 
-                    branches: {
-                        generations: 1,
-                        min_branches: 1,
-                        max_branches: 1,
-                        connects: 0
-                    },
-                });
+                branches: {
+                    generations: 1,
+                    min_branches: 1,
+                    max_branches: 1,
+                    connects: 0
+                },
+            });
 
-                const used = target.used;
-                const adj = target.adjacency;
+            const used = target.used;
+            const adj = target.adjacency;
 
-                expect(target.used.length).toEqual(5);
-                used.map(
-                    item => {
-                        if (item === 'a') {
+            expect(target.used.length).toEqual(5);
+            used.map(
+                item => {
+                    if (item === 'a') {
+                        expect(adj[item].length).toEqual(2);
+                    } else {
+                        if (includes(adj['a'], item)) {
                             expect(adj[item].length).toEqual(2);
+                            expect(adj[item]).toContain('a');
                         } else {
-                            if (contains(adj['a'], item)) {
-                                expect(adj[item].length).toEqual(2);
-                                expect(adj[item]).toContain('a');
-                            } else {
-                                expect(adj[item].length).toEqual(1);
-                            }
+                            expect(adj[item].length).toEqual(1);
                         }
                     }
-                );
-            }
-        );
+                }
+            );
+        });
 
         test('builds a map consisting of available nodes, non-simple case', () => {
             target.generate({
@@ -375,7 +363,7 @@ describe('MapManager', () => {
                         expect(adj[item].length).toBeGreaterThanOrEqual(2);
                         expect(adj[item].length).toBeLessThanOrEqual(3);
                     } else {
-                        if (contains(adj['a'], item)) {
+                        if (includes(adj['a'], item)) {
                             expect(adj[item].length).toBeGreaterThanOrEqual(1);
                             expect(adj[item].length).toBeLessThanOrEqual(3);
                         } else {
@@ -412,7 +400,7 @@ describe('MapManager', () => {
                         expect(adj[item].length).toBeGreaterThanOrEqual(3);
                         expect(adj[item].length).toBeLessThanOrEqual(6);
                     } else {
-                        if (contains(adj['a'], item)) {
+                        if (includes(adj['a'], item)) {
                             expect(adj[item].length).toBeGreaterThanOrEqual(1);
                             expect(adj[item].length).toBeLessThanOrEqual(6);
                         } else {
