@@ -272,10 +272,16 @@ describe('Engine', () => {
             expect(GUIState).toHaveProperty('propLocation', FOYER_LOCATION);
 
             expect(GUIState).toHaveProperty('propButtonGridActions');
-            expect(GUIState.propButtonGridActions.length).toEqual(1);
+            
 
-            expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_NOTHING);
-            expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES_NOCLICK);
+            if (target.mapManager.find('Foyer').items.length) {
+                expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES);
+
+            } else {
+                expect(GUIState.propButtonGridActions.length).toEqual(1);
+                expect(GUIState.propButtonGridActions[0].display).toEqual(ACTION_NOTHING);
+                expect(GUIState.propButtonGridActions[0].classes).toEqual(ACTION_CLASSES_NOCLICK);
+            }            
 
             expect(GUIState).toHaveProperty('propHealth', HEALTH_DESCRIPTION);
             expect(GUIState.propInventory).toMatch(INVENTORY_HOLDING_DESCRIPTION);
