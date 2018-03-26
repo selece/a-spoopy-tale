@@ -1,70 +1,68 @@
-import RoomDB from '../src/spoopy/rooms';
+import RoomDB from "../src/spoopy/rooms";
 
-describe('RoomDB', () => {
-    let target;
+describe("RoomDB", () => {
+  let target;
 
-    beforeEach(() => {
-        target = new RoomDB();
+  beforeEach(() => {
+    target = new RoomDB();
+  });
+
+  describe("constructor", () => {
+    test("inits properties to expected values", () => {
+      expect(target.rooms.length).toBeGreaterThan(1);
+      expect(target.unexplored.length).toBeGreaterThan(1);
+    });
+  });
+
+  describe("exists()", () => {
+    test("returns true for existing rooms", () => {
+      expect(target.exists("Foyer")).toEqual(true);
     });
 
-    describe('constructor', () => {
-        test('inits properties to expected values', () => {
-            expect(target.rooms.length).toBeGreaterThan(1);
-            expect(target.unexplored.length).toBeGreaterThan(1);
-        });
+    test("returns false for non-existent rooms", () => {
+      expect(target.exists("Bad")).toEqual(false);
+    });
+  });
+
+  describe("random_unexplored()", () => {
+    test("returns a random unexplored quip", () => {
+      expect(target.unexplored).toContain(target.random_unexplored);
+    });
+  });
+
+  describe("room_names()", () => {
+    test("returns an array of the room names", () => {
+      expect(target.room_names.length).toEqual(target.rooms.length);
+    });
+  });
+
+  describe("getDescription()", () => {
+    test("returns description for valid room, no conditions (Foyer)", () => {
+      expect([
+        "A musty smell fills your nostrils as you survey the dust-covered entranceway.",
+        "The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.",
+        'It isn"t hard for you to imagine the former grandeur of the decaying foyer.'
+      ]).toContain(target.getDescription("Foyer"));
     });
 
-    describe('exists()', () => {
-        test('returns true for existing rooms', () => {
-            expect(target.exists('Foyer')).toEqual(true);
-        });
-
-        test('returns false for non-existent rooms', () => {
-            expect(target.exists('Bad')).toEqual(false);
-        });
+    test("returns description for valid room, conditions applied (Foyer)", () => {
+      expect(target.getDescription("Foyer", { hasItem: "Skull" })).toEqual(
+        "!!! CONDITIONAL TEST !!!"
+      );
     });
 
-    describe('random_unexplored()', () => {
-        test('returns a random unexplored quip', () => {
-            expect(target.unexplored).toContain(target.random_unexplored);
-        });
+    test("returns default (no condition) description for valid room when no conditions match (Foyer)", () => {
+      expect([
+        "A musty smell fills your nostrils as you survey the dust-covered entranceway.",
+        "The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.",
+        'It isn"t hard for you to imagine the former grandeur of the decaying foyer.'
+      ]).toContain(target.getDescription("Foyer", { hasItem: "Bad" }));
     });
 
-    describe('room_names()', () => {
-        test('returns an array of the room names', () => {
-            expect(target.room_names.length).toEqual(target.rooms.length);
-        });
+    test("throws error for non-existent room", () => {
+      expect(() => target.getDescription("Bad")).toThrowError(
+        /Could not find room/
+      );
     });
-
-    describe('getDescription()', () => {
-        test('returns description for valid room, no conditions (Foyer)', () => {
-            expect(
-                [
-                    "A musty smell fills your nostrils as you survey the dust-covered entranceway.",
-                    "The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.",
-                    "It isn\"t hard for you to imagine the former grandeur of the decaying foyer.",
-                ]
-            ).toContain(target.getDescription('Foyer'));
-        });
-
-        test('returns description for valid room, conditions applied (Foyer)', () => {
-            expect(target.getDescription('Foyer', {hasItem: 'Skull'})).toEqual('!!! CONDITIONAL TEST !!!');
-        });
-
-        test('returns default (no condition) description for valid room when no conditions match (Foyer)', () => {
-            expect(
-                [
-                    "A musty smell fills your nostrils as you survey the dust-covered entranceway.",
-                    "The floorboards creak with an unearthly groan as you carefully step into the crumbling foyer.",
-                    "It isn\"t hard for you to imagine the former grandeur of the decaying foyer.",
-                ]
-            ).toContain(target.getDescription('Foyer', {hasItem: 'Bad'}));
-        });
-
-        test('throws error for non-existent room', () => {
-            expect(
-                () => target.getDescription('Bad')
-            ).toThrowError(/Could not find room/);
-        });
-    });
+  });
 });

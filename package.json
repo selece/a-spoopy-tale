@@ -7,7 +7,8 @@
     "build": "webpack",
     "dev-server": "webpack-dev-server",
     "test": "jest test --coverage --verbose",
-    "watch": "jest test --coverage --watch"
+    "watch": "jest test --coverage --watch",
+    "eslint": "eslint \"src/**/*.js\" \"src/**/*.jsx\" \"test/**/*.js\""
   },
   "author": "Jonathan Liaw",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "shortid": "^2.2.8"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
@@ -29,9 +31,13 @@
     "babel-preset-react-plus": "^1.3.0",
     "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.28.9",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^22.4.2",
     "node-sass": "^4.7.2",
+    "prettier": "^1.11.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.20.2",
     "webpack": "^3.11.0",

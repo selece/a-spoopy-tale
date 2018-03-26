@@ -1,79 +1,79 @@
-import EventManager from '../src/spoopy/eventmanager';
+import EventManager from "../src/spoopy/eventmanager";
 
 jest.useFakeTimers();
 
-describe('EventManager', () => {
-    let target = new EventManager();
-    const spy = jest.fn();
-    const props = {
-        name: 'Test',
-        timer: 5,
-        trigger: spy,
-        repeats: false,
-        startPaused: false,
-    };
+describe("EventManager", () => {
+  let target = new EventManager();
+  const spy = jest.fn();
+  const props = {
+    name: "Test",
+    timer: 5,
+    trigger: spy,
+    repeats: false,
+    startPaused: false
+  };
 
-    describe('constructor', () => {
-        test('inits an empty object for events', () => {
-            expect(target.events).toEqual({});
-        });
-
-        test('produces an object of type EventManager', () => {
-            expect(target instanceof EventManager);
-        });
+  describe("constructor", () => {
+    test("inits an empty object for events", () => {
+      expect(target.events).toEqual({});
     });
 
-    describe('exists', () => {
-        test('returns false when event is not found', () => {
-            expect(target.exists('fake')).toEqual(false);
-        });
+    test("produces an object of type EventManager", () => {
+      expect(target instanceof EventManager);
+    });
+  });
 
-        test('returns true when event is found', () => {
-            target.add([props]);
-            expect(target.exists('Test')).toEqual(true);
-            target.remove('Test');
-        });
+  describe("exists", () => {
+    test("returns false when event is not found", () => {
+      expect(target.exists("fake")).toEqual(false);
     });
 
-    describe('find', () => {
-        test('throws error if tag does not exist', () => {
-            expect(() => target.find('fake')).toThrowError(/Could not find event/);
-        });
+    test("returns true when event is found", () => {
+      target.add([props]);
+      expect(target.exists("Test")).toEqual(true);
+      target.remove("Test");
+    });
+  });
 
-        test('returns event object if tag is found', () => {
-            target.add([props]);
-            const local = target.find('Test');
-
-            expect(local).toHaveProperty('timer', 5);
-            expect(local).toHaveProperty('onDone', spy);
-            expect(local).toHaveProperty('repeats', false);
-            expect(local).toHaveProperty('paused', false);
-        });
-    })
-
-    describe('add', () => {
-        test('adds the specified event to the list', () => {
-            target.add([props]);
-            const local = target.events['Test'];
-
-            expect(local).toHaveProperty('timer', 5);
-            expect(local).toHaveProperty('onDone', spy);
-            expect(local).toHaveProperty('paused', false);
-            expect(local).toHaveProperty('repeats', false);
-        });
+  describe("find", () => {
+    test("throws error if tag does not exist", () => {
+      expect(() => target.find("fake")).toThrowError(/Could not find event/);
     });
 
-    describe('remove', () => {
-        test('removes the specified test from the list', () => {
-            target = new EventManager();
-            target.add([props]);
-            target.remove('Test');
+    test("returns event object if tag is found", () => {
+      target.add([props]);
+      const local = target.find("Test");
 
-            expect(target.events).toEqual({});
-        });
-
-        test('throws error if tag does not exist for event', () => {
-            expect(() => target.remove('fake')).toThrowError(/Could not find event/);
-        });
+      expect(local).toHaveProperty("timer", 5);
+      expect(local).toHaveProperty("onDone", spy);
+      expect(local).toHaveProperty("repeats", false);
+      expect(local).toHaveProperty("paused", false);
     });
+  });
+
+  describe("add", () => {
+    test("adds the specified event to the list", () => {
+      target.add([props]);
+      const local = target.events["Test"];
+
+      expect(local).toHaveProperty("timer", 5);
+      expect(local).toHaveProperty("onDone", spy);
+      expect(local).toHaveProperty("paused", false);
+      expect(local).toHaveProperty("repeats", false);
+    });
+  });
+
+  describe("remove", () => {
+    test("removes the specified test from the list", () => {
+      target = new EventManager();
+      target.add([props]);
+      target.remove("Test");
+
+      expect(target.events).toEqual({});
+    });
+
+    test("throws error if tag does not exist for event", () => {
+      expect(() => target.remove("fake")).toThrowError(/Could not find event/);
+    });
+  });
 });
