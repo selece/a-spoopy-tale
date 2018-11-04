@@ -1,43 +1,45 @@
+"use strict";
+
 export default class Event {
-    constructor(timer, onDone, repeats=false, startPaused=false) {
-        this.initial = timer;
-        this.timer = timer;
-        this.onDone = onDone;
-        this.repeats = repeats;
-        
-        this.paused = startPaused;
-        this.tickHandle = setInterval(() => this.tick(), 1000);
-    }
+  constructor(timer, onDone, repeats = false, startPaused = false) {
+    this.initial = timer;
+    this.timer = timer;
+    this.onDone = onDone;
+    this.repeats = repeats;
 
-    toggle() {
-        this.paused = !this.paused;
-    }
+    this.paused = startPaused;
+    this.tickHandle = setInterval(() => this.tick(), 1000);
+  }
 
-    tick() {
-        if (!this.paused) {
-            this.timer -= 1;
+  toggle() {
+    this.paused = !this.paused;
+  }
 
-            if (this.timer <= 0) {
-                this.onDone();
-                this.toggle();
+  tick() {
+    if (!this.paused) {
+      this.timer -= 1;
 
-                if (this.repeats) {
-                    this.reset();
-                    this.toggle();
-                }
-            }
+      if (this.timer <= 0) {
+        this.onDone();
+        this.toggle();
+
+        if (this.repeats) {
+          this.reset();
+          this.toggle();
         }
+      }
     }
+  }
 
-    add(amount) {
-        this.timer += amount;
-    }
+  add(amount) {
+    this.timer += amount;
+  }
 
-    subtract(amount) {
-        this.timer -= amount;
-    }
+  subtract(amount) {
+    this.timer -= amount;
+  }
 
-    reset() {
-        this.timer = this.initial;
-    }
+  reset() {
+    this.timer = this.initial;
+  }
 }

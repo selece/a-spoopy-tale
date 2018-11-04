@@ -1,0 +1,18 @@
+{
+    "name": "Trophy Room",
+    "descriptions": [
+        {
+            "text": "You shudder under the glass-eyed gaze of a dozen stuffed trophy heads.",
+            "conditions": {}
+        },
+        {
+            "text": "An explorer's room, you decide. The room is filled with hunting trophies and curios from the depths of darkest Africa.",
+            "conditions": {}
+        },
+        {
+            "text": "You can't help but notice the stuffed tiger's head mounted on the trophy room wall. Until you notice the rhinoceros, and the lion, and...",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

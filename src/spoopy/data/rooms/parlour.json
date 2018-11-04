@@ -1,0 +1,18 @@
+{
+    "name": "Parlour",
+    "descriptions": [
+        {
+            "text": "You decide the various couches and ottomans in the parlour look rather uncomfortable for sitting.",
+            "conditions": {}
+        },
+        {
+            "text": "The once-vibrant upholstery of the parlour's furniture is now moth-eaten and sunfaded.",
+            "conditions": {}
+        },
+        {
+            "text": "You enter the parlour, a room filled with an awkwardly placed chaise, three sofas, and two armchairs.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

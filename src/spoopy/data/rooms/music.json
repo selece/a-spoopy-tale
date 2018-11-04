@@ -1,0 +1,18 @@
+{
+    "name": "Music Room",
+    "descriptions": [
+        {
+            "text": "You imagine hearing a ghostly sonata as you gaze upon the dust-covered piano.",
+            "conditions": {}
+        },
+        {
+            "text": "Sheets of music have crumpled to near-dust atop the surface of the grand piano.",
+            "conditions": {}
+        },
+        {
+            "text": "A grand piano stands in a corner of the music room. Heavy drapery along the walls adds to the heavy silence.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

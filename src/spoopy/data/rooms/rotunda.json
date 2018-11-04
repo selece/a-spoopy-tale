@@ -1,0 +1,18 @@
+{
+    "name": "Rotunda",
+    "descriptions": [
+        {
+            "text": "You gaze out onto the grounds with a full 270 degrees of view.",
+            "conditions": {}
+        },
+        {
+            "text": "The rotunda is completely empty of anything but dust.",
+            "conditions": {}
+        },
+        {
+            "text": "You wonder at the purpose of an empty, round room.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

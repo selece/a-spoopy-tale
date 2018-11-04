@@ -1,0 +1,18 @@
+{
+    "name": "Pantry",
+    "descriptions": [
+        {
+            "text": "You admire the neat but dusty rows of china and wineglasses in the pantry.",
+            "conditions": {}
+        },
+        {
+            "text": "The pantry is stifling. No plates have been prepared here in some time.",
+            "conditions": {}
+        },
+        {
+            "text": "Not a thing is out of place in this pantry. You muse that a butler must have reigned here once.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

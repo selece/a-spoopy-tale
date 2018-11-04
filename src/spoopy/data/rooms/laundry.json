@@ -1,0 +1,18 @@
+{
+    "name": "Laundry Room",
+    "descriptions": [
+        {
+            "text": "The smell of mildew pervades your sinuses as you enter the laundry room.",
+            "conditions": {}
+        },
+        {
+            "text": "You meander around rotting tables and washbasins.",
+            "conditions": {}
+        },
+        {
+            "text": "Mildew and rot reign in the laundry room.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

@@ -4,6 +4,10 @@
         {
             "text": "The hollow eyes and broken teeth leer at you with an oddly jovial grin.",
             "conditions": {}
+        },
+        {
+            "text": "!!! CONDITIONAL TEST !!!",
+            "conditions": {"atLoc": "Foyer"}
         }
     ],
     "actions": {},

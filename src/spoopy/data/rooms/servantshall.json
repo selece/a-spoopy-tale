@@ -1,0 +1,18 @@
+{
+    "name": "Servants' Hall",
+    "descriptions": [
+        {
+            "text": "You notice the wooden floor is cheap, hard, and well-scuffed.",
+            "conditions": {}
+        },
+        {
+            "text": "The hall is furnished only by a massive wooden table and two long benches.",
+            "conditions": {}
+        },
+        {
+            "text": "You find the lack of artwork, decoration, and comfortable furniture a little alarming.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

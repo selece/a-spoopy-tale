@@ -1,0 +1,18 @@
+{
+    "name": "Nursery",
+    "descriptions": [
+        {
+            "text": "You shudder at the imagined sound of children laughing and the patter of little feet.",
+            "conditions": {}
+        },
+        {
+            "text": "China dolls and hobby horses lay scattered, long ago abandoned.",
+            "conditions": {}
+        },
+        {
+            "text": "Though probably much loved by their owners, you find the old-fashioned toys vaguely creepy.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

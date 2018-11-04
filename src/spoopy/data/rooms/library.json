@@ -1,0 +1,18 @@
+{
+    "name": "Library",
+    "descriptions": [
+        {
+            "text": "You spy hundreds upon hundreds of books and tomes, their leatherbound spines dusty and mould-ridden.",
+            "conditions": {}
+        },
+        {
+            "text": "Motes of dust dance in your vision as you gaze upon a vast library.",
+            "conditions": {}
+        },
+        {
+            "text": "The library is silent and oppressive with the weight of a century's forgotten knowledge",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

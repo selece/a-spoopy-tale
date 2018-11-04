@@ -1,50 +1,68 @@
-import {findWhere, sample, filter, isEqual, pluck, chain, contains} from 'underscore';
+"use strict";
 
+import { find, chain, map, filter, includes, isEqual } from "lodash";
+
+import Loader from "./loader";
 export default class ItemDB {
-    constructor() {
-        this.items = [
-            {
-                'name': 'Skull',
-                'descriptions': [
-                    {
-                        'text': 'The hollow eyes and broken teeth leer at you with an oddly jovial grin.',
-                        'conditions': {},
-                    }
-                ],
-                'actions': {},
-                'tags': {},
-            }
-        ];
-    }
+  constructor() {
+    this.items = new Loader(
+      ["skull.json", "tome.json", "amulet.json", "bottle.json", "pen.json"],
+      "./data/items/"
+      // path is relative to loader.js location!
+    ).res;
+  }
 
-    get item_names() {
-        return pluck(this.items, 'name');
+  item(search) {
+    if (this.exists(search)) {
+      return chain(this.items)
+        .filter(item => item.name === search)
+        .head()
+        .value();
+    } else {
+      throw new Error(`Item does not exist: ${search}.`);
     }
+  }
 
-    random_item(exclude) {
-        return chain(this.items)
-            .filter( (elem) => !contains(exclude, elem) )
-            .sample()
-            .value();
-    }
+  get item_names() {
+    return map(this.items, "name");
+  }
 
-    exists(search) {
-        return findWhere(this.items, {name: search}) !== undefined;
-    }
+  random_item(exclude = []) {
+    return find(this.items, {
+      name: chain(this.items)
+        .map("name")
+        .filter(item => !includes(exclude, item))
+        .sampleSize()
+        .head()
+        .value()
+    });
+  }
 
-    getDescription(search, conditions={}) {
-        let target = findWhere(this.items, {name: search});
-        if (target !== undefined) {
-            return sample(
-                filter(
-                    target.descriptions,
-                    i => isEqual(i.conditions, conditions)
-                )
-            ).text || 'Error! Could not load a valid description.';
-        
-        } else {
-            console.error('getDescription():', search, 'not found in', this.items);
-            return 'Error! No valid descriptions for' + search;
-        }
+  exists(search) {
+    return find(this.items, { name: search }) !== undefined;
+  }
+
+  getDescription(search, conditions = {}) {
+    const target = find(this.items, { name: search });
+    if (target) {
+      const filteredConditions = filter(target.descriptions, desc =>
+        isEqual(desc.conditions, conditions)
+      );
+
+      if (filteredConditions.length) {
+        return chain(filteredConditions)
+          .sampleSize()
+          .head()
+          .value().text;
+      } else {
+        return chain(target.descriptions)
+          .filter(desc => isEqual(desc.conditions, {}))
+          .sampleSize()
+          .head()
+          .value().text;
+      }
+    } else {
+      throw new Error(`Item not found: ${search}.`);
     }
+  }
 }

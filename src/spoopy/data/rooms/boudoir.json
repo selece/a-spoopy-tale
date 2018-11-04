@@ -1,0 +1,18 @@
+{
+    "name": "Boudoir",
+    "descriptions": [
+        {
+            "text": "The boudoir is heavily decorated with gilt and pink-striped wallpaper, though the gilt is chipped and wallpaper peeling.",
+            "conditions": {}
+        },
+        {
+            "text": "You tread lightly into the mistress's private sitting room, observing the feminine decor.",
+            "conditions": {}
+        },
+        {
+            "text": "The furniture in this room is feminine, and you discover an assortment of tarnished silver brushes and handmirrors on the dressing table.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

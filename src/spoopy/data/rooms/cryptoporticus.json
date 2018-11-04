@@ -1,0 +1,18 @@
+{
+    "name": "Cryptoporticus",
+    "descriptions": [
+        {
+            "text": "Your footsteps echo hollowly as you tread along the stone hallway.",
+            "conditions": {}
+        },
+        {
+            "text": "Several tons of stone loom over your head as you move down the hallway.",
+            "conditions": {}
+        },
+        {
+            "text": "Great stone slabs form the hallway floor. Blocks of stone form the hallway walls. And the arched ceiling? Also stone.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Furnace Room",
+    "descriptions": [
+        {
+            "text": "The furnace is a giant beast of stone and iron, surmounted by a spiderweb of pipes and ductwork.",
+            "conditions": {}
+        },
+        {
+            "text": "You find the furnace room chillingly cold. It is decades since a fire was stoked here.",
+            "conditions": {}
+        },
+        {
+            "text": "You spy a mountain of coal near a massive furnace.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Master Bedroom",
+    "descriptions": [
+        {
+            "text": "A canopied bed stands in the middle of the bedroom, its gauzy curtains hanging in moth-eaten shreds.",
+            "conditions": {}
+        },
+        {
+            "text": "You gaze for awhile at the hunting scene frescoed on the ceiling above the massive bedframe.",
+            "conditions": {}
+        },
+        {
+            "text": "You feel slightly uneasy intruding upon the long-ago master's private chambers.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

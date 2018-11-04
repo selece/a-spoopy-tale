@@ -1,0 +1,18 @@
+{
+    "name": "Larder",
+    "descriptions": [
+        {
+            "text": "The scent of rot and mould permeate the air in the larder.",
+            "conditions": {}
+        },
+        {
+            "text": "The butter churn is rotten and dusty bones strewn on the floor are all that remain of the larder\"s cured meats.",
+            "conditions": {}
+        },
+        {
+            "text": "Despite the smell of rot, you are in awe of the size of the house's larder.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

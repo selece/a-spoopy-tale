@@ -1,0 +1,18 @@
+{
+    "name": "Cloakroom",
+    "descriptions": [
+        {
+            "text": "Your feet sink into the dusty carpet of the abandoned cloakroom.",
+            "conditions": {}
+        },
+        {
+            "text": "The few moth-eaten overcoats and fur wraps remaining in the cloakroom give off a musty smell.",
+            "conditions": {}
+        },
+        {
+            "text": "You see nothing more than a couple of sofas and some abandoned coats.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}

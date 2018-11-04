@@ -1,0 +1,18 @@
+{
+    "name": "Bathroom",
+    "descriptions": [
+        {
+            "text": "You shudder at the grime in the cracks of the marble floor.",
+            "conditions": {}
+        },
+        {
+            "text": "You gaze about the bathroom. A wash basin, the standard plumbing, and a large clawfoot tub.",
+            "conditions": {}
+        },
+        {
+            "text": "Marble, wood, and cast iron lend the bathroom an air of ageold majesty.",
+            "conditions": {}
+        }
+    ],
+    "tags": {}
+}
