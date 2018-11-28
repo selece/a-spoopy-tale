@@ -5,6 +5,7 @@ import { map, includes, without, keys } from "lodash";
 export default class Player {
   constructor() {
     this.loc = "Foyer";
+    this.last = undefined;
     this.inventory = [];
     this.map = [];
     this.explored = [];
@@ -22,6 +23,10 @@ export default class Player {
 
       atLocation: arg => {
         return this.loc === arg;
+      },
+
+      lastAt: arg => {
+        return this.last === arg;
       },
 
       hasSearched: arg => {
@@ -93,6 +98,10 @@ export default class Player {
 
       loc: {
         value: this.loc
+      },
+
+      last: {
+        value: this.last
       },
 
       conditions: this.currentConditions
@@ -247,9 +256,10 @@ export default class Player {
     }
   }
 
-  move(loc) {
+  move(loc, last = undefined) {
     this.updateMap(loc);
     this.loc = loc;
+    this.last = last;
   }
 
   query(arg) {

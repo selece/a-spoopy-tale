@@ -1,7 +1,7 @@
 "use strict";
 
 import { includes, keys } from "lodash";
-import { computed, action, observable } from "mobx";
+import { action, observable } from "mobx";
 
 import Player from "./player";
 import ItemDB from "./items";
@@ -48,26 +48,26 @@ export default class Engine {
 
     // map player actions for playerAction()
     this._playerActions = {
-      PLAYER_MOVE: arg => {
-        this.player.move(arg.loc);
+      PLAYER_MOVE: ({ loc, last }) => {
+        this.player.move(loc, last);
       },
 
-      PLAYER_EXPLORE: arg => {
-        this.player.explore(arg.loc);
+      PLAYER_EXPLORE: ({ loc }) => {
+        this.player.explore(loc);
       },
 
-      PLAYER_SEARCH: arg => {
-        this.player.search(arg.loc);
+      PLAYER_SEARCH: ({ loc }) => {
+        this.player.search(loc);
       },
 
-      PLAYER_PICKUP: arg => {
-        this.player.pickup(arg.item);
-        this.mapManager.pickup(arg.item, arg.loc);
+      PLAYER_PICKUP: ({ item, loc }) => {
+        this.player.pickup(item);
+        this.mapManager.pickup(item, loc);
       },
 
-      PLAYER_DROP: arg => {
-        this.player.drop(arg.item);
-        this.mapManager.place(arg.item, arg.loc);
+      PLAYER_DROP: ({ item, loc }) => {
+        this.player.drop(item);
+        this.mapManager.place(item, loc);
       }
     };
 
@@ -83,9 +83,13 @@ export default class Engine {
     // generate props for button grids (exits and actions)
     const status = this.player.status;
     const here = status.loc.value;
+    const last = status.last.value;
     const room = this.mapManager.find(here);
 
     let propButtonGridActions, propButtonGridExits;
+
+    // TODO: make common buttons constants, push to appropriate array as req'd
+    // TODO: refactor if/else structure to be less repetitive below
 
     // completely new room (not explored, not searched)
     if (
@@ -103,6 +107,19 @@ export default class Engine {
         }
       ];
 
+      // check if this is the starting room - building in "go back" functionality
+      // TODO: build "go back" action
+      // NOTE: refactor? repeated code in multiple cases below
+      // NOTE: refactor out strings to constants in top of file
+      if (last) {
+        propButtonGridActions.push({
+          display: "Go back from where you came.",
+          classes: ["button-small", "cursor-pointer"],
+          onClickHandler: () =>
+            this.playerAction("PLAYER_MOVE", { loc: last, last: here })
+        });
+      }
+
       // explored room, but NOT searched (should see exits, but no items)
     } else if (
       this.player.query({ hasExplored: here }) &&
@@ -115,7 +132,8 @@ export default class Engine {
         classes: this.player.query({ hasVisited: exit })
           ? ["button-large", "cursor-pointer"]
           : ["button-large", "cursor-pointer", "text-italics"],
-        onClickHandler: () => this.playerAction("PLAYER_MOVE", { loc: exit })
+        onClickHandler: () =>
+          this.playerAction("PLAYER_MOVE", { loc: exit, last: here })
       }));
 
       propButtonGridActions = [
@@ -126,6 +144,17 @@ export default class Engine {
             this.playerAction("PLAYER_SEARCH", { loc: here })
         }
       ];
+
+      // check if this is the starting room - building in "go back" functionality
+      // TODO: build "go back" action
+      if (last) {
+        propButtonGridActions.push({
+          display: "Go back from where you came.",
+          classes: ["button-small", "cursor-pointer"],
+          onClickHandler: () =>
+            this.playerAction("PLAYER_MOVE", { loc: last, last: here })
+        });
+      }
 
       // explored room and searched room - should display items and exits
       // a bit of repeat code for propButtonGridExits - maybe refactor?
@@ -138,38 +167,52 @@ export default class Engine {
           ? exit
           : this.roomDB.random_unexplored,
         classes: ["button-large", "cursor-pointer"],
-        onClickHandler: () => this.playerAction("PLAYER_MOVE", { loc: exit })
+        onClickHandler: () =>
+          this.playerAction("PLAYER_MOVE", { loc: exit, last: here })
       }));
 
       propButtonGridActions = room.items.length
-        ? room.items.map(
-            item => ({
-              display: item.name,
-              classes: ["button-small", "cursor-pointer"],
-              onClickHandler: () =>
-                this.playerAction("PLAYER_PICKUP", { item: item, loc: here })
-            })
-
-            // no items, show nothing here to find
-          )
-        : [
+        ? room.items.map(item => ({
+            display: item.name,
+            classes: ["button-small", "cursor-pointer"],
+            onClickHandler: () =>
+              this.playerAction("PLAYER_PICKUP", { item: item, loc: here })
+          }))
+        : // no items, show nothing here to find
+          [
             {
               display: "There's nothing more here to find.",
               classes: ["button-small"]
             }
           ];
+
+      // check if this is the starting room - building in "go back" functionality
+      // TODO: build "go back" action
+      if (last) {
+        propButtonGridActions.push({
+          display: "Go back from where you came.",
+          classes: ["button-small", "cursor-pointer"],
+          onClickHandler: () =>
+            this.playerAction("PLAYER_MOVE", { loc: last, last: here })
+        });
+      }
     } else {
       throw new Error(
         `Unexpected exploration/search case! @ ${here} w/ ${room}.`
       );
     }
 
+    // NOTE: always show room name?
+    /*
     this.GUIState.propLocation = this.player.query({
       hasExplored: status.loc.value
     })
       ? status.loc.value
       : "A dark and indistinct room";
+    */
+    this.GUIState.propLocation = status.loc.value;
 
+    // TODO: more unexplored status statements (array, select random phrase)
     this.GUIState.propDescription = this.player.query({
       hasExplored: status.loc.value
     })
