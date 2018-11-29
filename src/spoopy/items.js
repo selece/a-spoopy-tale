@@ -1,13 +1,11 @@
-"use strict";
+import { find, chain, map, filter, includes, isEqual } from 'lodash';
+import Loader from './loader';
 
-import { find, chain, map, filter, includes, isEqual } from "lodash";
-
-import Loader from "./loader";
 export default class ItemDB {
   constructor() {
     this.items = new Loader(
-      ["skull.json", "tome.json", "amulet.json", "bottle.json", "pen.json"],
-      "./data/items/"
+      ['skull.json', 'tome.json', 'amulet.json', 'bottle.json', 'pen.json'],
+      './data/items/'
       // path is relative to loader.js location!
     ).res;
   }
@@ -18,19 +16,19 @@ export default class ItemDB {
         .filter(item => item.name === search)
         .head()
         .value();
-    } else {
-      throw new Error(`Item does not exist: ${search}.`);
     }
+
+    throw new Error(`Item does not exist: ${search}.`);
   }
 
   get item_names() {
-    return map(this.items, "name");
+    return map(this.items, 'name');
   }
 
   random_item(exclude = []) {
     return find(this.items, {
       name: chain(this.items)
-        .map("name")
+        .map('name')
         .filter(item => !includes(exclude, item))
         .sampleSize()
         .head()
@@ -54,15 +52,15 @@ export default class ItemDB {
           .sampleSize()
           .head()
           .value().text;
-      } else {
-        return chain(target.descriptions)
-          .filter(desc => isEqual(desc.conditions, {}))
-          .sampleSize()
-          .head()
-          .value().text;
       }
-    } else {
-      throw new Error(`Item not found: ${search}.`);
+
+      return chain(target.descriptions)
+        .filter(desc => isEqual(desc.conditions, {}))
+        .sampleSize()
+        .head()
+        .value().text;
     }
+
+    throw new Error(`Item not found: ${search}.`);
   }
 }

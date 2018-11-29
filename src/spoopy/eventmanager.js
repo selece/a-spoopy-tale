@@ -1,6 +1,4 @@
-"use strict";
-
-import Event from "./event";
+import Event from './event';
 
 export default class EventManager {
   constructor() {
@@ -27,7 +25,7 @@ export default class EventManager {
   }
 
   exists(ev) {
-    return this.events[ev] === undefined ? false : true;
+    return this.events[ev] !== undefined;
   }
 
   find(ev) {

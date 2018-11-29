@@ -1,6 +1,4 @@
-"use strict";
-
-import { includes, filter, sampleSize, times, random, without } from "lodash";
+import { includes, filter, sampleSize, times, random, without } from 'lodash';
 
 export default class MapManager {
   constructor(available, itemDB) {
@@ -98,9 +96,9 @@ export default class MapManager {
 
     if (filtered.length >= count) {
       return sampleSize(filtered, count);
-    } else {
-      return undefined;
     }
+
+    return undefined;
   }
 
   build(at, branches, connects = 0) {
@@ -169,7 +167,7 @@ export default class MapManager {
 
       const room = this.random(1, {
         available: this.used,
-        operator: room => !includes(excludeRooms, room)
+        operator: search => !includes(excludeRooms, search)
       })[0];
       excludeRooms.push(room);
 

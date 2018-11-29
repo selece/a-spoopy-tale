@@ -1,51 +1,54 @@
-const html_webpack_plugin = require("html-webpack-plugin");
-const clean_webpack_plugin = require("clean-webpack-plugin");
+const HTMLPlugin = require('html-webpack-plugin');
+const CleanPlugin = require('clean-webpack-plugin');
 
 module.exports = {
   entry: {
-    bundle: __dirname + "/src/index.jsx"
+    bundle: `${__dirname}/src/index.jsx`
   },
   module: {
-    loaders: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: [/node_modules/, /\.spec.(js|jsx)$/],
-        loader: "babel-loader"
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        loader: "sass-loader"
-      }
-    ],
     rules: [
       {
         test: /\.(s*)css$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' }
+        ]
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: { minimize: true }
+          }
+        ]
       },
       {
         test: /\.(js|jsx)$/,
         exclude: [/node_modules/, /\.spec.(js|jsx)$/],
-        use: "babel-loader"
+        use: {
+          loader: 'babel-loader'
+        }
       }
     ]
   },
   output: {
-    filename: "[name].js",
-    path: __dirname + "/build"
+    filename: '[name].js',
+    path: `${__dirname}/build`
   },
   plugins: [
-    new clean_webpack_plugin(["build/*.*"], {
+    new CleanPlugin(['build/*.*'], {
       verbose: true,
       watch: true,
       beforeEmit: true
     }),
-    new html_webpack_plugin({
-      template: __dirname + "/src/index.html",
-      filename: "index.html",
-      inject: "body"
+    new HTMLPlugin({
+      template: `${__dirname}/src/index.html`,
+      filename: 'index.html',
+      inject: 'body'
     })
   ],
   cache: true,
-  devtool: "source-map"
+  devtool: 'source-map'
 };

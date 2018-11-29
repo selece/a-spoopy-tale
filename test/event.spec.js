@@ -1,18 +1,18 @@
-import Event from "../src/spoopy/event";
+import Event from '../src/spoopy/event';
 
 jest.useFakeTimers();
 
-describe("Event", () => {
+describe('Event', () => {
   const timer = 5;
   const spy = jest.fn();
   let target = new Event(timer, spy, false, false);
 
-  describe("constructor", () => {
-    test("returns an object of type Event", () => {
-      expect(target instanceof Event);
+  describe('constructor', () => {
+    test('returns an object of type Event', () => {
+      expect(target instanceof Event).toBe(true);
     });
 
-    test("inits all parameters to expected values", () => {
+    test('inits all parameters to expected values', () => {
       expect(target.initial).toEqual(timer);
       expect(target.onDone).toEqual(spy);
       expect(target.repeats).toEqual(false);
@@ -20,8 +20,8 @@ describe("Event", () => {
     });
   });
 
-  describe("toggle", () => {
-    test("flips the value of paused", () => {
+  describe('toggle', () => {
+    test('flips the value of paused', () => {
       const current = target.paused;
       target.toggle();
 
@@ -29,43 +29,43 @@ describe("Event", () => {
     });
   });
 
-  describe("add", () => {
-    test("increments the timer by the specified amount", () => {
+  describe('add', () => {
+    test('increments the timer by the specified amount', () => {
       const current = target.timer;
       target.add(timer);
       expect(target.timer).toEqual(current + timer);
     });
   });
 
-  describe("subtract", () => {
-    test("decrements the timer by the specified amount", () => {
+  describe('subtract', () => {
+    test('decrements the timer by the specified amount', () => {
       const current = target.timer;
       target.subtract(timer);
       expect(target.timer).toEqual(current - timer);
     });
   });
 
-  describe("reset", () => {
-    test("restores the timer to the initial value", () => {
+  describe('reset', () => {
+    test('restores the timer to the initial value', () => {
       target.add(100);
       target.reset();
       expect(target.timer).toEqual(timer);
     });
   });
 
-  describe("tick", () => {
+  describe('tick', () => {
     beforeEach(() => {
       target = new Event(5, spy);
     });
 
-    test("spy is only called after timer <= 0", () => {
+    test('spy is only called after timer <= 0', () => {
       jest.runTimersToTime(5000);
 
       expect(target.timer).toEqual(0);
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    test("spy is called repeatedly for repeating events", () => {
+    test('spy is called repeatedly for repeating events', () => {
       const localSpy = jest.fn();
       const local = new Event(5, localSpy, true);
 

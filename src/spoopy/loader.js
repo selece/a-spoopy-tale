@@ -1,5 +1,3 @@
-"use strict";
-
 export default class Loader {
   constructor(files, path) {
     this.path = path;

@@ -1,10 +1,8 @@
-"use strict";
-
-import { map, includes, without, keys } from "lodash";
+import { map, includes, without, keys } from 'lodash';
 
 export default class Player {
   constructor() {
-    this.loc = "Foyer";
+    this.loc = 'Foyer';
     this.last = undefined;
     this.inventory = [];
     this.map = [];
@@ -16,54 +14,19 @@ export default class Player {
     this.updateMap(this.loc);
 
     // condition resolver bindings
-    this._conditionMap = {
-      hasItem: arg => {
-        return includes(map(this.inventory, "name"), arg);
-      },
-
-      atLocation: arg => {
-        return this.loc === arg;
-      },
-
-      lastAt: arg => {
-        return this.last === arg;
-      },
-
-      hasSearched: arg => {
-        return this.hasSearched(arg);
-      },
-
-      hasExplored: arg => {
-        return this.hasExplored(arg);
-      },
-
-      hasVisited: arg => {
-        return this.hasVisited(arg);
-      },
-
-      hasHealth: arg => {
-        return this.health === arg;
-      },
-
-      hasHealthGreaterThan: arg => {
-        return this.health >= arg;
-      },
-
-      hasHealthLessThan: arg => {
-        return this.health <= arg;
-      },
-
-      hasBattery: arg => {
-        return this.battery === arg;
-      },
-
-      hasBatteryGreaterThan: arg => {
-        return this.battery >= arg;
-      },
-
-      hasBatteryLessThan: arg => {
-        return this.battery <= arg;
-      }
+    this.conditionMap = {
+      hasItem: arg => includes(map(this.inventory, 'name'), arg),
+      atLocation: arg => this.loc === arg,
+      lastAt: arg => this.last === arg,
+      hasSearched: arg => this.hasSearched(arg),
+      hasExplored: arg => this.hasExplored(arg),
+      hasVisited: arg => this.hasVisited(arg),
+      hasHealth: arg => this.health === arg,
+      hasHealthGreaterThan: arg => this.health >= arg,
+      hasHealthLessThan: arg => this.health <= arg,
+      hasBattery: arg => this.battery === arg,
+      hasBatteryGreaterThan: arg => this.battery >= arg,
+      hasBatteryLessThan: arg => this.battery <= arg
     };
   }
 
@@ -126,75 +89,72 @@ export default class Player {
     // if the inventory is empty, return generic 'empty' response
     // TODO: have list of random phrases to randomly select from
     if (!this.inventory.length) {
-      return "Your pockets are quite empty.";
+      return 'Your pockets are quite empty.';
 
       // otherwise, build the response based on what we have right now
-    } else {
-      return `You are currently holding: ${this.inventory
-        .map(
-          // build the list for oxford comma correctness
-          (item, index, list) => {
-            // if the item starts with a vowel, prefix 'an', otherwise use 'a'
-            const indefinite_article = includes(
-              ["a", "e", "i", "o", "u"],
-              String(item.name)
-                .substring(0, 1)
-                .toLowerCase()
-            )
-              ? "an"
-              : "a";
-
-            // if the list is exactly one item
-            if (list.length === 1) {
-              return `${indefinite_article} ${item.name}`;
-
-              // otherwise we need to build a comma-separated list
-            } else {
-              // if we're at the end of the list
-              // return 'and item name', e.g. 'and Skull'
-              if (index === list.length - 1) {
-                return `and ${indefinite_article} ${item.name}`;
-              } else {
-                // if the list is only two items, don't add the oxford comma
-                if (list.length == 2) {
-                  return `${indefinite_article} ${item.name} `;
-
-                  // otherwise, add the oxford comma
-                } else {
-                  return `${indefinite_article} ${item.name}, `;
-                }
-              }
-            }
-
-            // NOTE: map returns an array - use join compact it into a single string
-            // NOTE: no spaces in between the list items, already added above
-          }
-        )
-        .join("")}.`;
     }
+
+    return `You are currently holding: ${this.inventory
+      .map(
+        // build the list for oxford comma correctness
+        (item, index, list) => {
+          // if the item starts with a vowel, prefix 'an', otherwise use 'a'
+          const indefiniteArticle = includes(
+            ['a', 'e', 'i', 'o', 'u'],
+            String(item.name)
+              .substring(0, 1)
+              .toLowerCase()
+          )
+            ? 'an'
+            : 'a';
+
+          // if the list is exactly one item, return '<article> {item.name}'
+          if (list.length === 1) {
+            return `${indefiniteArticle} ${item.name}`;
+          }
+
+          // otherwise build comma-seperated list
+          // if we're at the end of the list, return 'and <article> {item.name}'
+          if (index === list.length - 1) {
+            return `and ${indefiniteArticle} ${item.name}`;
+          }
+
+          // if the list is exactly two items, no oxford comma
+          if (list.length === 2) {
+            return `${indefiniteArticle} ${item.name} `;
+          }
+
+          // otherwise, add the oxford comma and continue
+          return `${indefiniteArticle} ${item.name}, `;
+
+          // NOTE: map returns an array - use join compact it into a single string
+          // NOTE: no spaces in between the list items, already added above
+        }
+      )
+      .join('')}.`;
   }
 
   get currentBatteryDescription() {
     if (this.battery === 100) {
       return "Your phone's battery is full.";
-    } else {
-      // TODO: finish descriptive outputs
-      return "Boop!";
     }
+
+    // TODO: finish descriptive outputs
+    return 'Boop!';
   }
 
   get currentHealthDescription() {
     if (this.health === 100) {
-      return "You feel perfectly healthy.";
-    } else {
-      // TODO: finish descriptive outputs
-      return "Welp.";
+      return 'You feel perfectly healthy.';
     }
+
+    // TODO: finish descriptive outputs
+    return 'Welp.';
   }
 
   modifyHealth(amount) {
-    if (isNaN(amount)) {
-      throw new Error(`Expected integer, got ${amount}.`);
+    if (Number.parseFloat(amount) !== +amount) {
+      throw new Error(`Expected number, got ${amount}.`);
     }
 
     this.health += amount;
@@ -202,8 +162,8 @@ export default class Player {
   }
 
   modifyBattery(amount) {
-    if (isNaN(amount)) {
-      throw new Error(`Expected integer, got ${amount}.`);
+    if (Number.parseFloat(amount) !== +amount) {
+      throw new Error(`Expected number, got ${amount}.`);
     }
 
     this.battery += amount;
@@ -268,11 +228,11 @@ export default class Player {
     Object.entries(arg).forEach(set => {
       const [key, val] = set;
 
-      if (!includes(keys(this._conditionMap), key)) {
+      if (!includes(keys(this.conditionMap), key)) {
         throw new Error(`Invalid condition: ${key}.`);
       }
 
-      res.push(this._conditionMap[key](val));
+      res.push(this.conditionMap[key](val));
     });
 
     return res.every(elem => elem === true);

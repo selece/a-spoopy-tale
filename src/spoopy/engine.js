@@ -1,13 +1,11 @@
-"use strict";
+import { includes, keys } from 'lodash';
+import { action, observable } from 'mobx';
 
-import { includes, keys } from "lodash";
-import { action, observable } from "mobx";
-
-import Player from "./player";
-import ItemDB from "./items";
-import RoomDB from "./rooms";
-import EventManager from "./eventmanager";
-import MapManager from "./mapmanager";
+import Player from './player';
+import ItemDB from './items';
+import RoomDB from './rooms';
+import EventManager from './eventmanager';
+import MapManager from './mapmanager';
 
 export default class Engine {
   constructor(params) {
@@ -36,7 +34,7 @@ export default class Engine {
     this.eventManager.add([
       // end of game event, occurs 60 minutes after start
       {
-        name: "Global",
+        name: 'Global',
         timer: 60 * 60,
         trigger: () => this.endGame(),
         repeats: false,
@@ -47,7 +45,7 @@ export default class Engine {
     this.mapManager.generate(params);
 
     // map player actions for playerAction()
-    this._playerActions = {
+    this.playerActions = {
       PLAYER_MOVE: ({ loc, last }) => {
         this.player.move(loc, last);
       },
@@ -77,33 +75,42 @@ export default class Engine {
 
   endGame() {
     // TODO: implement endgame sequence, update GUI etc.
+    this.player = undefined;
   }
 
   updateGUIState() {
     // generate props for button grids (exits and actions)
-    const status = this.player.status;
+    // const status = this.player.status;
+    const { status } = this.player;
     const here = status.loc.value;
     const last = status.last.value;
     const room = this.mapManager.find(here);
 
-    let propButtonGridActions, propButtonGridExits;
+    let propButtonGridActions;
+    let propButtonGridExits;
 
     // TODO: make common buttons constants, push to appropriate array as req'd
     // TODO: refactor if/else structure to be less repetitive below
 
     // completely new room (not explored, not searched)
     if (
-      !this.player.query({ hasExplored: here }) &&
-      !this.player.query({ hasSearched: here })
+      !this.player.query({
+        hasExplored: here
+      }) &&
+      !this.player.query({
+        hasSearched: here
+      })
     ) {
       propButtonGridExits = [{}];
 
       propButtonGridActions = [
         {
-          display: "Take a look around.",
-          classes: ["button-small", "cursor-pointer"],
+          display: 'Take a look around.',
+          classes: ['button-small', 'cursor-pointer'],
           onClickHandler: () =>
-            this.playerAction("PLAYER_EXPLORE", { loc: here })
+            this.playerAction('PLAYER_EXPLORE', {
+              loc: here
+            })
         }
       ];
 
@@ -113,35 +120,51 @@ export default class Engine {
       // NOTE: refactor out strings to constants in top of file
       if (last) {
         propButtonGridActions.push({
-          display: "Go back from where you came.",
-          classes: ["button-small", "cursor-pointer"],
+          display: 'Go back from where you came.',
+          classes: ['button-small', 'cursor-pointer'],
           onClickHandler: () =>
-            this.playerAction("PLAYER_MOVE", { loc: last, last: here })
+            this.playerAction('PLAYER_MOVE', {
+              loc: last,
+              last: here
+            })
         });
       }
 
       // explored room, but NOT searched (should see exits, but no items)
     } else if (
-      this.player.query({ hasExplored: here }) &&
-      !this.player.query({ hasSearched: here })
+      this.player.query({
+        hasExplored: here
+      }) &&
+      !this.player.query({
+        hasSearched: here
+      })
     ) {
       propButtonGridExits = room.adjacency.map(exit => ({
-        display: this.player.query({ hasVisited: exit })
+        display: this.player.query({
+          hasVisited: exit
+        })
           ? exit
           : this.roomDB.random_unexplored,
-        classes: this.player.query({ hasVisited: exit })
-          ? ["button-large", "cursor-pointer"]
-          : ["button-large", "cursor-pointer", "text-italics"],
+        classes: this.player.query({
+          hasVisited: exit
+        })
+          ? ['button-large', 'cursor-pointer']
+          : ['button-large', 'cursor-pointer', 'text-italics'],
         onClickHandler: () =>
-          this.playerAction("PLAYER_MOVE", { loc: exit, last: here })
+          this.playerAction('PLAYER_MOVE', {
+            loc: exit,
+            last: here
+          })
       }));
 
       propButtonGridActions = [
         {
-          display: "Search the room.",
-          classes: ["button-small", "cursor-pointer"],
+          display: 'Search the room.',
+          classes: ['button-small', 'cursor-pointer'],
           onClickHandler: () =>
-            this.playerAction("PLAYER_SEARCH", { loc: here })
+            this.playerAction('PLAYER_SEARCH', {
+              loc: here
+            })
         }
       ];
 
@@ -149,40 +172,52 @@ export default class Engine {
       // TODO: build "go back" action
       if (last) {
         propButtonGridActions.push({
-          display: "Go back from where you came.",
-          classes: ["button-small", "cursor-pointer"],
+          display: 'Go back from where you came.',
+          classes: ['button-small', 'cursor-pointer'],
           onClickHandler: () =>
-            this.playerAction("PLAYER_MOVE", { loc: last, last: here })
+            this.playerAction('PLAYER_MOVE', {
+              loc: last,
+              last: here
+            })
         });
       }
 
       // explored room and searched room - should display items and exits
       // a bit of repeat code for propButtonGridExits - maybe refactor?
     } else if (
-      this.player.query({ hasExplored: here }) &&
-      this.player.query({ hasSearched: here })
+      this.player.query({
+        hasExplored: here
+      }) &&
+      this.player.query({
+        hasSearched: here
+      })
     ) {
       propButtonGridExits = room.adjacency.map(exit => ({
         display: this.player.hasVisited(exit)
           ? exit
           : this.roomDB.random_unexplored,
-        classes: ["button-large", "cursor-pointer"],
+        classes: ['button-large', 'cursor-pointer'],
         onClickHandler: () =>
-          this.playerAction("PLAYER_MOVE", { loc: exit, last: here })
+          this.playerAction('PLAYER_MOVE', {
+            loc: exit,
+            last: here
+          })
       }));
 
       propButtonGridActions = room.items.length
         ? room.items.map(item => ({
             display: item.name,
-            classes: ["button-small", "cursor-pointer"],
+            classes: ['button-small', 'cursor-pointer'],
             onClickHandler: () =>
-              this.playerAction("PLAYER_PICKUP", { item: item, loc: here })
-          }))
-        : // no items, show nothing here to find
-          [
+              this.playerAction('PLAYER_PICKUP', {
+                item,
+                loc: here
+              })
+          })) // no items, show nothing here to find
+        : [
             {
               display: "There's nothing more here to find.",
-              classes: ["button-small"]
+              classes: ['button-small']
             }
           ];
 
@@ -190,10 +225,13 @@ export default class Engine {
       // TODO: build "go back" action
       if (last) {
         propButtonGridActions.push({
-          display: "Go back from where you came.",
-          classes: ["button-small", "cursor-pointer"],
+          display: 'Go back from where you came.',
+          classes: ['button-small', 'cursor-pointer'],
           onClickHandler: () =>
-            this.playerAction("PLAYER_MOVE", { loc: last, last: here })
+            this.playerAction('PLAYER_MOVE', {
+              loc: last,
+              last: here
+            })
         });
       }
     } else {
@@ -227,16 +265,16 @@ export default class Engine {
   }
 
   @action
-  playerAction(action, arg) {
-    if (!includes(keys(this._playerActions), action)) {
+  playerAction(target, arg) {
+    if (!includes(keys(this.playerActions), target)) {
       throw new Error(`"${action}" is not a valid action.`);
     }
 
-    if (typeof arg !== "object" || arg === undefined || arg === null) {
+    if (typeof arg !== 'object' || arg === undefined || arg === null) {
       throw new Error(`${arg} is not a valid parameter.`);
     }
 
-    this._playerActions[action](arg);
+    this.playerActions[target](arg);
     this.updateGUIState();
   }
 }
