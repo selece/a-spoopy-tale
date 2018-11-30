@@ -27,9 +27,11 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: [/node_modules/, /\.spec.(js|jsx)$/],
-        use: {
-          loader: 'babel-loader'
-        }
+        use: [
+          {
+            loader: 'babel-loader'
+          }
+        ]
       }
     ]
   },
@@ -50,5 +52,8 @@ module.exports = {
     })
   ],
   cache: true,
-  devtool: 'source-map'
+  devtool: 'source-map',
+  resolve: {
+    extensions: ['.js', '.jsx']
+  }
 };
