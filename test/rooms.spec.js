@@ -24,15 +24,15 @@ describe('RoomDB', () => {
     });
   });
 
-  describe('random_unexplored()', () => {
+  describe('randomUnexplored()', () => {
     test('returns a random unexplored quip', () => {
-      expect(target.unexplored).toContain(target.random_unexplored);
+      expect(target.unexplored).toContain(target.randomUnexplored);
     });
   });
 
-  describe('room_names()', () => {
+  describe('roomsByName()', () => {
     test('returns an array of the room names', () => {
-      expect(target.room_names.length).toEqual(target.rooms.length);
+      expect(target.roomsByName.length).toEqual(target.rooms.length);
     });
   });
 

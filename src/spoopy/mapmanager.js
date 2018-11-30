@@ -111,7 +111,10 @@ export default class MapManager {
 
       if (picks) {
         this.add(picks[0]);
-        this.connect(at, picks[0]);
+        this.connect(
+          at,
+          picks[0]
+        );
       }
     });
 
@@ -129,7 +132,10 @@ export default class MapManager {
 
         if (leaves) {
           const [a, b] = leaves;
-          this.connect(a, b);
+          this.connect(
+            a,
+            b
+          );
         }
       });
     }
@@ -162,7 +168,7 @@ export default class MapManager {
     const excludeRooms = [];
 
     times(params.items, () => {
-      const item = this.itemDB.random_item(excludeItems);
+      const item = this.itemDB.randomItem(excludeItems);
       excludeItems.push(item.name);
 
       const room = this.random(1, {

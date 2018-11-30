@@ -1,17 +1,21 @@
-import React from "react";
-import { observer } from "mobx-react";
-import { generate } from "shortid";
+import React from 'react';
+import classNames from 'classnames';
+import { observer } from 'mobx-react';
+import { generate } from 'shortid';
 
-import Button from "./Button/Button.jsx";
+import Button from './Button/Button';
 
-import "./ButtonGrid.scss";
+import './ButtonGrid.scss';
 
+export default
 @observer
-export default class ButtonGrid extends React.Component {
+class ButtonGrid extends React.Component {
   render() {
+    const { classes, render, renderName } = this.props;
+
     return (
-      <div className={this.props.classes}>
-        {this.props.render[this.props.renderName].map(btn => (
+      <div className={classNames(classes)}>
+        {render[renderName].map(btn => (
           <Button
             display={btn.display}
             onClickHandler={btn.onClickHandler}

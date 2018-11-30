@@ -10,7 +10,8 @@
 
     "plugins": ["prettier", "jest"],
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "react/prop-types": 0
     },
     "extends": ["airbnb", "plugin:prettier/recommended", "plugin:jest/recommended"]
 }

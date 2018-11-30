@@ -80,14 +80,14 @@ export default class RoomDB {
     );
   }
 
-  get random_unexplored() {
+  get randomUnexplored() {
     return chain(this.unexplored)
       .sampleSize()
       .head()
       .value();
   }
 
-  get room_names() {
+  get roomsByName() {
     return map(this.rooms, 'name');
   }
 

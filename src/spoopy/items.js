@@ -21,11 +21,11 @@ export default class ItemDB {
     throw new Error(`Item does not exist: ${search}.`);
   }
 
-  get item_names() {
+  get itemsByName() {
     return map(this.items, 'name');
   }
 
-  random_item(exclude = []) {
+  randomItem(exclude = []) {
     return find(this.items, {
       name: chain(this.items)
         .map('name')

@@ -1,16 +1,16 @@
-"use strict";
+/* eslint-env browser */
 
-import React from "react";
-import ReactDOM from "react-dom";
-import GUIRoot from "./components/GUIRoot.jsx";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import GUIRoot from './components/GUIRoot';
 
-import Engine from "./spoopy/engine";
+import Engine from './spoopy/engine';
 
-import "./globals.scss";
+import './globals.scss';
 
 const engine = new Engine({
   start: {
-    loc: "Foyer",
+    loc: 'Foyer',
     min_branches: 3,
     max_branches: 5
   },
@@ -27,5 +27,5 @@ const engine = new Engine({
 
 ReactDOM.render(
   <GUIRoot GUIState={engine.GUIState} />,
-  document.getElementById("root")
+  document.getElementById('root')
 );

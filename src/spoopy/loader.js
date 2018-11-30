@@ -1,3 +1,6 @@
+/* eslint global-require: 0 */
+/* eslint import/no-dynamic-require: 0 */
+
 export default class Loader {
   constructor(files, path) {
     this.path = path;

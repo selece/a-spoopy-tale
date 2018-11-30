@@ -1,14 +1,18 @@
-import React from "react";
-import { observer } from "mobx-react";
+import React from 'react';
+import { observer } from 'mobx-react';
 
-import "./DisplayHeader.scss";
+import './DisplayHeader.scss';
 
+export default
 @observer
-export default class DisplayHeader extends React.Component {
+class DisplayHeader extends React.Component {
   render() {
+    const { render, renderName } = this.props;
+    const display = render[renderName];
+
     return (
       <div>
-        <h1>{this.props.render[this.props.renderName]}</h1>
+        <h1>{display}</h1>
       </div>
     );
   }

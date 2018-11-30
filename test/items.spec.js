@@ -15,26 +15,26 @@ describe('ItemDB', () => {
     });
   });
 
-  describe('item_names()', () => {
+  describe('itemsByName()', () => {
     test('returns list of item names', () => {
-      expect(target.item_names.length).toBeGreaterThanOrEqual(1);
+      expect(target.itemsByName.length).toBeGreaterThanOrEqual(1);
     });
   });
 
-  describe('random_item()', () => {
+  describe('randomItem()', () => {
     test('returns a random item', () => {
-      const res = target.random_item([]);
+      const res = target.randomItem([]);
       expect(ITEMS_LIST).toContain(res.name);
     });
 
     test('returns a random item using exclusion list', () => {
-      const res = target.random_item(['Skull']);
+      const res = target.randomItem(['Skull']);
       expect(ITEMS_LIST).toContain(res.name);
       expect(res.name).not.toEqual('Skull');
     });
 
     test('returns a random item with default param for exclusion', () => {
-      const res = target.random_item();
+      const res = target.randomItem();
       expect(['Skull', 'Tome', 'Amulet', 'Bottle', 'Pen']).toContain(res.name);
     });
   });

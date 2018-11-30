@@ -1,15 +1,16 @@
-import React from "react";
-import { observer } from "mobx-react";
+import React from 'react';
+import { observer } from 'mobx-react';
 
-import PlayerInfo from "./PlayerInfo/PlayerInfo.jsx";
-import ButtonGrid from "./ButtonGrid/ButtonGrid.jsx";
+import PlayerInfo from './PlayerInfo/PlayerInfo';
+import ButtonGrid from './ButtonGrid/ButtonGrid';
 
-import "./GUIRoot.scss";
+import './GUIRoot.scss';
 
+export default
 @observer
-export default class GUIRoot extends React.Component {
+class GUIRoot extends React.Component {
   render() {
-    const GUIState = this.props.GUIState;
+    const { GUIState } = this.props;
 
     return (
       <div id="GUIRoot" className="center">

@@ -14,7 +14,7 @@ export default class Engine {
     this.roomDB = new RoomDB();
 
     this.eventManager = new EventManager();
-    this.mapManager = new MapManager(this.roomDB.room_names, this.itemDB);
+    this.mapManager = new MapManager(this.roomDB.roomsByName, this.itemDB);
 
     // slightly ugly non-decorator due to mobx only tracking object props that exist
     // when the object is declared
@@ -144,7 +144,7 @@ export default class Engine {
           hasVisited: exit
         })
           ? exit
-          : this.roomDB.random_unexplored,
+          : this.roomDB.randomUnexplored,
         classes: this.player.query({
           hasVisited: exit
         })
@@ -195,7 +195,7 @@ export default class Engine {
       propButtonGridExits = room.adjacency.map(exit => ({
         display: this.player.hasVisited(exit)
           ? exit
-          : this.roomDB.random_unexplored,
+          : this.roomDB.randomUnexplored,
         classes: ['button-large', 'cursor-pointer'],
         onClickHandler: () =>
           this.playerAction('PLAYER_MOVE', {

@@ -124,17 +124,40 @@ describe('MapManager', () => {
     });
 
     test('throws error if <from> or <to> is undefined', () => {
-      expect(() => target.connect('a', undefined)).toThrow(Error);
-      expect(() => target.connect(undefined, 'a')).toThrow(Error);
+      expect(() =>
+        target.connect(
+          'a',
+          undefined
+        )
+      ).toThrow(Error);
+      expect(() =>
+        target.connect(
+          undefined,
+          'a'
+        )
+      ).toThrow(Error);
     });
 
     test('throws error if adjacency of <from> or <to> is undefined', () => {
-      expect(() => target.connect('a', 'ab')).toThrow(Error);
-      expect(() => target.connect('ab', 'a')).toThrow(Error);
+      expect(() =>
+        target.connect(
+          'a',
+          'ab'
+        )
+      ).toThrow(Error);
+      expect(() =>
+        target.connect(
+          'ab',
+          'a'
+        )
+      ).toThrow(Error);
     });
 
     test('updates <from> and <to> adjacency lists properly', () => {
-      target.connect('a', 'b');
+      target.connect(
+        'a',
+        'b'
+      );
 
       expect(target.find('a').adjacency).toEqual(['b']);
       expect(target.find('b').adjacency).toEqual(['a']);
@@ -142,7 +165,11 @@ describe('MapManager', () => {
     });
 
     test('connects unidirectional passages correctly', () => {
-      target.connect('a', 'c', true);
+      target.connect(
+        'a',
+        'c',
+        true
+      );
 
       expect(target.find('a').adjacency).toContain('c');
       expect(target.find('c').adjacency).toHaveLength(0);
@@ -401,7 +428,7 @@ describe('MapManager', () => {
           }
 
           expect(adj[item].length).toBeGreaterThanOrEqual(1);
-          expect(adj[item].length).toBeLessThanOrEqual(3);
+          expect(adj[item].length).toBeLessThanOrEqual(4);
         }
       });
     });
