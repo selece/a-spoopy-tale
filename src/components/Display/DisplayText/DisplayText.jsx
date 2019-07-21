@@ -9,7 +9,7 @@ export default
 class DisplayText extends React.Component {
   render() {
     const { render, renderName, classes } = this.props;
-    const display = render[renderName];
+    const { [renderName]: display } = render;
 
     return <p className={classNames(classes)}>{display}</p>;
   }

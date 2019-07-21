@@ -1,5 +1,6 @@
 const HTMLPlugin = require('html-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -49,11 +50,18 @@ module.exports = {
       template: `${__dirname}/src/index.html`,
       filename: 'index.html',
       inject: 'body'
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ],
   cache: true,
-  devtool: 'source-map',
+  devServer: {
+    hot: true,
+    open: true,
+    compress: true
+  },
+  devtool: 'inline-source-map',
   resolve: {
     extensions: ['.js', '.jsx']
-  }
+  },
+  mode: 'development'
 };

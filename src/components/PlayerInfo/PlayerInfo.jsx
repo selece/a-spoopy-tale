@@ -14,10 +14,10 @@ class PlayerInfo extends React.Component {
 
     return (
       <div>
-        <DisplayHeader render={render} renderName="propLocation" classes="" />
-        <DisplayText render={render} renderName="propDescription" classes="" />
-        <DisplayText render={render} renderName="propHealth" classes="" />
-        <DisplayText render={render} renderName="propInventory" classes="" />
+        <DisplayHeader render={render} renderName="propLocation" />
+        <DisplayText render={render} renderName="propDescription" />
+        <DisplayText render={render} renderName="propHealth" />
+        <DisplayText render={render} renderName="propInventory" />
       </div>
     );
   }

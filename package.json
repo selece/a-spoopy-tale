@@ -4,9 +4,9 @@
   "description": "A spoopy tale! Text-based adventure game built in HTML5 & Javascript.",
   "main": "spoopy.server.js",
   "scripts": {
-    "build": "webpack --mode production",
-    "build:dev": "webpack --mode development",
-    "dev-server": "webpack-dev-server",
+    "build": "webpack --mode production --config webpack.config.prod.js",
+    "build:dev": "webpack --mode development -config webpack.config.dev.js",
+    "dev-server": "webpack-dev-server --config webpack.config.dev.js",
     "test": "jest --clearCache && jest test --coverage --verbose --config=jest.config.js",
     "watch": "jest --clearCache && jest test --coverage --watch",
     "eslint": "eslint \"src/**/*.js\" \"src/**/*.jsx\" \"test/**/*.js\""

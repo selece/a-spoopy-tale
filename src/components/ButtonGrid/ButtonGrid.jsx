@@ -12,19 +12,30 @@ export default
 class ButtonGrid extends React.Component {
   render() {
     const { classes, render, renderName } = this.props;
+    const { [renderName]: buttons } = render;
 
     return (
       <div className={classNames(classes)}>
-        {render[renderName].map(btn => (
-          <Button
-            display={btn.display}
-            onClickHandler={btn.onClickHandler}
-            onMouseEnter={btn.onMouseEnterHandler}
-            onMouseLeave={btn.onMouseLeaveHandler}
-            key={generate()}
-            classes={btn.classes}
-          />
-        ))}
+        {buttons.map(btn => {
+          const {
+            classes: buttonClasses,
+            display,
+            onClickHandler,
+            onMouseEnterHandler,
+            onMouseLeaveHandler
+          } = btn;
+
+          return (
+            <Button
+              display={display}
+              classes={buttonClasses}
+              onClickHandler={onClickHandler}
+              onMouseEnter={onMouseEnterHandler}
+              onMouseLeave={onMouseLeaveHandler}
+              key={generate()}
+            />
+          );
+        })}
       </div>
     );
   }
