@@ -78,8 +78,7 @@ export default class Engine {
     this.player = undefined;
   }
 
-  generateUIElement({ type, func }) {
-  }
+  generateUIElement({ type, func }) {}
 
   updateGUIState() {
     // generate props for button grids (exits and actions)
@@ -89,8 +88,6 @@ export default class Engine {
       last: { value: last }
     } = this.player.status;
 
-    // const here = status.loc.value;
-    // const last = status.last.value;
     const room = this.mapManager.find(here);
     const hasExplored = this.player.query({ hasExplored: here });
     const hasSearched = this.player.query({ hasSearched: here });
@@ -203,7 +200,6 @@ export default class Engine {
       inventory: { descriptive: propInventory },
       battery: { descriptive: propBattery }
     } = this.player.status;
-    // this.GUIState.propLocation = status.loc.value;
     this.GUIState.propLocation = propLocation;
 
     // TODO: more unexplored status statements (array, select random phrase)
