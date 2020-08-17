@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "classnames": "^2.2.6",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "mobx": "^3.6.2",
     "mobx-react": "^4.4.3",
     "prop-types": "^15.6.2",
